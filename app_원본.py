@@ -112,6 +112,120 @@ if 'ty_val' not in st.session_state:
 
 st.set_page_config(page_title="금융 자산 대시보드", layout="wide", initial_sidebar_state="collapsed")
 
+# === [보안 PIN 잠금 화면 로직] ===
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.markdown('''
+    <style>
+    /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
+    .stApp {
+        background: radial-gradient(circle at center, #0a0a1a 0%, #000000 100%);
+    }
+    
+    /* 화면 중앙 컨테이너 */
+    .pin-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15vh;
+        color: white;
+    }
+    
+    /* 야광 점멸 애니메이션 정의 (연보라 & 주황 믹스) */
+    @keyframes neonBreathe {
+        0% {
+            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
+        }
+        50% {
+            text-shadow: 0 0 20px rgba(255, 153, 0, 0.8), 0 0 40px rgba(255, 107, 0, 0.5), 0 0 60px rgba(255, 107, 0, 0.3);
+            color: #ffffff;
+        }
+        100% {
+            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
+        }
+    }
+
+    /* 타이틀 텍스트 (흰색 기본 + 야광 애니메이션) */
+    .oracle-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 8px;
+        margin-bottom: 5px;
+        text-align: center;
+        font-family: 'Inter', 'Arial Black', sans-serif;
+        animation: neonBreathe 3s infinite ease-in-out;
+    }
+    
+    .pin-subtitle {
+        color: #888888;
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    /* 입력창 폭 좁게 중앙 정렬 */
+    div[data-testid="stTextInput"] {
+        width: 300px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* 텍스트 인풋 디자인 */
+    div[data-baseweb="input"] {
+        background-color: rgba(20, 20, 30, 0.8) !important;
+        border: 1px solid rgba(184, 154, 255, 0.3) !important;
+        border-radius: 20px !important;
+        transition: all 0.3s ease;
+    }
+    
+    /* 텍스트 인풋 포커스 시 주황색 네온 띠 */
+    div[data-baseweb="input"]:focus-within {
+        border-color: #FF9900 !important;
+        box-shadow: 0 0 20px rgba(255, 153, 0, 0.4) !important;
+        background-color: rgba(0, 0, 0, 0.9) !important;
+    }
+
+    div[data-baseweb="input"] input {
+        color: white !important;
+        font-size: 3rem !important;
+        text-align: center !important;
+        letter-spacing: 25px !important;
+        caret-color: #FF9900 !important;
+        padding: 20px !important;
+    }
+    </style>
+    
+    <div class="pin-container">
+        <div class="oracle-title">ASSET 333</div>
+        <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
+    </div>
+    ''', unsafe_allow_html=True)
+    
+    st.write("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        pin = st.text_input("PIN", type="password", label_visibility="collapsed", key="pin_input")
+        if pin:
+            app_pin = ""
+            try:
+                # secrets에서 PIN을 가져옴. 없으면 "1234"
+                app_pin = str(st.secrets.get("APP_PIN", "1234"))
+            except:
+                app_pin = "1234"
+                
+            if pin == app_pin:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("❌ 비밀번호가 틀렸습니다.")
+    st.stop()
+# =================================
+
+
 # 사이버펑크 & Glassmorphism 글로벌 CSS 주입
 st.markdown("""
 <style>
