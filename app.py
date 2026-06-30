@@ -924,13 +924,6 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             st.warning(f"⚠️ 캘린더 데이터 파싱 실패: {e}")
 
     monthly_total = sum(v for k, v in daily_pnl_dict.items() if k.year == year and k.month == month)
-    color = get_color_by_value(monthly_total)
-    st.markdown(
-        f'<div style="text-align:right;margin-bottom:10px;">'
-        f'<span style="color:#a0a0a0;font-size:15px;">당월 총손익: </span>'
-        f'<span style="color:{color};font-size:22px;font-weight:bold;">{monthly_total:,.0f} 원</span></div>',
-        unsafe_allow_html=True,
-    )
 
     cal   = calendar.Calendar(firstweekday=6)
     weeks = cal.monthdatescalendar(year, month)
