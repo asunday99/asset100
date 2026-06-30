@@ -1817,15 +1817,18 @@ elements.forEach(el => {
                         _dash_monthly_rates[_m] = (_pnl / _base) * 100
                     _dash_year_total += _pnl
 
-            # ── 차트1: 월별 총손익 막대 (주황색) ──
-            _max_p_d = max(max(abs(v) for v in _dash_monthly_profits.values()), 1)
+            # ── 차트1: 월별 자산 총액 추이 막대 (주황색) ──
+            # 현재 총자산 (가장 최근 데이터)
+            _cur_total_asset = _monthly_last_asset.get(max(_monthly_last_asset.keys()), total_assets) if _monthly_last_asset else total_assets
+            # 막대 높이 기준: 월별 자산이액 중 최대값
+            _max_asset_d = max(max(_monthly_last_asset.values()), 1) if _monthly_last_asset else 1
             _bars_html_d1 = ""
             for _m in range(1, 13):
-                _p = _dash_monthly_profits[_m]
-                _h = max(min(int((abs(_p) / _max_p_d) * 100), 100), 5) if _p != 0 else 2
-                _clr = "#FF6B00" if _p > 0 else ("#4B9FFF" if _p < 0 else "#333")
-                _lbl = (f"<div style='color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{int(_p/10000):,}</div>" if _p > 0
-                        else (f"<div style='color:#4B9FFF;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{int(_p/10000):,}</div>" if _p < 0 else ""))
+                _a = _monthly_last_asset.get(_m, 0)
+                _h = max(min(int((_a / _max_asset_d) * 100), 100), 5) if _a > 0 else 2
+                _clr = "#FF6B00" if _a > 0 else "#333"
+                # 억 단위 표시
+                _lbl = (f"<div style='color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_a/100000000:.1f}억</div>" if _a > 0 else "")
                 _bars_html_d1 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
                                   f"{_lbl}<div style='background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;'></div>"
                                   f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
@@ -1833,8 +1836,8 @@ elements.forEach(el => {
             _chart_d1 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
                          f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
                          f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 총 자산 변동은<br>"
-                         f"<span style='font-size:20px;'>{_dash_year_total:,}원 이에요</span></div></div>"
+                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>현재까지 총 자산은<br>"
+                         f"<span style='font-size:20px;'>{_cur_total_asset:,}원 이에요</span></div></div>"
                          f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d1}</div></div>")
             import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d1), unsafe_allow_html=True)
 
