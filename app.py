@@ -1833,7 +1833,7 @@ elements.forEach(el => {
             _chart_d1 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
                          f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
                          f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 팔아서 실제로 번 돈은<br>"
+                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 총 자산 변동은<br>"
                          f"<span style='font-size:20px;'>{_dash_year_total:,}원 이에요</span></div></div>"
                          f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d1}</div></div>")
             import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d1), unsafe_allow_html=True)
@@ -1885,8 +1885,8 @@ elements.forEach(el => {
             current_month = datetime.datetime.now().month
             prev_month = current_month - 1 if current_month > 1 else 12
             
-            curr_profit = monthly_profits.get(current_month, 0)
-            prev_profit = monthly_profits.get(prev_month, 0)
+            curr_profit = _dash_monthly_profits.get(current_month, 0)
+            prev_profit = _dash_monthly_profits.get(prev_month, 0)
             
             # Extract target and actual values from df_dash
             try:
