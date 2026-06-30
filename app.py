@@ -1631,18 +1631,14 @@ if menu == "대시보드":
 
         st.markdown(f'''<div class='glass-card' style='padding: 20px; padding-bottom:5px; border-radius: 15px 15px 0 0; border-bottom: none; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
+<div style="font-size:13px; color:#A0A0A0; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">D-{d_days_dynamic}</span></div>
 <div class="neon-text" style="font-size:42px;">₩{int(total_assets):,}</div>
-<div style="font-size:16px; color:#A0A0A0; margin-top:5px; margin-bottom: 25px;">당월 실현수익 <span style="color:{month_color};">{month_sign}{month_profit:,}원</span></div>
         
 <div style="width:100%; background-color:rgba(255,255,255,0.05); border-radius:10px; height:8px; margin-top:20px; margin-bottom:10px; overflow:hidden;">
 <div style="width:{ach}%; background:linear-gradient(90deg, #FF6B00, #FF9900); height:100%; border-radius:10px;"></div>
 </div>
 <div style="font-size:15px; color:#E0E0E0; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:space-between; align-items:center; letter-spacing:0.5px; gap: 4px;">
 <span style="color:#FF9900; font-weight:900; font-size:14px; white-space:nowrap;">{ach:.2f}% 달성</span>
-<div style="display:flex; align-items:center; flex-wrap:nowrap; gap:6px;">
-<span style="font-size:12px;">목표 {formatted_gs_val}억</span>
-<span style="font-size:11px; color:#FFFFFF; background-color:rgba(255,255,255,0.15); padding:2px 6px; border-radius:10px; white-space:nowrap;">D-{d_days_dynamic}</span>
-</div>
 </div>
     </div>''', unsafe_allow_html=True)
         
@@ -1777,88 +1773,112 @@ elements.forEach(el => {
         try:
             import pandas as pd
             import datetime
-            if df_monthly.empty or len(df_monthly.columns) < 3:
-                st.info("월별 손익 데이터를 불러오는 중입니다. 잠시 후 새로고침해 주세요.")
-                raise ValueError("df_monthly empty")
-            date_col = df_monthly.columns[0]
-            profit_col = next((c for c in df_monthly.columns if '실현손익' in str(c).replace(' ', '')), df_monthly.columns[2])
-            
-            # Extract 2026 data
-            year_data = df_monthly[df_monthly[date_col].astype(str).str.contains(str(datetime.date.today().year), na=False)].copy()
-            
-            monthly_profits = {i: 0 for i in range(1, 13)}
-            for r in range(len(year_data)):
-                d_str = str(year_data.iloc[r][date_col])
-                val_str = str(year_data.iloc[r][profit_col]).replace(',', '')
-                try:
-                    m = int(d_str.split('-')[1].replace('월','').strip())
-                    monthly_profits[m] = int(float(val_str))
-                except: pass
-                
-            max_profit = max(max(monthly_profits.values()), 1)
-            
-            bars_html = ""
-            for m in range(1, 13):
-                p = monthly_profits[m]
-                height_pct = max(min(int((p / max_profit) * 100), 100), 5) if p > 0 else 2
-                color = "#FF6B00" if p > 0 else "#333"
-                
-                # Add text label for p (in 10,000s: 만원)
-                if p > 0:
-                    val_manwon = f"{int(p / 10000):,}"
-                    label_html = f"<div style='color:#FF6B00; font-size:10px; font-weight:bold; margin-bottom:2px; white-space:nowrap;'>{val_manwon}</div>"
-                else:
-                    label_html = ""
+            import re as _re
+            _today = datetime.date.today()
+            _cur_year = _today.year
 
-                bars_html += f"""
-                <div style='display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:120px; width:7%; margin:0 1%;'>
-                    {label_html}
-                    <div style='background-color:{color}; width:100%; height:{height_pct}%; border-radius:4px 4px 0 0;'></div>
-                    <div style='color:#a0a0a0; font-size:10px; margin-top:5px;'>{m}</div>
-                </div>
-                """
-                
-            chart_html = f"""
-            <div style='background-color:#111; border-radius:12px; padding:20px; margin-bottom:15px;'>
-                <div style='display:flex; align-items:center; margin-bottom:20px;'>
-                    <div style='width:30px; height:30px; border-radius:50%; background:conic-gradient(#FF6B00 0% 15%, #333 15% 100%); margin-right:15px;'></div>
-                    <div style='color:white; font-size:16px; font-weight:bold; line-height:1.4;'>
-                        올해 달성한 실현수익은<br>
-                        <span style='font-size:20px;'>{year_profit:,}원 이에요</span>
-                    </div>
-                </div>
-                <div style='display:flex; align-items:flex-end; justify-content:space-between; height:130px; border-bottom:1px solid #333; padding-bottom:5px;'>
-                    {bars_html}
-                </div>
-            </div>
-            """
-            import re; st.markdown(re.sub(r'\n\s+', ' ', chart_html), unsafe_allow_html=True)
+            # ── 일별 시트에서 월별 자산이액 증감 계산 (실현+평가 자연 반영) ──
+            _dash_monthly_profits = {i: 0 for i in range(1, 13)}
+            _dash_monthly_rates = {i: 0.0 for i in range(1, 13)}
+            _dash_year_total = 0
 
+            if not df_daily.empty:
+                _dd = df_daily.copy()
+                _dc_d = _dd.columns[0]
+                _ac_d = next((c for c in _dd.columns if '당일자산' in str(c).replace(' ','') or '자산이액' in str(c).replace(' ','')), _dd.columns[1])
+                _dd['_date'] = pd.to_datetime(_dd[_dc_d].astype(str).str.replace(' ',''), format='%y.%m.%d.', errors='coerce')
+                _dd['_asset'] = pd.to_numeric(_dd[_ac_d].astype(str).str.replace(',',''), errors='coerce').fillna(0)
+                _dd = _dd.dropna(subset=['_date'])
+                _dd = _dd[_dd['_asset'] > 0]
+                _dd_year = _dd[_dd['_date'].dt.year == _cur_year].sort_values('_date')
+
+                # 전년도 마지막 자산이액 (기준점)
+                _dd_prev = _dd[_dd['_date'].dt.year == _cur_year - 1].sort_values('_date')
+                _prev_year_last_asset = int(_dd_prev.iloc[-1]['_asset']) if len(_dd_prev) > 0 else 0
+
+                # 월별 마지막 자산이액 집계
+                _monthly_last_asset = {}
+                for _m in range(1, 13):
+                    _m_rows = _dd_year[_dd_year['_date'].dt.month == _m]
+                    if len(_m_rows) > 0:
+                        _monthly_last_asset[_m] = int(_m_rows.sort_values('_date').iloc[-1]['_asset'])
+
+                # 월별 손익 = 당월말 자산 - 전월말 자산
+                _sorted_months = sorted(_monthly_last_asset.keys())
+                for _idx, _m in enumerate(_sorted_months):
+                    if _idx == 0:
+                        _base = _prev_year_last_asset
+                    else:
+                        _base = _monthly_last_asset.get(_sorted_months[_idx - 1], 0)
+                    _cur_asset = _monthly_last_asset[_m]
+                    _pnl = _cur_asset - _base
+                    _dash_monthly_profits[_m] = _pnl
+                    if _base > 0:
+                        _dash_monthly_rates[_m] = (_pnl / _base) * 100
+                    _dash_year_total += _pnl
+
+            # ── 차트1: 월별 총손익 막대 (주황색) ──
+            _max_p_d = max(max(abs(v) for v in _dash_monthly_profits.values()), 1)
+            _bars_html_d1 = ""
+            for _m in range(1, 13):
+                _p = _dash_monthly_profits[_m]
+                _h = max(min(int((abs(_p) / _max_p_d) * 100), 100), 5) if _p != 0 else 2
+                _clr = "#FF6B00" if _p > 0 else ("#4B9FFF" if _p < 0 else "#333")
+                _lbl = (f"<div style='color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{int(_p/10000):,}</div>" if _p > 0
+                        else (f"<div style='color:#4B9FFF;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{int(_p/10000):,}</div>" if _p < 0 else ""))
+                _bars_html_d1 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
+                                  f"{_lbl}<div style='background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;'></div>"
+                                  f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
+
+            _chart_d1 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
+                         f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
+                         f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
+                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 팔아서 실제로 번 돈은<br>"
+                         f"<span style='font-size:20px;'>{_dash_year_total:,}원 이에요</span></div></div>"
+                         f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d1}</div></div>")
+            import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d1), unsafe_allow_html=True)
+
+            # ── 차트2: 월별 수익률 막대 (보라색) - 매매기록 탭과 동일 로직 ──
+            # 매매기록에서 YTD 단순평균 수익률 계산
+            _dash_ytd_val = 0.0
             try:
-                ytd_return = str(df_dash.iloc[4, 12]).strip()
-                expected_return = str(df_dash.iloc[5, 12]).strip()
-                if ytd_return == 'nan': ytd_return = '0%'
-                if expected_return == 'nan': expected_return = '0%'
+                _df_rec_dash = load_records_data(urls.get("RECORDS", ""))
+                _dash_all_rates = []
+                if not _df_rec_dash.empty and "날짜" in _df_rec_dash.columns and "수익률" in _df_rec_dash.columns:
+                    _df_rec_dash["_rd"] = pd.to_datetime(_df_rec_dash["날짜"].astype(str).str.replace(" ",""), format="%y.%m.%d.", errors="coerce")
+                    _df_rec_dash["_rr"] = pd.to_numeric(_df_rec_dash["수익률"].astype(str).str.replace(",",""), errors="coerce")
+                    _rc = _df_rec_dash.dropna(subset=["_rd","_rr"])
+                    _rc = _rc[_rc["_rd"].dt.year == _cur_year]
+                    if "계좌" in _rc.columns:
+                        _rc = _rc[_rc["계좌"].astype(str).str.strip() != "모의계산"]
+                    _dash_all_rates = [float(r) for r in _rc["_rr"].tolist() if r != 0]
+                if _dash_all_rates:
+                    _dash_ytd_val = sum(_dash_all_rates) / len(_dash_all_rates)
             except:
-                ytd_return = '0%'
-                expected_return = '0%'
+                pass
 
+            _dash_ytd_str = f"{_dash_ytd_val:.2f}%"
 
-            chart_html2 = f"""
-            <div style='background-color:#111; border-radius:12px; padding:20px; margin-bottom:15px;'>
-                <div style='display:flex; align-items:center; margin-bottom:20px;'>
-                    <div style='width:30px; height:30px; border-radius:50%; background:conic-gradient(#8A2BE2 0% 15%, #333 15% 100%); margin-right:15px;'></div>
-                    <div style='color:white; font-size:16px; font-weight:bold; line-height:1.4;'>
-                        올해 실현수익률은 <span style='font-size:20px; color:#8A2BE2;'>{ytd_return}</span> 이에요<br>
-                        <span style='font-size:13px; color:#A0A0A0; font-weight:normal;'>이 추세라면 연말까지 {expected_return} 예상돼요</span>
-                    </div>
-                </div>
-                <div style='display:flex; align-items:flex-end; justify-content:space-between; height:130px; border-bottom:1px solid #333; padding-bottom:5px;'>
-                    {bars_html}
-                </div>
-            </div>
-            """
-            import re; st.markdown(re.sub(r'\n\s+', ' ', chart_html2), unsafe_allow_html=True)
+            # 월별 수익률 막대용 (자산증감 기반)
+            _max_r_d = max(max(abs(v) for v in _dash_monthly_rates.values()), 0.1)
+            _bars_html_d2 = ""
+            for _m in range(1, 13):
+                _r = _dash_monthly_rates[_m]
+                _h2 = max(min(int((abs(_r) / _max_r_d) * 100), 100), 5) if _r != 0 else 2
+                _clr2 = "#8A2BE2" if _r > 0 else ("#4B9FFF" if _r < 0 else "#333")
+                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r > 0
+                         else (f"<div style='color:#4B9FFF;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r < 0 else ""))
+                _bars_html_d2 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
+                                  f"{_lbl2}<div style='background-color:{_clr2};width:100%;height:{_h2}%;border-radius:4px 4px 0 0;'></div>"
+                                  f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
+
+            _chart_d2 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
+                         f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
+                         f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
+                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 평균 수익률은 "
+                         f"<span style='font-size:20px;color:#8A2BE2;'>{_dash_ytd_str}</span> 이에요</div></div>"
+                         f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d2}</div></div>")
+            import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d2), unsafe_allow_html=True)
 
             
             # -- Side-by-Side UI (Target vs Realized) --
