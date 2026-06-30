@@ -479,6 +479,9 @@ def load_and_clean_data_no_cache(url, is_multi_header=False):
             except ValueError:
                 return x
         for col in df.columns:
+            # 날짜 컨럼은 숫자 변환 제외 (날짜 문자열 보존)
+            if str(col).strip() in ('날짜', 'date', 'Date', '날짜_str'):
+                continue
             df[col] = df[col].apply(clean_val)
                     
         df = df.fillna(0.0)
@@ -1145,19 +1148,15 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     _MIN_YEAR, _MIN_MONTH = 2026, 1
     _MAX_YEAR, _MAX_MONTH = today.year, today.month  # 상한 = 오늘 달
 
-    # 초기화: 없거나 상한 초과시 오늘 달로 리셋
-    if _CAL_YEAR_KEY not in st.session_state:
+    # A 방식: 버튼 조작 플래그가 없으면 오늘 달로 초기화
+    # 버튼이 클릭되면 _CAL_NAV_FLAG를 True로 설정하고, 다음 렬더링에서 플래그를 사용 후 해제
+    _CAL_NAV_FLAG = "_trade_cal_navigated"
+    if not st.session_state.get(_CAL_NAV_FLAG, False):
+        # 네비게이션 중이 아니면 항상 오늘 달로 리셋
         st.session_state[_CAL_YEAR_KEY]  = _MAX_YEAR
         st.session_state[_CAL_MONTH_KEY] = _MAX_MONTH
-    # 상한 강제 클램핑 (저장된 값이 오늘 달보다 어떤 이유로 크면 리셋)
-    _sy, _sm = st.session_state[_CAL_YEAR_KEY], st.session_state[_CAL_MONTH_KEY]
-    if (_sy, _sm) > (_MAX_YEAR, _MAX_MONTH):
-        st.session_state[_CAL_YEAR_KEY]  = _MAX_YEAR
-        st.session_state[_CAL_MONTH_KEY] = _MAX_MONTH
-    # 하한 클램핑
-    if (_sy, _sm) < (_MIN_YEAR, _MIN_MONTH):
-        st.session_state[_CAL_YEAR_KEY]  = _MIN_YEAR
-        st.session_state[_CAL_MONTH_KEY] = _MIN_MONTH
+    # 플래그 해제 (다음 렬더링에서는 다시 초기화 대상)
+    st.session_state[_CAL_NAV_FLAG] = False
 
     _disp_year  = st.session_state[_CAL_YEAR_KEY]
     _disp_month = st.session_state[_CAL_MONTH_KEY]
@@ -1176,6 +1175,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 _ny -= 1
             st.session_state[_CAL_YEAR_KEY]  = _ny
             st.session_state[_CAL_MONTH_KEY] = _nm
+            st.session_state[_CAL_NAV_FLAG]  = True  # 네비게이션 플래그 설정
             st.rerun()
     with _col_next:
         if st.button("►", key="_cal_next_btn", help="다음 달", disabled=_next_disabled):
@@ -1186,6 +1186,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 _ny += 1
             st.session_state[_CAL_YEAR_KEY]  = _ny
             st.session_state[_CAL_MONTH_KEY] = _nm
+            st.session_state[_CAL_NAV_FLAG]  = True  # 네비게이션 플래그 설정
             st.rerun()
 
     # 표시월 재가져오기 (rerun 후)
