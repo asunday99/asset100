@@ -684,7 +684,7 @@ with st.sidebar:
     st.markdown(manual_md)
 # ----------------------------
 
-menu_options = ["대시보드", "매매 기록", "손익 현황"]
+menu_options = ["대시보드", "매매 기록"]
 
 if "menu_selection" not in st.session_state:
     page_from_url = st.query_params.get("page", "대시보드")
@@ -738,7 +738,7 @@ st.markdown("""
 menu = option_menu(
     menu_title=None, 
     options=menu_options, 
-    icons=['', '', ''], 
+    icons=['', ''], 
     menu_icon="cast", 
     default_index=default_index, 
     orientation="horizontal",
@@ -862,240 +862,7 @@ def render_trade_records(urls: dict):
     <div style="max-width: 860px; margin: 0 auto;">
     """, unsafe_allow_html=True)
 
-    # ── 데이터 로드 ──────────────────────────────────────────────
-    all_data   = load_all_data(urls)
-    df_daily   = all_data.get("DAILY",   pd.DataFrame())
-    df_monthly = all_data.get("MONTHLY", pd.DataFrame())
-
-    today_profit = month_profit = year_profit = 0
-
-    if not df_daily.empty:
-        try:
-            profit_col = next((c for c in df_daily.columns if "실현손익" in str(c).replace(" ", "")), None)
-            if profit_col:
-                today_profit = int(safe_int_float(df_daily.iloc[0][profit_col]))
-        except Exception as e:
-            logger.warning("오늘 손익 파싱 실패: %s", e)
-
-    if not df_monthly.empty:
-        try:
-            date_col   = df_monthly.columns[0]
-            profit_col = next((c for c in df_monthly.columns if "실현손익" in str(c).replace(" ", "")), None)
-            if profit_col:
-                month_profit = int(safe_int_float(df_monthly.iloc[0][profit_col]))
-                _cy = str(datetime.date.today().year)
-                year_data    = df_monthly[df_monthly[date_col].astype(str).str.contains(_cy, na=False)]
-                year_profit  = sum(int(safe_int_float(v)) for v in year_data[profit_col])
-        except Exception as e:
-            logger.warning("월별 손익 파싱 실패: %s", e)
-
-    t_color = get_color_by_value(today_profit)
-    m_color = get_color_by_value(month_profit)
-    y_color = get_color_by_value(year_profit)
-
-    # ── 막대 높이 동적 계산 (비율) ──────────────────────────────────
-    max_abs = max(abs(today_profit), abs(month_profit), abs(year_profit), 1)
-    # 동적 비율 계산 (최대 100%)
-    t_h = max(int(abs(today_profit) / max_abs * 100), 5)
-    m_h = max(int(abs(month_profit) / max_abs * 100), 5)
-    y_h = max(int(abs(year_profit)  / max_abs * 100), 5)
-
-    st.markdown(f"""
-<div style='padding:10px 0 24px 0;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:20px;'>
-  <div style='margin-bottom:24px;'>
-    <span style='color:#A0A0B0;font-size:14px;'>오늘의 투자수익</span>
-    <h1 style='color:{t_color};font-size:40px;font-weight:bold;margin:5px 0 0 0;'>{today_profit:+,}원</h1>
-  </div>
-  <div style='display:flex;align-items:flex-end;justify-content:space-around;height:120px;'>
-    <div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:30%;'>
-      <span style='color:{t_color};font-size:12px;margin-bottom:4px;font-weight:bold;'>{today_profit:+,}</span>
-      <div style='width:36px;height:{t_h}%;background-color:{t_color};border-radius:4px 4px 0 0;margin-bottom:8px;'></div>
-      <span style='background:#fff;color:#000;font-size:12px;font-weight:bold;padding:5px 18px;border-radius:20px;'>오늘</span>
-    </div>
-    <div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:30%;'>
-      <span style='color:{m_color};font-size:12px;margin-bottom:4px;font-weight:bold;'>{month_profit:+,}</span>
-      <div style='width:36px;height:{m_h}%;background-color:{m_color};border-radius:4px 4px 0 0;margin-bottom:8px;'></div>
-      <span style='background:#222;color:#aaa;font-size:12px;padding:5px 18px;border-radius:20px;'>이번달</span>
-    </div>
-    <div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:30%;'>
-      <span style='color:{y_color};font-size:12px;margin-bottom:4px;font-weight:bold;'>{year_profit:+,}</span>
-      <div style='width:36px;height:{y_h}%;background-color:{y_color};border-radius:4px 4px 0 0;margin-bottom:8px;'></div>
-      <span style='background:#222;color:#aaa;font-size:12px;padding:5px 18px;border-radius:20px;'>올해</span>
-    </div>
-  </div>
-</div>""", unsafe_allow_html=True)
-
-    # ── 토글 버튼 4개 (일별/월별/연별/누적) ──────────────────────
-    view_modes = ["일별", "월별", "연별", "누적"]
-    cols_toggle = st.columns(len(view_modes))
-    for i, mode in enumerate(view_modes):
-        with cols_toggle[i]:
-            is_active = (st.session_state.trade_view_mode == mode)
-            btn_type = "primary" if is_active else "secondary"
-            if st.button(mode, key=f"toggle_{mode}", use_container_width=True, type=btn_type):
-                st.session_state.trade_view_mode = mode
-                st.rerun()
-
-    # ── ◀ 2026.06 ▶ 날짜 네비게이터 ─────────────────────────────
-    if "trade_nav_date" not in st.session_state:
-        st.session_state.trade_nav_date = datetime.date.today()
-        
-    cur_date = st.session_state.trade_nav_date
-    mode = st.session_state.trade_view_mode
-
-    if mode == "일별":
-        nav_label = cur_date.strftime("%Y.%m.%d")
-    elif mode == "월별":
-        nav_label = cur_date.strftime("%Y.%m")
-    elif mode == "연별":
-        nav_label = cur_date.strftime("%Y")
-    else:
-        nav_label = "전체 누적"
-
-    col_prev, col_label, col_next = st.columns([1, 4, 1])
-    with col_prev:
-        if mode != "누적":
-            if st.button("◀", key="nav_prev", use_container_width=True):
-                if mode == "일별":
-                    st.session_state.trade_nav_date -= datetime.timedelta(days=1)
-                elif mode == "월별":
-                    # subtract 1 month
-                    first_day = cur_date.replace(day=1)
-                    st.session_state.trade_nav_date = first_day - datetime.timedelta(days=1)
-                    st.session_state.trade_nav_date = st.session_state.trade_nav_date.replace(day=min(cur_date.day, 28))
-                elif mode == "연별":
-                    st.session_state.trade_nav_date = cur_date.replace(year=cur_date.year - 1)
-                st.rerun()
-    with col_label:
-        st.markdown(
-            f"<div style='text-align:center;font-size:18px;font-weight:700;color:#fff;padding:8px 0;'>{nav_label}</div>",
-            unsafe_allow_html=True
-        )
-    with col_next:
-        if mode != "누적":
-            if st.button("▶", key="nav_next", use_container_width=True):
-                if mode == "일별":
-                    st.session_state.trade_nav_date += datetime.timedelta(days=1)
-                elif mode == "월별":
-                    # add 1 month
-                    next_month = cur_date.replace(day=28) + datetime.timedelta(days=4)
-                    st.session_state.trade_nav_date = next_month.replace(day=min(cur_date.day, 28))
-                elif mode == "연별":
-                    st.session_state.trade_nav_date = cur_date.replace(year=cur_date.year + 1)
-                st.rerun()
-
-    # ── 내 투자수익 카드 ─────────────────────────────────────────
-    if mode == "일별":
-        card_profit = today_profit
-        card_label  = f"{cur_date.strftime('%Y.%m.%d')} 일별 실현 손익"
-    elif mode == "월별":
-        card_profit = month_profit
-        card_label  = f"{cur_date.strftime('%Y.%m')}월 실현 손익"
-    elif mode == "연별":
-        card_profit = year_profit
-        card_label  = f"{cur_date.strftime('%Y')}년 실현 손익"
-    else:
-        card_profit = year_profit
-        card_label  = "누적 실현 손익"
-
-    card_color = get_color_by_value(card_profit)
-    pct_bg     = "#ff4757" if card_profit >= 0 else "#1e90ff"
-
-    # 수익률 계산 (총자산 대비)
-    card_pct = 0.0
-    if not df_monthly.empty:
-        try:
-            profit_col = next((c for c in df_monthly.columns if "실현손익" in str(c).replace(" ", "")), None)
-            if profit_col and card_profit != 0:
-                total_invested = abs(card_profit) * 20
-                card_pct = (card_profit / total_invested * 100) if total_invested > 0 else 0.0
-        except:
-            pass
-
-    st.markdown(f"""
-<div style='background:#111; border-radius:16px; border:1px solid #222; padding:28px 24px 18px 24px; margin-bottom:12px;'>
-  <div style='font-size:15px;color:#aaa;margin-bottom:8px;'>내 투자수익</div>
-  <div style='font-size:38px;font-weight:900;color:{card_color};margin:6px 0 10px 0;'>{card_profit:+,}원</div>
-  <div><span style='display:inline-block;padding:6px 22px;border-radius:20px;background:{pct_bg};font-size:16px;font-weight:700;color:#fff;'>{card_pct:+.2f}%</span></div>
-  <div style='color:#888;font-size:12px;margin-top:8px;'>{card_label}</div>
-</div>""", unsafe_allow_html=True)
-
-    # ── ∨ 내 투자 성과 보기 (차트 토글) ──────────────────────────
-    toggle_label = "∧ 내 투자 성과 접기" if st.session_state.show_perf_chart else "∨ 내 투자 성과 보기"
-    if st.button(toggle_label, key="toggle_perf_chart", use_container_width=True):
-        st.session_state.show_perf_chart = not st.session_state.show_perf_chart
-        st.rerun()
-
-    # 차트 표시
-    if st.session_state.show_perf_chart:
-        st.markdown('<div style="background:#111; border-radius:16px; border:1px solid #222; padding:20px 24px; margin-bottom:16px;">', unsafe_allow_html=True)
-        st.markdown("**누적자산변동율 vs KOSPI**")
-        try:
-            if not df_monthly.empty:
-                profit_col = next((c for c in df_monthly.columns if "실현손익" in str(c).replace(" ", "")), None)
-                date_col   = df_monthly.columns[0]
-                if profit_col:
-                    df_chart = df_monthly[[date_col, profit_col]].copy()
-                    df_chart = df_chart[df_chart[date_col].astype(str).str.strip() != "합계"]
-                    df_chart = df_chart.iloc[::-1].reset_index(drop=True)
-                    df_chart[profit_col] = pd.to_numeric(df_chart[profit_col], errors="coerce").fillna(0)
-                    initial_asset = 1_000_000_000
-                    df_chart["누적수익"]   = df_chart[profit_col].cumsum()
-                    df_chart["누적수익률"] = df_chart["누적수익"] / initial_asset * 100
-
-                    try:
-                        import yfinance as yf
-                        kospi = yf.download("^KS11", period="2y", interval="1mo", progress=False)
-                        if not kospi.empty:
-                            kospi = kospi["Close"].dropna().reset_index()
-                            kospi.columns = ["날짜", "KOSPI"]
-                            kospi["KOSPI수익률"] = (kospi["KOSPI"] / kospi["KOSPI"].iloc[0] - 1) * 100
-                            kospi["날짜str"] = kospi["날짜"].dt.strftime("%Y.%m")
-                            df_chart["날짜str"] = df_chart[date_col].astype(str).str[:7].str.replace("-", ".")
-                            df_merged = pd.merge(df_chart, kospi[["날짜str", "KOSPI수익률"]], on="날짜str", how="left")
-                        else:
-                            df_merged = df_chart.copy()
-                            df_merged["KOSPI수익률"] = None
-                    except:
-                        df_merged = df_chart.copy()
-                        df_merged["KOSPI수익률"] = None
-
-                    import plotly.graph_objects as go
-                    fig = go.Figure()
-                    fig.add_trace(go.Scatter(
-                        x=df_merged[date_col].astype(str),
-                        y=df_merged["누적수익률"],
-                        mode="lines+markers",
-                        name="누적자산변동율",
-                        line=dict(color="#FF9900", width=2.5),
-                        marker=dict(size=5),
-                    ))
-                    if "KOSPI수익률" in df_merged.columns and df_merged["KOSPI수익률"].notna().any():
-                        fig.add_trace(go.Scatter(
-                            x=df_merged[date_col].astype(str),
-                            y=df_merged["KOSPI수익률"],
-                            mode="lines+markers",
-                            name="KOSPI",
-                            line=dict(color="#4B9FFF", width=2),
-                            marker=dict(size=4),
-                        ))
-                    fig.update_layout(
-                        paper_bgcolor="rgba(0,0,0,0)",
-                        plot_bgcolor="rgba(0,0,0,0)",
-                        font=dict(color="#d2d2d2"),
-                        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
-                        margin=dict(l=10, r=10, t=30, b=10),
-                        height=320,
-                        yaxis=dict(ticksuffix="%", gridcolor="rgba(255,255,255,0.08)"),
-                        xaxis=dict(showgrid=False),
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-        except Exception as e:
-            st.warning(f"차트 로드 실패: {e}")
-        st.markdown('</div>', unsafe_allow_html=True)
-
     # ── 매매 캘린더 / 매매 기록 서브탭 ─────────────────────────────
-    st.markdown("---")
     with st.expander("▼ 매매 캘린더", expanded=True):
         df_rec = load_records_data(urls.get("RECORDS", ""))
         _render_trade_calendar(df_rec)
@@ -2410,15 +2177,7 @@ elif menu == "매매 기록":
     }
     render_trade_records(urls_dict)
 
-elif menu == "손익 현황":
-    urls_dict = {
-        "DASHBOARD": URL_DASHBOARD,
-        "ACCOUNT": URL_ACCOUNT,
-        "RECORDS": URL_RECORDS,
-        "DAILY": URL_PNL_DAILY,
-        "MONTHLY": URL_PNL_MONTHLY
-    }
-    render_pnl(urls_dict)
+
 
 
 if __name__ == "__main__":
