@@ -852,11 +852,13 @@ def render_trade_records(urls: dict):
     # ── 최대 폭 제한 ───────────────────────────────────────────────
     st.markdown("""
     <style>
-    /* 매매기록 탭 전체 너비 사용 */
+    /* 매매기록 탭 반응형 너비 */
     .block-container {
-        max-width: 100% !important;
+        max-width: min(1200px, 90vw) !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
     </style>
     <div style="width: 100%;">
@@ -920,21 +922,22 @@ def render_trade_records(urls: dict):
 """, unsafe_allow_html=True)
 
     # ── 매매 캘린더 ─────────────────────────────────────────────────
-    with st.expander(_expander_title, expanded=True):
+    with st.expander(_expander_title, expanded=False):
         df_rec = load_records_data(urls.get("RECORDS", ""))
         _render_trade_calendar(df_rec)
 
-    # ── 익절/손절 계산기 ────────────────────────────────────────
-    # ── 연간 실현수익 막대 차트 (일별 데이터 직접 집계) ────────────────────────────────────────────
+    # ── 연간 실현수익 & 수익률 버블차트 (좌우 병렬) ─────────────────────────────────────────
     try:
         import datetime as _dt2
+        import math as _math
+
+        # ── 1) 일별 시트에서 월별 실현손익 집계 ──
         _df_daily_chart = load_and_clean_data(urls.get("DAILY", ""))
-        _df_dash_chart = load_and_clean_data(urls.get("DASHBOARD", ""))
+        _year_profit_c = 0
+        _monthly_profits_c = {i: 0 for i in range(1, 13)}
         if not _df_daily_chart.empty:
             _dc2 = _df_daily_chart.columns[0]
             _pc2 = next((c for c in _df_daily_chart.columns if "실현손익" in str(c).replace(" ", "")), None)
-            _year_profit_c = 0
-            _monthly_profits_c = {i: 0 for i in range(1, 13)}
             if _pc2:
                 _tmp2 = _df_daily_chart.copy()
                 _tmp2['_date2'] = pd.to_datetime(
@@ -949,86 +952,153 @@ def render_trade_records(urls: dict):
                     _val = int(_row[_pc2])
                     _monthly_profits_c[_m] = _monthly_profits_c.get(_m, 0) + _val
                     _year_profit_c += _val
-            _max_profit_c = max(max(_monthly_profits_c.values()), 1)
-            _bars_html_c = ""
-            for _m in range(1, 13):
-                _p = _monthly_profits_c[_m]
-                _h = max(min(int((_p / _max_profit_c) * 100), 100), 5) if _p > 0 else 2
-                _clr = "#FF6B00" if _p > 0 else "#333"
-                _lbl = f"<div style=\'color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;\'>{int(_p/10000):,}</div>" if _p > 0 else ""
-                _bars_html_c += f"<div style=\'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;\'>{_lbl}<div style=\'background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;\'></div><div style=\'color:#a0a0a0;font-size:10px;margin-top:5px;\'>{_m}</div></div>"
-            _chart1 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 팔아서 실제로 번 돈은<br><span style=\'font-size:20px;\'>{_year_profit_c:,}원 이에요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
-            st.markdown(_chart1, unsafe_allow_html=True)
-            # ── 올해 실현수익률 & 연말 예상: 매매기록에서 직접 계산 ──
-            try:
-                _df_rec_chart = load_records_data(urls.get("RECORDS", ""))
-                _monthly_rates_c2 = {i: [] for i in range(1, 13)}
-                if not _df_rec_chart.empty and "날짜" in _df_rec_chart.columns and "수익률" in _df_rec_chart.columns:
-                    _df_rec_chart["_rc_date"] = pd.to_datetime(
-                        _df_rec_chart["날짜"].astype(str).str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
-                    )
-                    _df_rec_chart["_rc_rate"] = pd.to_numeric(
-                        _df_rec_chart["수익률"].astype(str).str.replace(",", ""), errors="coerce"
-                    )
-                    _rc_year = _dt2.date.today().year
-                    _rc_rows = _df_rec_chart.dropna(subset=["_rc_date", "_rc_rate"])
-                    _rc_rows = _rc_rows[_rc_rows["_rc_date"].dt.year == _rc_year]
-                    if "계좌" in _rc_rows.columns:
-                        _rc_rows = _rc_rows[_rc_rows["계좌"].astype(str).str.strip() != "모의계산"]
-                    for _, _rr in _rc_rows.iterrows():
-                        _rm = _rr["_rc_date"].month
-                        _rv = float(_rr["_rc_rate"])
-                        if _rv != 0:
-                            _monthly_rates_c2[_rm].append(_rv)
-                # 월별 수익률 = AVERAGEIFS 방식 (구글 시트와 동일, 막대그래프 표시용)
-                _monthly_avg_rates2 = {}
-                for _mi in range(1, 13):
-                    if _monthly_rates_c2[_mi]:
-                        _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi]) / len(_monthly_rates_c2[_mi])  # 월별 평균
-                    else:
-                        _monthly_avg_rates2[_mi] = 0.0
-                # 올해 YTD = 올해 전체 매도 건 수익률의 단순 평균 (AVERAGEIFS 방식)
-                _all_rates2 = [r for rates in _monthly_rates_c2.values() for r in rates]
-                _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
-                _ytd = f"{_ytd_val:.2f}%"
-                _today_m2 = _dt2.date.today().month
-                _today_d2 = _dt2.date.today().day
-                # 완료된 개월수: 당월 1일~4일이면 전월까지, 그 외 당월 포함
-                _completed_months2 = _today_m2 - 1 if _today_d2 <= 4 else _today_m2
-                _completed_months2 = max(_completed_months2, 1)
-                # 연말 예상 = YTD 평균 × (12 / 완료 개월수)
-                if _all_rates2 and _completed_months2 > 0:
-                    _exp_val = _ytd_val * (12 / _completed_months2)
-                    _exp = f"{_exp_val:.2f}%"
-                else:
-                    _exp = "0%"
-            except Exception:
-                _ytd = "0%"
-                _exp = "0%"
-                _monthly_avg_rates2 = {i: 0.0 for i in range(1, 13)}
-            # ── 두 번째 차트: 월별 수익률(%) 막대 (보라색) ──
-            _max_rate_c2 = max(max(_monthly_avg_rates2.values()), 0.1)
-            _bars_html_rate2 = ""
-            for _m in range(1, 13):
-                _r = _monthly_avg_rates2.get(_m, 0.0)
-                _h2 = max(min(int((_r / _max_rate_c2) * 100), 100), 5) if _r > 0 else 2
-                _clr2 = "#8A2BE2" if _r > 0 else "#333"
-                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r > 0 else "")
-                _bars_html_rate2 += (
-                    f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
-                    f"{_lbl2}<div style='background-color:{_clr2};width:100%;height:{_h2}%;border-radius:4px 4px 0 0;'></div>"
-                    f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>"
-                )
-            _chart2 = (
-                f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
-                f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
-                f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 평균 수익률은 "
-                f"<span style='font-size:20px;color:#8A2BE2;'>{_ytd}</span> 이에요"
-                f"</div></div>"
-                f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_rate2}</div></div>"
+
+        # ── 2) 매매기록 시트에서 월별 수익률 & 건수 집계 ──
+        _df_rec_chart = load_records_data(urls.get("RECORDS", ""))
+        _monthly_rates_c2 = {i: [] for i in range(1, 13)}
+        _monthly_counts_c2 = {i: 0 for i in range(1, 13)}
+        if not _df_rec_chart.empty and "날짜" in _df_rec_chart.columns and "수익률" in _df_rec_chart.columns:
+            _df_rec_chart["_rc_date"] = pd.to_datetime(
+                _df_rec_chart["날짜"].astype(str).str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
             )
-            st.markdown(_chart2, unsafe_allow_html=True)
+            _df_rec_chart["_rc_rate"] = pd.to_numeric(
+                _df_rec_chart["수익률"].astype(str).str.replace(",", ""), errors="coerce"
+            )
+            _rc_year = _dt2.date.today().year
+            _rc_rows = _df_rec_chart.dropna(subset=["_rc_date", "_rc_rate"])
+            _rc_rows = _rc_rows[_rc_rows["_rc_date"].dt.year == _rc_year]
+            if "계좌" in _rc_rows.columns:
+                _rc_rows = _rc_rows[_rc_rows["계좌"].astype(str).str.strip() != "모의계산"]
+            for _, _rr in _rc_rows.iterrows():
+                _rm = _rr["_rc_date"].month
+                _rv = float(_rr["_rc_rate"])
+                if _rv != 0:
+                    _monthly_rates_c2[_rm].append(_rv)
+                    _monthly_counts_c2[_rm] += 1
+
+        # 월별 평균 수익률
+        _monthly_avg_rates2 = {}
+        for _mi in range(1, 13):
+            if _monthly_rates_c2[_mi]:
+                _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi]) / len(_monthly_rates_c2[_mi])
+            else:
+                _monthly_avg_rates2[_mi] = 0.0
+
+        # YTD 전체 평균
+        _all_rates2 = [r for rates in _monthly_rates_c2.values() for r in rates]
+        _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
+        _ytd = f"{_ytd_val:.2f}%"
+
+        # ── 3) 버블차트 SVG 생성 함수 ──
+        def _make_bubble_svg(data_dict, count_dict, color_pos, color_neg, y_label, fmt_val):
+            """data_dict: {month: value}, count_dict: {month: count}
+            color_pos/neg: 양수/음수 버블 색상
+            y_label: Y축 단위 표시
+            fmt_val: value 포맷 함수
+            반환: SVG 문자열"""
+            W, H = 460, 200
+            PAD_L, PAD_R, PAD_T, PAD_B = 48, 16, 16, 32
+            plot_w = W - PAD_L - PAD_R
+            plot_h = H - PAD_T - PAD_B
+
+            months_with_data = [m for m in range(1, 13) if data_dict.get(m, 0) != 0]
+            if not months_with_data:
+                return f'<svg width="{W}" height="{H}"><text x="{W//2}" y="{H//2}" fill="#666" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+
+            all_vals = [abs(data_dict.get(m, 0)) for m in range(1, 13) if data_dict.get(m, 0) != 0]
+            max_val = max(all_vals) if all_vals else 1
+            max_count = max((count_dict.get(m, 0) for m in range(1, 13)), default=1)
+            max_count = max(max_count, 1)
+
+            # 최소/최대 버블 반경
+            R_MIN, R_MAX = 8, 32
+
+            # X 위치: 1~12월 균등 분포
+            def x_pos(m):
+                return PAD_L + int((m - 1) / 11.0 * plot_w) if len(months_with_data) > 1 else PAD_L + plot_w // 2
+
+            # Y 위치: 값에 비례 (양수=위, 음수=아래)
+            y_vals = [data_dict.get(m, 0) for m in range(1, 13)]
+            y_min = min(y_vals + [0])
+            y_max = max(y_vals + [0])
+            y_range = max(y_max - y_min, 1)
+
+            def y_pos(v):
+                return PAD_T + int((1 - (v - y_min) / y_range) * plot_h)
+
+            svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
+            # 배경
+            svg += f'<rect width="{W}" height="{H}" fill="#111" rx="10"/>'
+            # 0선
+            y0 = y_pos(0)
+            svg += f'<line x1="{PAD_L}" y1="{y0}" x2="{W-PAD_R}" y2="{y0}" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>'
+            # 버블 & 라벨
+            for m in range(1, 13):
+                v = data_dict.get(m, 0)
+                cnt = count_dict.get(m, 0)
+                if v == 0 and cnt == 0:
+                    # 월 라벨만
+                    svg += f'<text x="{x_pos(m)}" y="{H-PAD_B+14}" fill="#555" text-anchor="middle" font-size="10">{m}</text>'
+                    continue
+                cx = x_pos(m)
+                cy = y_pos(v)
+                r = R_MIN + int((cnt / max_count) * (R_MAX - R_MIN))
+                clr = color_pos if v >= 0 else color_neg
+                # 버블 (반투명)
+                svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{clr}" fill-opacity="0.75" stroke="{clr}" stroke-width="1.5"/>'
+                # 값 라벨 (버블 위)
+                lbl = fmt_val(v)
+                svg += f'<text x="{cx}" y="{cy - r - 4}" fill="{clr}" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
+                # 건수 라벨 (버블 안)
+                if cnt > 0:
+                    svg += f'<text x="{cx}" y="{cy + 4}" fill="white" text-anchor="middle" font-size="9" font-weight="bold">{cnt}건</text>'
+                # 월 라벨
+                svg += f'<text x="{cx}" y="{H-PAD_B+14}" fill="#aaa" text-anchor="middle" font-size="10">{m}월</text>'
+            # Y축 단위
+            svg += f'<text x="{PAD_L-4}" y="{PAD_T+8}" fill="#666" text-anchor="end" font-size="9">{y_label}</text>'
+            svg += '</svg>'
+            return svg
+
+        # ── 4) 차트1 버블 SVG (실현손익, 건수=월별 매도건수) ──
+        _svg1 = _make_bubble_svg(
+            _monthly_profits_c,
+            _monthly_counts_c2,
+            "#FF6B00", "#4B9FFF",
+            "만원",
+            lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}"
+        )
+
+        # ── 5) 차트2 버블 SVG (수익률, 버블크기=실현금액) ──
+        # 버블크기용 count_dict를 실현금액 기준으로 대체
+        _profit_as_count = {m: max(int(abs(_monthly_profits_c.get(m, 0)) / 1000000), 1)
+                            if _monthly_avg_rates2.get(m, 0) != 0 else 0
+                            for m in range(1, 13)}
+        _svg2 = _make_bubble_svg(
+            _monthly_avg_rates2,
+            _profit_as_count,
+            "#8A2BE2", "#4B9FFF",
+            "%",
+            lambda v: f"{v:.1f}%"
+        )
+
+        # ── 6) 좌우 병렬 HTML 렌더링 ──
+        _chart_html = f"""
+<div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
+  <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 올해 팔아서 실제로 번 돈은</div>
+    <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_year_profit_c:,}원 이에요</div>
+    {_svg1}
+    <div style='color:#666;font-size:10px;margin-top:6px;text-align:right;'>버블 크기 = 매도 건수</div>
+  </div>
+  <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128201; 올해 평균 수익률은</div>
+    <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_ytd} 이에요</div>
+    {_svg2}
+    <div style='color:#666;font-size:10px;margin-top:6px;text-align:right;'>버블 크기 = 실현금액 규모</div>
+  </div>
+</div>
+"""
+        st.markdown(_chart_html, unsafe_allow_html=True)
     except Exception:
         pass
 
@@ -1036,10 +1106,10 @@ def render_trade_records(urls: dict):
     _render_profit_loss_calculator()
 
     st.markdown('</div>', unsafe_allow_html=True)
-\
+
 
 def _render_trade_calendar(df_rec: pd.DataFrame):
-    """매매 캘린더 렌더링 - 최근 3개월 가로 스크롤 방식."""
+    """매매 캘린더 렌더링 - 화살표 버튼으로 월 이동, 1개 달력 표시."""
     today = datetime.date.today()
     kr_holidays = holidays.KR()
     daily_pnl_dict: dict = {}
@@ -1061,68 +1131,75 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 daily_pnl_dict = df_real.groupby("date")["차익실현금액"].sum().to_dict()
         except Exception as e:
             logger.warning("캘린더 데이터 파싱 실패: %s", e)
-            st.warning(f"⚠️ 캘린더 데이터 파싱 실패: {e}")
 
-    # ── 최근 3개월 목록 계산 (슬라이딩) ────────────────────────────────
+    # ── session_state로 현재 표시 월 관리 ───────────────────────────
+    _CAL_KEY = "_trade_cal_offset"  # 0=현재월, -1=전월, +1=다음월
+    if _CAL_KEY not in st.session_state:
+        st.session_state[_CAL_KEY] = 0
+
+    # 화살표 버튼 (좌/우)
+    _col_prev, _col_title, _col_next = st.columns([1, 6, 1])
+    with _col_prev:
+        if st.button("◀", key="_cal_prev_btn", help="이전 달"):
+            st.session_state[_CAL_KEY] -= 1
+    with _col_next:
+        if st.button("▶", key="_cal_next_btn", help="다음 달"):
+            st.session_state[_CAL_KEY] += 1
+
+    # 현재 표시할 연/월 계산
+    _offset = st.session_state[_CAL_KEY]
+    _disp_year = today.year
+    _disp_month = today.month + _offset
+    while _disp_month <= 0:
+        _disp_month += 12
+        _disp_year -= 1
+    while _disp_month > 12:
+        _disp_month -= 12
+        _disp_year += 1
+
+    with _col_title:
+        _monthly_total_nav = sum(v for k, v in daily_pnl_dict.items() if k.year == _disp_year and k.month == _disp_month)
+        _nav_color = "#FF4B4B" if _monthly_total_nav > 0 else ("#4B9FFF" if _monthly_total_nav < 0 else "#888")
+        _nav_sign  = "+" if _monthly_total_nav > 0 else ""
+        st.markdown(
+            f"<div style='text-align:center;font-size:16px;font-weight:900;color:#fff;padding-top:6px;'>"
+            f"{_disp_year}년 {_disp_month}월 "
+            f"<span style='color:{_nav_color};font-size:14px;'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
+            unsafe_allow_html=True
+        )
+
+    # ── 달력 HTML 생성 ─────────────────────────────────────────────
     cal_obj = calendar.Calendar(firstweekday=6)
-    months_to_show = []
-    for offset in range(2, -1, -1):  # 2개월 전 → 1개월 전 → 현재월
-        y = today.year
-        m = today.month - offset
-        while m <= 0:
-            m += 12
-            y -= 1
-        months_to_show.append((y, m))
+    weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
-    # ── 달력 1개 HTML 생성 함수 ─────────────────────────────────────
-    def _build_one_calendar(y, m):
-        weeks = cal_obj.monthdatescalendar(y, m)
-        monthly_total = sum(v for k, v in daily_pnl_dict.items() if k.year == y and k.month == m)
-        total_color = "#FF4B4B" if monthly_total > 0 else ("#4B9FFF" if monthly_total < 0 else "#888888")
-        total_sign  = "+" if monthly_total > 0 else ""
-
-        tbl  = f'<div style="min-width:340px;max-width:380px;flex:0 0 auto;margin-right:16px;">'
-        tbl += f'<div style="font-size:18px;font-weight:900;color:#FFFFFF;margin-bottom:6px;">📅 {y}년 {m}월</div>'
-        tbl += f'<div style="font-size:13px;color:{total_color};font-weight:bold;margin-bottom:8px;">월 합계: {total_sign}{monthly_total:,.0f}원</div>'
-        tbl += '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #333;">'
+    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #333;margin-top:8px;">'
+    tbl += "<tr>"
+    for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
+        tbl += f'<th style="background-color:#0A0A0C;color:#FF9900;padding:6px 2px;border:1px solid #2b2e35;text-align:center;font-size:12px;">{day_name}</th>'
+    tbl += "</tr>"
+    for week in weeks:
         tbl += "<tr>"
-        for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-            tbl += f'<th style="background-color:#0A0A0C;color:#FF9900;padding:6px 2px;border:1px solid #2b2e35;text-align:center;font-size:12px;">{day_name}</th>'
+        for d in week:
+            day_text   = str(d.day) if d.month == _disp_month else " "
+            style_date = "height:24px;background-color:#111111;color:#FF9900;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #2b2e35;font-size:11px;"
+            tbl += f'<td style="{style_date}">{day_text}</td>'
+        tbl += "</tr><tr>"
+        for d in week:
+            if d.month == _disp_month and d in daily_pnl_dict:
+                val = daily_pnl_dict[d]
+                val_color     = get_color_by_value(val)
+                formatted_val = f"{val:,.0f}" if val != 0 else "&nbsp;"
+            elif d.month == _disp_month and d in kr_holidays:
+                val_color     = "#888888"
+                formatted_val = "휴장"
+            else:
+                val_color     = "white"
+                formatted_val = "&nbsp;"
+            style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid #2b2e35;text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
+            tbl += f'<td style="{style_data}">{formatted_val}</td>'
         tbl += "</tr>"
-        for week in weeks:
-            tbl += "<tr>"
-            for d in week:
-                day_text   = str(d.day) if d.month == m else " "
-                style_date = "height:24px;background-color:#111111;color:#FF9900;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #2b2e35;font-size:11px;"
-                tbl += f'<td style="{style_date}">{day_text}</td>'
-            tbl += "</tr><tr>"
-            for d in week:
-                if d.month == m and d in daily_pnl_dict:
-                    val = daily_pnl_dict[d]
-                    val_color     = get_color_by_value(val)
-                    formatted_val = f"{val:,.0f}" if val != 0 else "&nbsp;"
-                elif d.month == m and d in kr_holidays:
-                    val_color     = "#888888"
-                    formatted_val = "휴장"
-                else:
-                    val_color     = "white"
-                    formatted_val = "&nbsp;"
-                style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid #2b2e35;text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
-                tbl += f'<td style="{style_data}">{formatted_val}</td>'
-            tbl += "</tr>"
-        tbl += "</table></div>"
-        return tbl
-
-    # ── 3개월 가로 스크롤 컨테이너 렌더링 ───────────────────────────────
-    all_cals = "".join(_build_one_calendar(y, m) for y, m in months_to_show)
-    scroll_html = f"""
-<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:10px;">
-  <div style="display:flex;flex-direction:row;gap:0;min-width:max-content;">
-    {all_cals}
-  </div>
-</div>
-"""
-    st.markdown(scroll_html, unsafe_allow_html=True)
+    tbl += "</table>"
+    st.markdown(tbl, unsafe_allow_html=True)
 
 def _render_trade_table(df_rec: pd.DataFrame):
     """매매 기록 표 및 모의계산 렌더링."""
