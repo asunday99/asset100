@@ -925,26 +925,30 @@ def render_trade_records(urls: dict):
         _render_trade_calendar(df_rec)
 
     # ── 익절/손절 계산기 ────────────────────────────────────────
-    # ── 연간 실현수익 막대 차트 ────────────────────────────────────────────
+    # ── 연간 실현수익 막대 차트 (일별 데이터 직접 집계) ────────────────────────────────────────────
     try:
         import datetime as _dt2
-        _df_monthly_chart = load_and_clean_data(urls.get("MONTHLY", ""))
+        _df_daily_chart = load_and_clean_data(urls.get("DAILY", ""))
         _df_dash_chart = load_and_clean_data(urls.get("DASHBOARD", ""))
-        if not _df_monthly_chart.empty:
-            _date_col_c = _df_monthly_chart.columns[0]
-            _profit_col_c = next((c for c in _df_monthly_chart.columns if "실현손익" in str(c).replace(" ", "")), _df_monthly_chart.columns[2])
-            _year_data_c = _df_monthly_chart[_df_monthly_chart[_date_col_c].astype(str).str.contains(str(_dt2.date.today().year), na=False)].copy()
+        if not _df_daily_chart.empty:
+            _dc2 = _df_daily_chart.columns[0]
+            _pc2 = next((c for c in _df_daily_chart.columns if "실현손익" in str(c).replace(" ", "")), None)
             _year_profit_c = 0
             _monthly_profits_c = {i: 0 for i in range(1, 13)}
-            for _r in range(len(_year_data_c)):
-                _d_str = str(_year_data_c.iloc[_r][_date_col_c])
-                _v_str = str(_year_data_c.iloc[_r][_profit_col_c]).replace(",", "")
-                try:
-                    _m = int(_d_str.split("-")[1].replace("월","").strip())
-                    _val = int(float(_v_str))
-                    _monthly_profits_c[_m] = _val
+            if _pc2:
+                _tmp2 = _df_daily_chart.copy()
+                _tmp2['_date2'] = pd.to_datetime(
+                    _tmp2[_dc2].astype(str).str.replace(' ', ''), format='%y.%m.%d.', errors='coerce'
+                )
+                _tmp2[_pc2] = pd.to_numeric(_tmp2[_pc2].astype(str).str.replace(',', ''), errors='coerce').fillna(0)
+                _tmp2 = _tmp2.dropna(subset=['_date2'])
+                _cur_year = _dt2.date.today().year
+                _year_rows = _tmp2[_tmp2['_date2'].dt.year == _cur_year]
+                for _, _row in _year_rows.iterrows():
+                    _m = _row['_date2'].month
+                    _val = int(_row[_pc2])
+                    _monthly_profits_c[_m] = _monthly_profits_c.get(_m, 0) + _val
                     _year_profit_c += _val
-                except: pass
             _max_profit_c = max(max(_monthly_profits_c.values()), 1)
             _bars_html_c = ""
             for _m in range(1, 13):
@@ -1443,6 +1447,42 @@ if menu == "대시보드":
     year_profit = 0
     today_profit_pct = 0.0
     
+    # ── 일별 데이터에서 직접 월별 집계 (손익현황_월별 시트 CSV export 불가 대체) ──
+    df_monthly_computed = pd.DataFrame()
+    if not df_daily.empty:
+        try:
+            _dc = df_daily.columns[0]
+            _pc = next((c for c in df_daily.columns if '실현손익' in str(c).replace(' ', '')), None)
+            _ac = next((c for c in df_daily.columns if '자산총액' in str(c).replace(' ', '') or '당일자산' in str(c).replace(' ', '')), None)
+            _cc = next((c for c in df_daily.columns if '매매비용' in str(c).replace(' ', '') or '당일매매' in str(c).replace(' ', '')), None)
+            if _pc:
+                _tmp = df_daily.copy()
+                _tmp['_date'] = pd.to_datetime(
+                    _tmp[_dc].astype(str).str.replace(' ', ''), format='%y.%m.%d.', errors='coerce'
+                )
+                _tmp[_pc] = pd.to_numeric(_tmp[_pc].astype(str).str.replace(',', ''), errors='coerce').fillna(0)
+                if _ac:
+                    _tmp[_ac] = pd.to_numeric(_tmp[_ac].astype(str).str.replace(',', ''), errors='coerce').fillna(0)
+                if _cc:
+                    _tmp[_cc] = pd.to_numeric(_tmp[_cc].astype(str).str.replace(',', ''), errors='coerce').fillna(0)
+                _tmp = _tmp.dropna(subset=['_date'])
+                _tmp['_ym'] = _tmp['_date'].dt.to_period('M')
+                rows = []
+                for ym, grp in _tmp.groupby('_ym'):
+                    last_row = grp.sort_values('_date').iloc[-1]
+                    last_asset = int(last_row[_ac]) if _ac else 0
+                    sum_cost = int(grp[_cc].sum()) if _cc else 0
+                    sum_pnl = int(grp[_pc].sum())
+                    rows.append({'년-월': str(ym), '자산총액': last_asset, '매매비용': sum_cost, '실현손익': sum_pnl})
+                if rows:
+                    df_monthly_computed = pd.DataFrame(rows[::-1])  # 최신월 먼저
+        except:
+            pass
+    
+    # df_monthly_computed가 있으면 우선 사용, 없으면 기존 df_monthly 사용
+    if not df_monthly_computed.empty:
+        df_monthly = df_monthly_computed
+    
     if not df_daily.empty:
         try:
             profit_col = next((c for c in df_daily.columns if '실현손익' in str(c).replace(' ', '')), df_daily.columns[2])
@@ -1677,6 +1717,9 @@ elements.forEach(el => {
         try:
             import pandas as pd
             import datetime
+            if df_monthly.empty or len(df_monthly.columns) < 3:
+                st.info("월별 손익 데이터를 불러오는 중입니다. 잠시 후 새로고침해 주세요.")
+                raise ValueError("df_monthly empty")
             date_col = df_monthly.columns[0]
             profit_col = next((c for c in df_monthly.columns if '실현손익' in str(c).replace(' ', '')), df_monthly.columns[2])
             
