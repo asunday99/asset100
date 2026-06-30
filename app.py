@@ -925,6 +925,49 @@ def render_trade_records(urls: dict):
         _render_trade_calendar(df_rec)
 
     # ── 익절/손절 계산기 ────────────────────────────────────────
+    # ── 연간 실현수익 막대 차트 ────────────────────────────────────────────
+    try:
+        import datetime as _dt2
+        _df_monthly_chart = load_and_clean_data(urls.get("MONTHLY", ""))
+        _df_dash_chart = load_and_clean_data(urls.get("DASHBOARD", ""))
+        if not _df_monthly_chart.empty:
+            _date_col_c = _df_monthly_chart.columns[0]
+            _profit_col_c = next((c for c in _df_monthly_chart.columns if "실현손익" in str(c).replace(" ", "")), _df_monthly_chart.columns[2])
+            _year_data_c = _df_monthly_chart[_df_monthly_chart[_date_col_c].astype(str).str.contains(str(_dt2.date.today().year), na=False)].copy()
+            _year_profit_c = 0
+            _monthly_profits_c = {i: 0 for i in range(1, 13)}
+            for _r in range(len(_year_data_c)):
+                _d_str = str(_year_data_c.iloc[_r][_date_col_c])
+                _v_str = str(_year_data_c.iloc[_r][_profit_col_c]).replace(",", "")
+                try:
+                    _m = int(_d_str.split("-")[1].replace("월","").strip())
+                    _val = int(float(_v_str))
+                    _monthly_profits_c[_m] = _val
+                    _year_profit_c += _val
+                except: pass
+            _max_profit_c = max(max(_monthly_profits_c.values()), 1)
+            _bars_html_c = ""
+            for _m in range(1, 13):
+                _p = _monthly_profits_c[_m]
+                _h = max(min(int((_p / _max_profit_c) * 100), 100), 5) if _p > 0 else 2
+                _clr = "#FF6B00" if _p > 0 else "#333"
+                _lbl = f"<div style=\'color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;\'>{int(_p/10000):,}</div>" if _p > 0 else ""
+                _bars_html_c += f"<div style=\'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;\'>{_lbl}<div style=\'background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;\'></div><div style=\'color:#a0a0a0;font-size:10px;margin-top:5px;\'>{_m}</div></div>"
+            _chart1 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 달성한 실현수익은<br><span style=\'font-size:20px;\'>{_year_profit_c:,}원 이에요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
+            st.markdown(_chart1, unsafe_allow_html=True)
+            try:
+                _ytd = str(_df_dash_chart.iloc[4, 12]).strip()
+                _exp = str(_df_dash_chart.iloc[5, 12]).strip()
+                if _ytd == "nan": _ytd = "0%"
+                if _exp == "nan": _exp = "0%"
+            except:
+                _ytd = "0%"
+                _exp = "0%"
+            _chart2 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 실현수익률은 <span style=\'font-size:20px;color:#8A2BE2;\'>{_ytd}</span> 이에요<br><span style=\'font-size:13px;color:#A0A0A0;font-weight:normal;\'>이 추세라면 연말까지 {_exp} 예상돼요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
+            st.markdown(_chart2, unsafe_allow_html=True)
+    except Exception:
+        pass
+
     st.markdown("---")
     _render_profit_loss_calculator()
 
