@@ -980,24 +980,24 @@ def render_trade_records(urls: dict):
                         _rv = float(_rr["_rc_rate"])
                         if _rv != 0:
                             _monthly_rates_c2[_rm].append(_rv)
-                # 월별 수익률 = AVERAGEIFS 방식 (구글 시트와 동일)
+                # 월별 수익률 = AVERAGEIFS 방식 (구글 시트와 동일, 막대그래프 표시용)
                 _monthly_avg_rates2 = {}
                 for _mi in range(1, 13):
                     if _monthly_rates_c2[_mi]:
                         _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi]) / len(_monthly_rates_c2[_mi])  # 월별 평균
                     else:
                         _monthly_avg_rates2[_mi] = 0.0
-                # 올해 YTD = 각 월 평균의 합산
-                _ytd_val = sum(_monthly_avg_rates2.values())
+                # 올해 YTD = 올해 전체 매도 건 수익률의 단순 평균 (AVERAGEIFS 방식)
+                _all_rates2 = [r for rates in _monthly_rates_c2.values() for r in rates]
+                _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
                 _ytd = f"{_ytd_val:.2f}%"
                 _today_m2 = _dt2.date.today().month
                 _today_d2 = _dt2.date.today().day
                 # 완료된 개월수: 당월 1일~4일이면 전월까지, 그 외 당월 포함
                 _completed_months2 = _today_m2 - 1 if _today_d2 <= 4 else _today_m2
                 _completed_months2 = max(_completed_months2, 1)
-                # 연말 예상 = YTD 합산 × (12 / 완료 개월수)
-                _months_done2 = [_mi for _mi in range(1, 13) if _monthly_avg_rates2.get(_mi, 0) > 0]
-                if _months_done2 and _completed_months2 > 0:
+                # 연말 예상 = YTD 평균 × (12 / 완료 개월수)
+                if _all_rates2 and _completed_months2 > 0:
                     _exp_val = _ytd_val * (12 / _completed_months2)
                     _exp = f"{_exp_val:.2f}%"
                 else:
