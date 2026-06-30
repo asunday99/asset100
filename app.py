@@ -862,26 +862,62 @@ def render_trade_records(urls: dict):
     <div style="max-width: 860px; margin: 0 auto;">
     """, unsafe_allow_html=True)
 
-    # ── 이번 달 수익 계산 ─────────────────────────────────────────
+    # ── 이번 달 수익 계산 (일별 데이터 합산) ─────────────────────────────────
     import datetime as _dt
     _month_profit = 0
+    _today = _dt.date.today()
     try:
-        _df_monthly = load_and_clean_data(urls.get("MONTHLY", ""))
-        if not _df_monthly.empty:
-            _profit_col = next((c for c in _df_monthly.columns if "실현손익" in str(c).replace(" ", "")), None)
-            if _profit_col:
-                _month_profit = int(safe_int_float(_df_monthly.iloc[0][_profit_col]))
+        _df_daily = load_and_clean_data(urls.get("DAILY", ""))
+        if not _df_daily.empty:
+            # 날짜 컴럼 파싱 (26.6.30. 형식)
+            _date_col = _df_daily.columns[0]
+            _pnl_col = next((c for c in _df_daily.columns if "실현손익" in str(c).replace(" ", "")), None)
+            if _pnl_col:
+                _df_daily["_date"] = pd.to_datetime(
+                    _df_daily[_date_col].astype(str).str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
+                ).dt.date
+                _df_daily[_pnl_col] = pd.to_numeric(
+                    _df_daily[_pnl_col].astype(str).str.replace(",", ""), errors="coerce"
+                ).fillna(0)
+                _this_month = _df_daily[
+                    _df_daily["_date"].apply(lambda d: d is not None and not pd.isna(d) and d.year == _today.year and d.month == _today.month)
+                ]
+                _month_profit = int(_this_month[_pnl_col].sum())
     except Exception:
         _month_profit = 0
 
-    _today = _dt.date.today()
-    _month_label = f"{_today.month}월"
     if _month_profit > 0:
-        _expander_title = f"📅 {_month_label} +{_month_profit:,}원 벌고 있어요!"
+        _profit_text = f"+{_month_profit:,}원"
+        _profit_color = "#FF4B4B"
+        _msg = "벌고 있어요! 🚀"
+        _expander_title = f"📅 이번 달 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
-        _expander_title = f"📅 {_month_label} {_month_profit:,}원 빠졌어요"
+        _profit_text = f"{_month_profit:,}원"
+        _profit_color = "#4B9FFF"
+        _msg = "빠졌어요 💧"
+        _expander_title = f"📅 이번 달 {_month_profit:,}원 빠졌어요"
     else:
-        _expander_title = f"📅 {_month_label} 아직 0원이에요"
+        _profit_text = "0원"
+        _profit_color = "#A0A0A0"
+        _msg = "아직 0원이에요"
+        _expander_title = f"📅 이번 달 아직 0원이에요"
+
+    # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
+    st.markdown(f"""
+<div style='
+    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 1px solid {_profit_color}44;
+    border-left: 4px solid {_profit_color};
+    border-radius: 16px;
+    padding: 28px 28px 22px 28px;
+    margin-bottom: 20px;
+    text-align: center;
+'>
+  <div style='color:#A0A0B0; font-size:14px; letter-spacing:2px; margin-bottom:10px;'>이번 달 수익</div>
+  <div style='color:{_profit_color}; font-size:44px; font-weight:900; letter-spacing:-1px; margin-bottom:8px;'>{_profit_text}</div>
+  <div style='color:#d0d0d0; font-size:18px; font-weight:500;'>{_msg}</div>
+</div>
+""", unsafe_allow_html=True)
 
     # ── 매매 캘린더 ─────────────────────────────────────────────────
     with st.expander(_expander_title, expanded=True):
