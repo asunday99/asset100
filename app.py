@@ -1153,12 +1153,15 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
         if st.button("◀", key="_cal_prev_btn", help="이전 달", disabled=_prev_disabled):
             st.session_state[_CAL_KEY] -= 1
     with _col_next:
-        if st.button("▶", key="_cal_next_btn", help="다음 달"):
+        _next_disabled = st.session_state[_CAL_KEY] >= 0  # 오늘 달(offset=0)이 상한
+        if st.button("▶", key="_cal_next_btn", help="다음 달", disabled=_next_disabled):
             st.session_state[_CAL_KEY] += 1
 
-    # offset 하한 강제 적용
+    # offset 하한/상한 강제 적용
     if st.session_state[_CAL_KEY] < _min_offset:
         st.session_state[_CAL_KEY] = _min_offset
+    if st.session_state[_CAL_KEY] > 0:  # 오늘 달 초과 방지
+        st.session_state[_CAL_KEY] = 0
 
     # 현재 표시할 연/월 계산
     _offset = st.session_state[_CAL_KEY]
