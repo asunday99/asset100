@@ -1873,69 +1873,7 @@ elements.forEach(el => {
                          f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d2}</div></div>")
             import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d2), unsafe_allow_html=True)
 
-            
-            # -- Side-by-Side UI (Target vs Realized) --
-            current_month = datetime.datetime.now().month
-            prev_month = current_month - 1 if current_month > 1 else 12
-            
-            curr_profit = _dash_monthly_profits.get(current_month, 0)
-            prev_profit = _dash_monthly_profits.get(prev_month, 0)
-            
-            # Extract target and actual values from df_dash
-            try:
-                monthly_target_pct_str = str(df_dash.columns[10])
-                daily_target_pct_str = str(df_dash.iloc[0, 10])
-                daily_target_amt_str = str(df_dash.iloc[1, 10])
-                
-                prev_profit_pct_str = str(df_dash.columns[12])
-                prev_profit_amt_str = str(df_dash.iloc[0, 12])
-                curr_profit_pct_str = str(df_dash.iloc[1, 12])
-            except Exception as e:
-                monthly_target_pct_str = "-"
-                daily_target_pct_str = "-"
-                daily_target_amt_str = "-"
-                prev_profit_pct_str = "-"
-                prev_profit_amt_str = "-"
-                curr_profit_pct_str = "-"
-                
-            summary_html = f"""
-            <div style='display:flex; gap:15px; margin-bottom:15px;'>
-                <!-- Left Box: Target -->
-                <div style='flex:1; background-color:#1e1410; border:1px solid #4a2b12; border-radius:12px; padding:20px;'>
-                    <h4 style='color:#FF9900; margin-top:0; margin-bottom:20px; font-size:16px;'>달성 목표</h4>
-                    <div style='display:flex; justify-content:space-between; margin-bottom:12px;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>매월 달성할 수익률</div>
-                        <div style='color:white; font-size:14px; font-weight:bold;'>{monthly_target_pct_str}</div>
-                    </div>
-                    <div style='display:flex; justify-content:space-between; margin-bottom:12px;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>매일 달성할 수익률</div>
-                        <div style='color:white; font-size:14px; font-weight:bold;'>{daily_target_pct_str}</div>
-                    </div>
-                    <div style='display:flex; justify-content:space-between; align-items:center;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>매일 달성할 실현금액</div>
-                        <div style='color:#FF9900; font-size:15px; font-weight:bold;'>{daily_target_amt_str}원</div>
-                    </div>
-                </div>
-                
-                <!-- Right Box: Actual -->
-                <div style='flex:1; background-color:#16102b; border:1px solid #2a1b42; border-radius:12px; padding:20px;'>
-                    <h4 style='color:#b89aff; margin-top:0; margin-bottom:20px; font-size:16px;'>실현 수익</h4>
-                    <div style='display:flex; justify-content:space-between; margin-bottom:12px;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>전월 실현 수익률</div>
-                        <div style='color:white; font-size:14px; font-weight:bold;'>{prev_profit_pct_str}</div>
-                    </div>
-                    <div style='display:flex; justify-content:space-between; margin-bottom:12px;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>전월 실현 수익금</div>
-                        <div style='color:white; font-size:14px; font-weight:bold;'>{prev_profit_amt_str}</div>
-                    </div>
-                    <div style='display:flex; justify-content:space-between; align-items:center;'>
-                        <div style='color:#a0a0a0; font-size:13px;'>당월 실현 수익률</div>
-                        <div style='background-color:#10b981; color:white; padding:4px 8px; border-radius:6px; font-size:14px; font-weight:bold;'>{curr_profit_pct_str}</div>
-                    </div>
-                </div>
-            </div>
-            """
-            import re; st.markdown(re.sub(r'\n\s+', ' ', summary_html), unsafe_allow_html=True)
+
             
         except Exception as e:
             st.error(f"Error rendering toss chart: {e}")
