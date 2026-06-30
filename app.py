@@ -1842,35 +1842,25 @@ elements.forEach(el => {
             import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d1), unsafe_allow_html=True)
 
             # ── 차트2: 월별 수익률 막대 (보라색) - 매매기록 탭과 동일 로직 ──
-            # 매매기록에서 YTD 단순평균 수익률 계산
-            _dash_ytd_val = 0.0
-            try:
-                _df_rec_dash = load_records_data(urls.get("RECORDS", ""))
-                _dash_all_rates = []
-                if not _df_rec_dash.empty and "날짜" in _df_rec_dash.columns and "수익률" in _df_rec_dash.columns:
-                    _df_rec_dash["_rd"] = pd.to_datetime(_df_rec_dash["날짜"].astype(str).str.replace(" ",""), format="%y.%m.%d.", errors="coerce")
-                    _df_rec_dash["_rr"] = pd.to_numeric(_df_rec_dash["수익률"].astype(str).str.replace(",",""), errors="coerce")
-                    _rc = _df_rec_dash.dropna(subset=["_rd","_rr"])
-                    _rc = _rc[_rc["_rd"].dt.year == _cur_year]
-                    if "계좌" in _rc.columns:
-                        _rc = _rc[_rc["계좌"].astype(str).str.strip() != "모의계산"]
-                    _dash_all_rates = [float(r) for r in _rc["_rr"].tolist() if r != 0]
-                if _dash_all_rates:
-                    _dash_ytd_val = sum(_dash_all_rates) / len(_dash_all_rates)
-            except:
-                pass
+            # ── 차트2: 월별 목표 달성률 추이 (보라색) ──
+            # 목표금액: gs_val 억 기준 (session_state에서 읽기)
+            _goal_amount = gs_val * 100000000 if gs_val > 0 else 10000000000  # 기본 100억
 
-            _dash_ytd_str = f"{_dash_ytd_val:.2f}%"
+            # 월별 달성률 계산 (월말 자산 / 목표금액 * 100)
+            _monthly_ach = {}
+            for _m, _a in _monthly_last_asset.items():
+                _monthly_ach[_m] = (_a / _goal_amount) * 100
 
-            # 월별 수익률 막대용 (자산증감 기반)
-            _max_r_d = max(max(abs(v) for v in _dash_monthly_rates.values()), 0.1)
+            # 현재 달성률
+            _cur_ach = (total_assets / _goal_amount) * 100 if _goal_amount > 0 else 0
+
+            _max_ach_d = max(max(_monthly_ach.values()), 0.1) if _monthly_ach else 100
             _bars_html_d2 = ""
             for _m in range(1, 13):
-                _r = _dash_monthly_rates[_m]
-                _h2 = max(min(int((abs(_r) / _max_r_d) * 100), 100), 5) if _r != 0 else 2
-                _clr2 = "#8A2BE2" if _r > 0 else ("#4B9FFF" if _r < 0 else "#333")
-                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r > 0
-                         else (f"<div style='color:#4B9FFF;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r < 0 else ""))
+                _r2 = _monthly_ach.get(_m, 0)
+                _h2 = max(min(int((_r2 / _max_ach_d) * 100), 100), 5) if _r2 > 0 else 2
+                _clr2 = "#8A2BE2" if _r2 > 0 else "#333"
+                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r2:.1f}%</div>" if _r2 > 0 else "")
                 _bars_html_d2 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
                                   f"{_lbl2}<div style='background-color:{_clr2};width:100%;height:{_h2}%;border-radius:4px 4px 0 0;'></div>"
                                   f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
@@ -1878,8 +1868,8 @@ elements.forEach(el => {
             _chart_d2 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
                          f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
                          f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 평균 수익률은 "
-                         f"<span style='font-size:20px;color:#8A2BE2;'>{_dash_ytd_str}</span> 이에요</div></div>"
+                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>목표 {formatted_gs_val}억, 지금 이만큼 왔어요<br>"
+                         f"<span style='font-size:20px;color:#8A2BE2;'>{_cur_ach:.2f}% 달성</span></div></div>"
                          f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d2}</div></div>")
             import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d2), unsafe_allow_html=True)
 
