@@ -1140,11 +1140,15 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
 
     # ── session_state로 현재 표시 월 관리 ───────────────────────────
     _CAL_KEY = "_trade_cal_offset"  # 0=현재월, 음수=이전월
+    _CAL_MONTH_KEY = "_trade_cal_cur_month"  # 마지막으로 확인한 오늘 연월
     # 하한: 2026년 1월 (offset으로 환산)
     _MIN_YEAR, _MIN_MONTH = 2026, 1
     _min_offset = (_MIN_YEAR - today.year) * 12 + (_MIN_MONTH - today.month)
-    if _CAL_KEY not in st.session_state:
+    # 월이 바뀌면 offset을 0(오늘 달)으로 자동 리셋
+    _cur_ym = (today.year, today.month)
+    if _CAL_KEY not in st.session_state or st.session_state.get(_CAL_MONTH_KEY) != _cur_ym:
         st.session_state[_CAL_KEY] = 0
+        st.session_state[_CAL_MONTH_KEY] = _cur_ym
 
     # 화살표 버튼 (좌/우)
     _col_prev, _col_title, _col_next = st.columns([1, 6, 1])
@@ -2222,10 +2226,88 @@ elements.forEach(el => {
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card {row['hover']}" style="position:relative;padding-right:90px;width:100%;box-sizing:border-box;"><div style="font-size: 13px; color: #A0A0A0; font-weight: bold; margin-bottom: 5px;">🔹{row['category']}</div><div style="font-size: 26px; font-weight: 900; color: #FFFFFF; margin-bottom: 5px; white-space: nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
-        st.markdown(f'<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">{cards_html}</div>', unsafe_allow_html=True)
+            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:90px;"><div style="font-size:13px;color:#A0A0A0;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-size:26px;font-weight:900;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+        # 가로 스크롤 + chevron 표시
+        st.markdown(
+            f'<div class="swipe-wrapper" style="position:relative;">'
+            f'<div class="swipe-container">{cards_html}</div>'
+            f'<div class="swipe-glow-left hidden"></div>'
+            f'<div class="swipe-glow-right hidden"></div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
 
         import streamlit.components.v1 as components
+        components.html('''
+        <script>
+        (function(){
+            const doc = window.parent.document;
+            const container = doc.querySelector('.swipe-container');
+            if (!container) return;
+            if (!doc.getElementById('swipe-glow-style')) {
+                const style = doc.createElement('style');
+                style.id = 'swipe-glow-style';
+                style.innerHTML = `
+                .swipe-container::-webkit-scrollbar { display: none !important; }
+                .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
+                .swipe-glow-right, .swipe-glow-left {
+                    position: absolute; top: 50% !important;
+                    width: 16px !important; height: 16px !important;
+                    pointer-events: none; opacity: 1;
+                    transition: opacity 0.3s ease-in-out;
+                    background: none !important; border-radius: 0 !important; z-index: 50;
+                }
+                .swipe-glow-right {
+                    right: 25px;
+                    border-top: 4px solid rgba(180,130,255,0.9);
+                    border-right: 4px solid rgba(180,130,255,0.9);
+                    border-left: none; border-bottom: none;
+                    animation: neon-chevron-right 1.2s infinite alternate ease-in-out;
+                }
+                .swipe-glow-left {
+                    left: 25px;
+                    border-bottom: 4px solid rgba(180,130,255,0.9);
+                    border-left: 4px solid rgba(180,130,255,0.9);
+                    border-top: none; border-right: none;
+                    animation: neon-chevron-left 1.2s infinite alternate ease-in-out;
+                }
+                .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; }
+                @keyframes neon-chevron-right {
+                    from { opacity:0.3; transform:translateY(-50%) rotate(45deg) translateX(-3px); }
+                    to   { opacity:1;   transform:translateY(-50%) rotate(45deg) translateX(3px); filter:drop-shadow(0 0 10px rgba(180,130,255,1)); }
+                }
+                @keyframes neon-chevron-left {
+                    from { opacity:0.3; transform:translateY(-50%) rotate(45deg) translateX(3px); }
+                    to   { opacity:1;   transform:translateY(-50%) rotate(45deg) translateX(-3px); filter:drop-shadow(0 0 10px rgba(180,130,255,1)); }
+                }
+                `;
+                doc.head.appendChild(style);
+            }
+            const overlayRight = doc.querySelector('.swipe-glow-right');
+            const overlayLeft  = doc.querySelector('.swipe-glow-left');
+            const firstCard    = container.querySelector('.asset-card');
+            if (container && firstCard && overlayRight && overlayLeft) {
+                const updateBounds = () => {
+                    overlayRight.style.top = firstCard.offsetTop + 'px';
+                    overlayRight.style.height = firstCard.offsetHeight + 'px';
+                    overlayLeft.style.top  = firstCard.offsetTop + 'px';
+                    overlayLeft.style.height = firstCard.offsetHeight + 'px';
+                };
+                const checkScroll = () => {
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10)
+                        overlayRight.classList.add('hidden');
+                    else overlayRight.classList.remove('hidden');
+                    if (container.scrollLeft <= 10) overlayLeft.classList.add('hidden');
+                    else overlayLeft.classList.remove('hidden');
+                };
+                container.addEventListener('scroll', checkScroll);
+                window.parent.addEventListener('resize', () => { updateBounds(); checkScroll(); });
+                setTimeout(() => { updateBounds(); checkScroll(); }, 300);
+                setTimeout(() => { updateBounds(); checkScroll(); }, 1200);
+            }
+        })();
+        </script>
+        ''', height=0)
 
 
     
