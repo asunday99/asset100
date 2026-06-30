@@ -852,14 +852,14 @@ def render_trade_records(urls: dict):
     # ── 최대 폭 제한 ───────────────────────────────────────────────
     st.markdown("""
     <style>
-    /* 매매기록 탭 화면폭을 860px로 제한 */
-    @media screen and (min-width: 860px) {
-        .block-container {
-            max-width: 860px !important;
-        }
+    /* 매매기록 탭 전체 너비 사용 */
+    .block-container {
+        max-width: 100% !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
     }
     </style>
-    <div style="max-width: 860px; margin: 0 auto;">
+    <div style="width: 100%;">
     """, unsafe_allow_html=True)
 
     # ── 이번 달 수익 계산 (일별 데이터 합산) ─────────────────────────────────
