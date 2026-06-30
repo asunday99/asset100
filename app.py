@@ -959,15 +959,74 @@ def render_trade_records(urls: dict):
                 _bars_html_c += f"<div style=\'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;\'>{_lbl}<div style=\'background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;\'></div><div style=\'color:#a0a0a0;font-size:10px;margin-top:5px;\'>{_m}</div></div>"
             _chart1 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 달성한 실현수익은<br><span style=\'font-size:20px;\'>{_year_profit_c:,}원 이에요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
             st.markdown(_chart1, unsafe_allow_html=True)
+            # ── 올해 실현수익률 & 연말 예상: 매매기록에서 직접 계산 ──
             try:
-                _ytd = str(_df_dash_chart.iloc[4, 12]).strip()
-                _exp = str(_df_dash_chart.iloc[5, 12]).strip()
-                if _ytd == "nan": _ytd = "0%"
-                if _exp == "nan": _exp = "0%"
-            except:
+                _df_rec_chart = load_records_data(urls.get("RECORDS", ""))
+                _monthly_rates_c2 = {i: [] for i in range(1, 13)}
+                if not _df_rec_chart.empty and "날짜" in _df_rec_chart.columns and "수익률" in _df_rec_chart.columns:
+                    _df_rec_chart["_rc_date"] = pd.to_datetime(
+                        _df_rec_chart["날짜"].astype(str).str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
+                    )
+                    _df_rec_chart["_rc_rate"] = pd.to_numeric(
+                        _df_rec_chart["수익률"].astype(str).str.replace(",", ""), errors="coerce"
+                    )
+                    _rc_year = _dt2.date.today().year
+                    _rc_rows = _df_rec_chart.dropna(subset=["_rc_date", "_rc_rate"])
+                    _rc_rows = _rc_rows[_rc_rows["_rc_date"].dt.year == _rc_year]
+                    if "계좌" in _rc_rows.columns:
+                        _rc_rows = _rc_rows[_rc_rows["계좌"].astype(str).str.strip() != "모의계산"]
+                    for _, _rr in _rc_rows.iterrows():
+                        _rm = _rr["_rc_date"].month
+                        _rv = float(_rr["_rc_rate"])
+                        if _rv != 0:
+                            _monthly_rates_c2[_rm].append(_rv)
+                _monthly_avg_rates2 = {}
+                for _mi in range(1, 13):
+                    if _monthly_rates_c2[_mi]:
+                        _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi]) / len(_monthly_rates_c2[_mi])
+                    else:
+                        _monthly_avg_rates2[_mi] = 0.0
+                _all_rates2 = [r for rates in _monthly_rates_c2.values() for r in rates]
+                _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
+                _ytd = f"{_ytd_val:.2f}%"
+                _today_m2 = _dt2.date.today().month
+                _today_d2 = _dt2.date.today().day
+                _completed_months2 = _today_m2 - 1 if _today_d2 < 28 else _today_m2
+                _completed_months2 = max(_completed_months2, 1)
+                _months_with_data2 = [_mi for _mi in range(1, _today_m2 + 1) if _monthly_avg_rates2.get(_mi, 0) > 0]
+                if _months_with_data2:
+                    _avg_monthly_rate2 = sum(_monthly_avg_rates2[_mi] for _mi in _months_with_data2) / len(_months_with_data2)
+                    _exp_val = _avg_monthly_rate2 * (12 / _completed_months2)
+                    _exp = f"{_exp_val:.2f}%"
+                else:
+                    _exp = "0%"
+            except Exception:
                 _ytd = "0%"
                 _exp = "0%"
-            _chart2 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 실현수익률은 <span style=\'font-size:20px;color:#8A2BE2;\'>{_ytd}</span> 이에요<br><span style=\'font-size:13px;color:#A0A0A0;font-weight:normal;\'>이 추세라면 연말까지 {_exp} 예상돼요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
+                _monthly_avg_rates2 = {i: 0.0 for i in range(1, 13)}
+            # ── 두 번째 차트: 월별 수익률(%) 막대 (보라색) ──
+            _max_rate_c2 = max(max(_monthly_avg_rates2.values()), 0.1)
+            _bars_html_rate2 = ""
+            for _m in range(1, 13):
+                _r = _monthly_avg_rates2.get(_m, 0.0)
+                _h2 = max(min(int((_r / _max_rate_c2) * 100), 100), 5) if _r > 0 else 2
+                _clr2 = "#8A2BE2" if _r > 0 else "#333"
+                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r:.1f}%</div>" if _r > 0 else "")
+                _bars_html_rate2 += (
+                    f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
+                    f"{_lbl2}<div style='background-color:{_clr2};width:100%;height:{_h2}%;border-radius:4px 4px 0 0;'></div>"
+                    f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>"
+                )
+            _chart2 = (
+                f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
+                f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
+                f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
+                f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 실현수익률은 "
+                f"<span style='font-size:20px;color:#8A2BE2;'>{_ytd}</span> 이에요<br>"
+                f"<span style='font-size:13px;color:#A0A0A0;font-weight:normal;'>이 추세라면 연말까지 {_exp} 예상돼요</span>"
+                f"</div></div>"
+                f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_rate2}</div></div>"
+            )
             st.markdown(_chart2, unsafe_allow_html=True)
     except Exception:
         pass
