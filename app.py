@@ -980,14 +980,14 @@ def render_trade_records(urls: dict):
                         _rv = float(_rr["_rc_rate"])
                         if _rv != 0:
                             _monthly_rates_c2[_rm].append(_rv)
-                # 월별 수익률 합산 (평균 아님)
+                # 월별 수익률 = AVERAGEIFS 방식 (구글 시트와 동일)
                 _monthly_avg_rates2 = {}
                 for _mi in range(1, 13):
                     if _monthly_rates_c2[_mi]:
-                        _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi])  # 합산
+                        _monthly_avg_rates2[_mi] = sum(_monthly_rates_c2[_mi]) / len(_monthly_rates_c2[_mi])  # 월별 평균
                     else:
                         _monthly_avg_rates2[_mi] = 0.0
-                # 올해 YTD = 각 월 합산값의 총합
+                # 올해 YTD = 각 월 평균의 합산
                 _ytd_val = sum(_monthly_avg_rates2.values())
                 _ytd = f"{_ytd_val:.2f}%"
                 _today_m2 = _dt2.date.today().month
