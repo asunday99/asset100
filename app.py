@@ -853,12 +853,12 @@ def load_records_data(url: str) -> pd.DataFrame:
 def render_trade_records(urls: dict):
     df_dash = load_and_clean_data(urls['DASHBOARD'])
     
-    stock_eval = find_metric(df_dash, "주식 평가금액", col_offset=1)
-    stock_profit = find_metric(df_dash, "주식 평가손익", col_offset=1)
+    stock_eval = safe_int_float(find_metric(df_dash, "주식 평가금액", col_offset=1))
+    stock_profit = safe_int_float(find_metric(df_dash, "주식 평가손익", col_offset=1))
     stock_principal = stock_eval - stock_profit
     
-    total_realized_ytd = find_metric(df_dash, "올해 누적 실현손익", col_offset=1)
-    avg_monthly = find_metric(df_dash, "올해 월평균 실현손익", col_offset=1)
+    total_realized_ytd = safe_int_float(find_metric(df_dash, "올해 누적 실현손익", col_offset=1))
+    avg_monthly = safe_int_float(find_metric(df_dash, "올해 월평균 실현손익", col_offset=1))
     
     if stock_principal <= 0:
         ytd_roi_str = "원금 회수 완료 🚀"
@@ -1161,13 +1161,13 @@ if menu == "대시보드":
     if df_dash.empty:
         st.warning("대시보드 데이터를 불러올 수 없습니다.")
     else:
-        stock_eval = find_metric(df_dash, "주식 평가금액", col_offset=1)
-        stock_profit = find_metric(df_dash, "주식 평가손익", col_offset=1)
-        total_assets = find_metric(df_dash, "총 자산", col_offset=1)
+        stock_eval = safe_int_float(find_metric(df_dash, "주식 평가금액", col_offset=1))
+        stock_profit = safe_int_float(find_metric(df_dash, "주식 평가손익", col_offset=1))
+        total_assets = safe_int_float(find_metric(df_dash, "총 자산", col_offset=1))
         stock_principal = stock_eval - stock_profit
         
-        total_realized_ytd = find_metric(df_dash, "올해 누적 실현손익", col_offset=1)
-        avg_monthly_realized = find_metric(df_dash, "올해 월평균 실현손익", col_offset=1)
+        total_realized_ytd = safe_int_float(find_metric(df_dash, "올해 누적 실현손익", col_offset=1))
+        avg_monthly_realized = safe_int_float(find_metric(df_dash, "올해 월평균 실현손익", col_offset=1))
 
         col1, col2 = st.columns(2)
         with col1:
