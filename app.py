@@ -1139,44 +1139,58 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             logger.warning("캘린더 데이터 파싱 실패: %s", e)
 
     # ── session_state로 현재 표시 월 관리 ───────────────────────────
-    _CAL_KEY = "_trade_cal_offset"  # 0=현재월, 음수=이전월
-    _CAL_MONTH_KEY = "_trade_cal_cur_month"  # 마지막으로 확인한 오늘 연월
-    # 하한: 2026년 1월 (offset으로 환산)
+    # ── 절대 연월 방식으로 변경 (오류 방지) ──
+    _CAL_YEAR_KEY  = "_trade_cal_year"
+    _CAL_MONTH_KEY = "_trade_cal_month"
     _MIN_YEAR, _MIN_MONTH = 2026, 1
-    _min_offset = (_MIN_YEAR - today.year) * 12 + (_MIN_MONTH - today.month)
-    # 월이 바뀌면 offset을 0(오늘 달)으로 자동 리셋
-    _cur_ym = (today.year, today.month)
-    if _CAL_KEY not in st.session_state or st.session_state.get(_CAL_MONTH_KEY) != _cur_ym:
-        st.session_state[_CAL_KEY] = 0
-        st.session_state[_CAL_MONTH_KEY] = _cur_ym
+    _MAX_YEAR, _MAX_MONTH = today.year, today.month  # 상한 = 오늘 달
 
-    # 화살표 버튼 (좌/우)
+    # 초기화: 없거나 상한 초과시 오늘 달로 리셋
+    if _CAL_YEAR_KEY not in st.session_state:
+        st.session_state[_CAL_YEAR_KEY]  = _MAX_YEAR
+        st.session_state[_CAL_MONTH_KEY] = _MAX_MONTH
+    # 상한 강제 클램핑 (저장된 값이 오늘 달보다 어떤 이유로 크면 리셋)
+    _sy, _sm = st.session_state[_CAL_YEAR_KEY], st.session_state[_CAL_MONTH_KEY]
+    if (_sy, _sm) > (_MAX_YEAR, _MAX_MONTH):
+        st.session_state[_CAL_YEAR_KEY]  = _MAX_YEAR
+        st.session_state[_CAL_MONTH_KEY] = _MAX_MONTH
+    # 하한 클램핑
+    if (_sy, _sm) < (_MIN_YEAR, _MIN_MONTH):
+        st.session_state[_CAL_YEAR_KEY]  = _MIN_YEAR
+        st.session_state[_CAL_MONTH_KEY] = _MIN_MONTH
+
+    _disp_year  = st.session_state[_CAL_YEAR_KEY]
+    _disp_month = st.session_state[_CAL_MONTH_KEY]
+
+    # 화살표 버튼
+    _prev_disabled = (_disp_year, _disp_month) <= (_MIN_YEAR, _MIN_MONTH)
+    _next_disabled = (_disp_year, _disp_month) >= (_MAX_YEAR, _MAX_MONTH)
+
     _col_prev, _col_title, _col_next = st.columns([1, 6, 1])
     with _col_prev:
-        _prev_disabled = st.session_state[_CAL_KEY] <= _min_offset
-        if st.button("◀", key="_cal_prev_btn", help="이전 달", disabled=_prev_disabled):
-            st.session_state[_CAL_KEY] -= 1
+        if st.button("◄", key="_cal_prev_btn", help="이전 달", disabled=_prev_disabled):
+            _nm = _disp_month - 1
+            _ny = _disp_year
+            if _nm < 1:
+                _nm = 12
+                _ny -= 1
+            st.session_state[_CAL_YEAR_KEY]  = _ny
+            st.session_state[_CAL_MONTH_KEY] = _nm
+            st.rerun()
     with _col_next:
-        _next_disabled = st.session_state[_CAL_KEY] >= 0  # 오늘 달(offset=0)이 상한
-        if st.button("▶", key="_cal_next_btn", help="다음 달", disabled=_next_disabled):
-            st.session_state[_CAL_KEY] += 1
+        if st.button("►", key="_cal_next_btn", help="다음 달", disabled=_next_disabled):
+            _nm = _disp_month + 1
+            _ny = _disp_year
+            if _nm > 12:
+                _nm = 1
+                _ny += 1
+            st.session_state[_CAL_YEAR_KEY]  = _ny
+            st.session_state[_CAL_MONTH_KEY] = _nm
+            st.rerun()
 
-    # offset 하한/상한 강제 적용
-    if st.session_state[_CAL_KEY] < _min_offset:
-        st.session_state[_CAL_KEY] = _min_offset
-    if st.session_state[_CAL_KEY] > 0:  # 오늘 달 초과 방지
-        st.session_state[_CAL_KEY] = 0
-
-    # 현재 표시할 연/월 계산
-    _offset = st.session_state[_CAL_KEY]
-    _disp_year = today.year
-    _disp_month = today.month + _offset
-    while _disp_month <= 0:
-        _disp_month += 12
-        _disp_year -= 1
-    while _disp_month > 12:
-        _disp_month -= 12
-        _disp_year += 1
+    # 표시월 재가져오기 (rerun 후)
+    _disp_year  = st.session_state[_CAL_YEAR_KEY]
+    _disp_month = st.session_state[_CAL_MONTH_KEY]
 
     with _col_title:
         _monthly_total_nav = sum(v for k, v in daily_pnl_dict.items() if k.year == _disp_year and k.month == _disp_month)
