@@ -862,8 +862,29 @@ def render_trade_records(urls: dict):
     <div style="max-width: 860px; margin: 0 auto;">
     """, unsafe_allow_html=True)
 
-    # ── 매매 캘린더 / 매매 기록 서브탭 ─────────────────────────────
-    with st.expander("▼ 매매 캘린더", expanded=True):
+    # ── 이번 달 수익 계산 ─────────────────────────────────────────
+    import datetime as _dt
+    _month_profit = 0
+    try:
+        _df_monthly = load_and_clean_data(urls.get("MONTHLY", ""))
+        if not _df_monthly.empty:
+            _profit_col = next((c for c in _df_monthly.columns if "실현손익" in str(c).replace(" ", "")), None)
+            if _profit_col:
+                _month_profit = int(safe_int_float(_df_monthly.iloc[0][_profit_col]))
+    except Exception:
+        _month_profit = 0
+
+    _today = _dt.date.today()
+    _month_label = f"{_today.month}월"
+    if _month_profit > 0:
+        _expander_title = f"📅 {_month_label} +{_month_profit:,}원 벌고 있어요!"
+    elif _month_profit < 0:
+        _expander_title = f"📅 {_month_label} {_month_profit:,}원 빠졌어요"
+    else:
+        _expander_title = f"📅 {_month_label} 아직 0원이에요"
+
+    # ── 매매 캘린더 ─────────────────────────────────────────────────
+    with st.expander(_expander_title, expanded=True):
         df_rec = load_records_data(urls.get("RECORDS", ""))
         _render_trade_calendar(df_rec)
 
