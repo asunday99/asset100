@@ -1039,21 +1039,18 @@ def render_trade_records(urls: dict):
 \
 
 def _render_trade_calendar(df_rec: pd.DataFrame):
-    """매매 캘린더 렌더링."""
+    """매매 캘린더 렌더링 - 최근 3개월 가로 스크롤 방식."""
     today = datetime.date.today()
-    year, month = today.year, today.month
-    st.subheader(f"📅 {year}년 {month}월")
-
     kr_holidays = holidays.KR()
     daily_pnl_dict: dict = {}
 
+    # ── 데이터 파싱 ──────────────────────────────────────────────────
     if not df_rec.empty:
         try:
             df_rec["계좌"]    = df_rec["계좌"].astype(str).str.strip()
             df_rec["날짜_str"] = df_rec["날짜"].astype(str).str.strip()
             is_mock  = (df_rec["계좌"] == "모의계산") | (df_rec["날짜_str"] == "모의계산")
             df_real  = df_rec[~is_mock].copy()
-
             if "날짜" in df_real.columns and "차익실현금액" in df_real.columns:
                 df_real["date"] = pd.to_datetime(
                     df_real["날짜_str"].str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
@@ -1066,43 +1063,66 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             logger.warning("캘린더 데이터 파싱 실패: %s", e)
             st.warning(f"⚠️ 캘린더 데이터 파싱 실패: {e}")
 
-    monthly_total = sum(v for k, v in daily_pnl_dict.items() if k.year == year and k.month == month)
+    # ── 최근 3개월 목록 계산 (슬라이딩) ────────────────────────────────
+    cal_obj = calendar.Calendar(firstweekday=6)
+    months_to_show = []
+    for offset in range(2, -1, -1):  # 2개월 전 → 1개월 전 → 현재월
+        y = today.year
+        m = today.month - offset
+        while m <= 0:
+            m += 12
+            y -= 1
+        months_to_show.append((y, m))
 
-    cal   = calendar.Calendar(firstweekday=6)
-    weeks = cal.monthdatescalendar(year, month)
+    # ── 달력 1개 HTML 생성 함수 ─────────────────────────────────────
+    def _build_one_calendar(y, m):
+        weeks = cal_obj.monthdatescalendar(y, m)
+        monthly_total = sum(v for k, v in daily_pnl_dict.items() if k.year == y and k.month == m)
+        total_color = "#FF4B4B" if monthly_total > 0 else ("#4B9FFF" if monthly_total < 0 else "#888888")
+        total_sign  = "+" if monthly_total > 0 else ""
 
-    html_str = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #333;">'
-    html_str += "<tr>"
-    for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-        html_str += f'<th style="background-color:#0A0A0C;color:#FF9900;padding:10px;border:1px solid #2b2e35;width:14.28%;text-align:center;">{day_name}</th>'
-    html_str += "</tr>"
+        tbl  = f'<div style="min-width:340px;max-width:380px;flex:0 0 auto;margin-right:16px;">'
+        tbl += f'<div style="font-size:18px;font-weight:900;color:#FFFFFF;margin-bottom:6px;">📅 {y}년 {m}월</div>'
+        tbl += f'<div style="font-size:13px;color:{total_color};font-weight:bold;margin-bottom:8px;">월 합계: {total_sign}{monthly_total:,.0f}원</div>'
+        tbl += '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #333;">'
+        tbl += "<tr>"
+        for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
+            tbl += f'<th style="background-color:#0A0A0C;color:#FF9900;padding:6px 2px;border:1px solid #2b2e35;text-align:center;font-size:12px;">{day_name}</th>'
+        tbl += "</tr>"
+        for week in weeks:
+            tbl += "<tr>"
+            for d in week:
+                day_text   = str(d.day) if d.month == m else " "
+                style_date = "height:24px;background-color:#111111;color:#FF9900;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #2b2e35;font-size:11px;"
+                tbl += f'<td style="{style_date}">{day_text}</td>'
+            tbl += "</tr><tr>"
+            for d in week:
+                if d.month == m and d in daily_pnl_dict:
+                    val = daily_pnl_dict[d]
+                    val_color     = get_color_by_value(val)
+                    formatted_val = f"{val:,.0f}" if val != 0 else "&nbsp;"
+                elif d.month == m and d in kr_holidays:
+                    val_color     = "#888888"
+                    formatted_val = "휴장"
+                else:
+                    val_color     = "white"
+                    formatted_val = "&nbsp;"
+                style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid #2b2e35;text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
+                tbl += f'<td style="{style_data}">{formatted_val}</td>'
+            tbl += "</tr>"
+        tbl += "</table></div>"
+        return tbl
 
-    for week in weeks:
-        html_str += "<tr>"
-        for d in week:
-            day_text   = str(d.day) if d.month == month else " "
-            style_date = "height:30px;background-color:#111111;color:#FF9900;font-weight:bold;text-align:left;padding:5px;border:1px solid #2b2e35;width:14.28%;"
-            html_str  += f'<td style="{style_date}">{day_text}</td>'
-        html_str += "</tr><tr>"
-        for d in week:
-            if d.month == month and d in daily_pnl_dict:
-                val = daily_pnl_dict[d]
-                bg_style      = "background-color:#000000;"
-                val_color     = get_color_by_value(val)
-                formatted_val = f"{val:,.0f}" if val != 0 else "&nbsp;"
-            elif d.month == month and d.weekday() < 5 and d in kr_holidays:
-                bg_style      = "background-color:#000000;"
-                val_color     = "#888888"
-                formatted_val = "휴장"
-            else:
-                bg_style      = "background-color:#000000;"
-                val_color     = "white"
-                formatted_val = "&nbsp;"
-            style_data = f"height:80px;{bg_style}color:{val_color};border:1px solid #2b2e35;text-align:center;vertical-align:middle;padding:5px;font-size:15px;font-weight:bold;"
-            html_str  += f'<td style="{style_data}">{formatted_val}</td>'
-        html_str += "</tr>"
-    html_str += "</table>"
-    st.markdown(html_str, unsafe_allow_html=True)
+    # ── 3개월 가로 스크롤 컨테이너 렌더링 ───────────────────────────────
+    all_cals = "".join(_build_one_calendar(y, m) for y, m in months_to_show)
+    scroll_html = f"""
+<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:10px;">
+  <div style="display:flex;flex-direction:row;gap:0;min-width:max-content;">
+    {all_cals}
+  </div>
+</div>
+"""
+    st.markdown(scroll_html, unsafe_allow_html=True)
 
 def _render_trade_table(df_rec: pd.DataFrame):
     """매매 기록 표 및 모의계산 렌더링."""
