@@ -991,12 +991,12 @@ def render_trade_records(urls: dict):
                 _ytd = f"{_ytd_val:.2f}%"
                 _today_m2 = _dt2.date.today().month
                 _today_d2 = _dt2.date.today().day
-                _completed_months2 = _today_m2 - 1 if _today_d2 < 28 else _today_m2
+                # 완료된 개월수: 당월 1일~4일이면 전월까지, 그 외 당월 포함
+                _completed_months2 = _today_m2 - 1 if _today_d2 <= 4 else _today_m2
                 _completed_months2 = max(_completed_months2, 1)
-                _months_with_data2 = [_mi for _mi in range(1, _today_m2 + 1) if _monthly_avg_rates2.get(_mi, 0) > 0]
-                if _months_with_data2:
-                    _avg_monthly_rate2 = sum(_monthly_avg_rates2[_mi] for _mi in _months_with_data2) / len(_months_with_data2)
-                    _exp_val = _avg_monthly_rate2 * (12 / _completed_months2)
+                # 연말 예상 = 올해 전체 수익률 평균 × (12 / 완료 개월수)
+                if _all_rates2 and _completed_months2 > 0:
+                    _exp_val = _ytd_val * (12 / _completed_months2)
                     _exp = f"{_exp_val:.2f}%"
                 else:
                     _exp = "0%"
