@@ -314,16 +314,32 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-if "google_sheets" in st.secrets:
-    URL_DASHBOARD = st.secrets["google_sheets"]["URL_DASHBOARD"]
-    URL_ACCOUNT = st.secrets["google_sheets"]["URL_ACCOUNT"]
-    URL_CALENDAR = st.secrets["google_sheets"]["URL_CALENDAR"]
-    URL_RECORDS = st.secrets["google_sheets"]["URL_RECORDS"]
-    URL_PNL_DAILY = st.secrets["google_sheets"]["URL_PNL_DAILY"]
-    URL_PNL_MONTHLY = st.secrets["google_sheets"]["URL_PNL_MONTHLY"]
-else:
+try:
+    if "google_sheets" in st.secrets:
+        URL_DASHBOARD = st.secrets["google_sheets"]["URL_DASHBOARD"]
+        URL_ACCOUNT = st.secrets["google_sheets"]["URL_ACCOUNT"]
+        URL_CALENDAR = st.secrets["google_sheets"]["URL_CALENDAR"]
+        URL_RECORDS = st.secrets["google_sheets"]["URL_RECORDS"]
+        URL_PNL_DAILY = st.secrets["google_sheets"]["URL_PNL_DAILY"]
+        URL_PNL_MONTHLY = st.secrets["google_sheets"]["URL_PNL_MONTHLY"]
+    else:
+        st.error("Google Sheets URL 설정이 필요합니다. `.streamlit/secrets.toml` 파일을 확인해주세요.")
+        st.stop()
+except FileNotFoundError:
     st.error("Google Sheets URL 설정이 필요합니다. `.streamlit/secrets.toml` 파일을 확인해주세요.")
     st.stop()
+except Exception as e:
+    st.error(f"Secrets Error: {e}")
+    st.stop()
+
+# fallback values for bare python test
+if 'URL_DASHBOARD' not in locals():
+    URL_DASHBOARD = ""
+    URL_ACCOUNT = ""
+    URL_CALENDAR = ""
+    URL_RECORDS = ""
+    URL_PNL_DAILY = ""
+    URL_PNL_MONTHLY = ""
 
 def get_upbit_btc_price():
     try:
@@ -835,7 +851,7 @@ def load_records_data(url: str) -> pd.DataFrame:
     return load_and_clean_data(url)
 
 def render_trade_records(urls: dict):
-    df_dash = load_and_clean_data(urls['dashboard'])
+    df_dash = load_and_clean_data(urls['DASHBOARD'])
     
     stock_eval = find_metric(df_dash, "주식 평가금액", col_offset=1)
     stock_profit = find_metric(df_dash, "주식 평가손익", col_offset=1)
@@ -891,7 +907,7 @@ def render_trade_records(urls: dict):
     with col_s3: st.metric("올해 총 수익률", total_roi_str)
         
     st.markdown("---")
-    df_rec = load_records_data(urls['trade_records'])
+    df_rec = load_records_data(urls['RECORDS'])
     if df_rec.empty:
         st.info("매매 기록이 없습니다.")
     else:
@@ -1141,7 +1157,7 @@ def render_pnl(urls: dict):
 # =============================================================================
 
 if menu == "대시보드":
-    df_dash = load_and_clean_data(urls_dict['DASHBOARD'])
+    df_dash = load_and_clean_data(URL_DASHBOARD)
     if df_dash.empty:
         st.warning("대시보드 데이터를 불러올 수 없습니다.")
     else:
