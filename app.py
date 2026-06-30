@@ -1719,8 +1719,20 @@ if menu == "대시보드":
     month_sign = "+" if month_profit > 0 else ""
     month_color = "#FF1493" if month_profit < 0 else "#FF4B4B"
     
-    col_left, col_right = st.columns([1.3, 1.0], gap="large")
-    with col_left:
+    # ── 대시보드 반응형 1열 레이아웃 CSS ──
+    st.markdown("""
+    <style>
+    .block-container {
+        max-width: min(1200px, 90vw) !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .asset-card-stack { width: 100%; margin-bottom: 12px; position: relative; }
+    </style>
+    """, unsafe_allow_html=True)
+    if True:  # 대시보드 1열 시작
         gs_val = st.session_state.gs_val
         if 'target_date_dynamic' not in st.session_state:
             _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
@@ -1928,61 +1940,64 @@ elements.forEach(el => {
                         _dash_monthly_rates[_m] = (_pnl / _base) * 100
                     _dash_year_total += _pnl
 
-            # ── 차트1: 월별 자산 총액 추이 막대 (주황색) ──
-            # 현재 총자산 (가장 최근 데이터)
+            # ── 차트 데이터 준비 ──
             _cur_total_asset = _monthly_last_asset.get(max(_monthly_last_asset.keys()), total_assets) if _monthly_last_asset else total_assets
-            # 막대 높이 기준: 월별 자산이액 중 최대값
-            _max_asset_d = max(max(_monthly_last_asset.values()), 1) if _monthly_last_asset else 1
-            _bars_html_d1 = ""
-            for _m in range(1, 13):
-                _a = _monthly_last_asset.get(_m, 0)
-                _h = max(min(int((_a / _max_asset_d) * 100), 100), 5) if _a > 0 else 2
-                _clr = "#FF6B00" if _a > 0 else "#333"
-                # 억 단위 표시
-                _lbl = (f"<div style='color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_a/100000000:.1f}억</div>" if _a > 0 else "")
-                _bars_html_d1 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
-                                  f"{_lbl}<div style='background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;'></div>"
-                                  f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
-
-            _chart_d1 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
-                         f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
-                         f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>현재까지 총 자산은<br>"
-                         f"<span style='font-size:20px;'>{_cur_total_asset:,}원 이에요</span></div></div>"
-                         f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d1}</div></div>")
-            import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d1), unsafe_allow_html=True)
-
-            # ── 차트2: 월별 수익률 막대 (보라색) - 매매기록 탭과 동일 로직 ──
-            # ── 차트2: 월별 목표 달성률 추이 (보라색) ──
-            # 목표금액: gs_val 억 기준 (session_state에서 읽기)
-            _goal_amount = gs_val * 100000000 if gs_val > 0 else 10000000000  # 기본 100억
-
-            # 월별 달성률 계산 (월말 자산 / 목표금액 * 100)
-            _monthly_ach = {}
-            for _m, _a in _monthly_last_asset.items():
-                _monthly_ach[_m] = (_a / _goal_amount) * 100
-
-            # 현재 달성률
+            _goal_amount = gs_val * 100000000 if gs_val > 0 else 10000000000
+            _monthly_ach = {_m: (_a / _goal_amount) * 100 for _m, _a in _monthly_last_asset.items()}
             _cur_ach = (total_assets / _goal_amount) * 100 if _goal_amount > 0 else 0
 
-            _max_ach_d = max(max(_monthly_ach.values()), 0.1) if _monthly_ach else 100
-            _bars_html_d2 = ""
-            for _m in range(1, 13):
-                _r2 = _monthly_ach.get(_m, 0)
-                _h2 = max(min(int((_r2 / _max_ach_d) * 100), 100), 5) if _r2 > 0 else 2
-                _clr2 = "#8A2BE2" if _r2 > 0 else "#333"
-                _lbl2 = (f"<div style='color:#8A2BE2;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;'>{_r2:.1f}%</div>" if _r2 > 0 else "")
-                _bars_html_d2 += (f"<div style='display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;'>"
-                                  f"{_lbl2}<div style='background-color:{_clr2};width:100%;height:{_h2}%;border-radius:4px 4px 0 0;'></div>"
-                                  f"<div style='color:#a0a0a0;font-size:10px;margin-top:5px;'>{_m}</div></div>")
+            # ── SVG Area Line Chart 생성 함수 ──
+            def _make_area_svg(data_dict, color, y_fmt):
+                W, H = 460, 200
+                PAD_L, PAD_R, PAD_T, PAD_B = 48, 16, 20, 36
+                plot_w = W - PAD_L - PAD_R
+                plot_h = H - PAD_T - PAD_B
+                months = sorted([m for m in range(1, 13) if data_dict.get(m, 0) > 0])
+                if not months:
+                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="#111" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+                vals = [data_dict.get(m, 0) for m in months]
+                y_max = max(vals) * 1.15 if max(vals) > 0 else 1
+                def xp(idx): return PAD_L + int(idx / max(len(months) - 1, 1) * plot_w)
+                def yp(v): return PAD_T + int((1 - v / y_max) * plot_h)
+                pts = [(xp(i), yp(data_dict.get(m, 0))) for i, m in enumerate(months)]
+                area_pts = f"{PAD_L},{H-PAD_B} " + " ".join(f"{x},{y}" for x, y in pts) + f" {pts[-1][0]},{H-PAD_B}"
+                line_pts = " ".join(f"{x},{y}" for x, y in pts)
+                svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
+                svg += f'<rect width="{W}" height="{H}" fill="#111" rx="10"/>'
+                for gi in range(5):
+                    gy = PAD_T + int(gi / 4 * plot_h)
+                    svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
+                svg += f'<polygon points="{area_pts}" fill="{color}" fill-opacity="0.18"/>'
+                svg += f'<polyline points="{line_pts}" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px {color})"/>'
+                for i, (m, (x, y)) in enumerate(zip(months, pts)):
+                    svg += f'<circle cx="{x}" cy="{y}" r="4" fill="{color}" stroke="#111" stroke-width="1.5"/>'
+                    lbl = y_fmt(data_dict.get(m, 0))
+                    svg += f'<text x="{x}" y="{y-8}" fill="{color}" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="10">{m}월</text>'
+                svg += '</svg>'
+                return svg
 
-            _chart_d2 = (f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
-                         f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
-                         f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                         f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>목표 {formatted_gs_val}억, 지금 이만큼 왔어요<br>"
-                         f"<span style='font-size:20px;color:#8A2BE2;'>{_cur_ach:.2f}% 달성</span></div></div>"
-                         f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_d2}</div></div>")
-            import re; st.markdown(re.sub(r'\n\s+', ' ', _chart_d2), unsafe_allow_html=True)
+            _svg_d1 = _make_area_svg(_monthly_last_asset, "#FF6B00", lambda v: f"{v/100000000:.1f}억")
+            _svg_d2 = _make_area_svg(_monthly_ach, "#8A2BE2", lambda v: f"{v:.1f}%")
+
+            _charts_html = f"""
+<div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
+  <div style='flex:1;min-width:280px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
+    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'>{_cur_total_asset:,}원 이에요</div>
+    {_svg_d1}
+    <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
+  </div>
+  <div style='flex:1;min-width:280px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#127919; 목표 {formatted_gs_val}억, 지금 이만큼 왔어요</div>
+    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'><span style='color:#8A2BE2;'>{_cur_ach:.2f}%</span> 달성</div>
+    {_svg_d2}
+    <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월별 목표 달성률 추이</div>
+  </div>
+</div>
+"""
+            import re; st.markdown(re.sub(r'\n\s+', ' ', _charts_html), unsafe_allow_html=True)
+
 
 
             
@@ -2121,7 +2136,7 @@ elements.forEach(el => {
 </div>
 """
 
-    with col_right:
+    if True:  # 자산카드 1열 블록
         # 구글 시트 대시보드 탭에서 자산 카드 데이터 동적 파싱
         # 구조: summary_start_row 기준 헤더행=row+0, 평가금액=row+1, 평가손익=row+2, 수익률=row+3
         # 컬럼: col0=항목명, col1=총합계, col2=주식, col3=금, col4=채권, col5=코인, col6=현금성
@@ -2204,137 +2219,14 @@ elements.forEach(el => {
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position: relative; padding-right: 90px;"><div style="font-size: 13px; color: #A0A0A0; font-weight: bold; margin-bottom: 5px;">🔹{row['category']}</div><div style="font-size: 26px; font-weight: 900; color: #FFFFFF; margin-bottom: 5px; white-space: nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
-        st.markdown(f'<div class="swipe-wrapper" style="position:relative;"><div class="swipe-container">{cards_html}</div><div class="swipe-glow-left hidden"></div><div class="swipe-glow-right hidden"></div></div>', unsafe_allow_html=True)
+            cards_html += f'''<div class="glass-card {row['hover']}" style="position:relative;padding-right:90px;width:100%;box-sizing:border-box;"><div style="font-size: 13px; color: #A0A0A0; font-weight: bold; margin-bottom: 5px;">🔹{row['category']}</div><div style="font-size: 26px; font-weight: 900; color: #FFFFFF; margin-bottom: 5px; white-space: nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+        st.markdown(f'<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">{cards_html}</div>', unsafe_allow_html=True)
 
         import streamlit.components.v1 as components
-        components.html('''
-        <script>
-        const doc = window.parent.document;
-        const container = doc.querySelector('.swipe-container');
-        
-        if (!doc.getElementById('swipe-glow-style')) {
-            const style = doc.createElement('style');
-            style.id = 'swipe-glow-style';
-            style.innerHTML = `
-            .swipe-container::-webkit-scrollbar { display: none !important; }
-            .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
-            .swipe-glow-right, .swipe-glow-left {
-                position: absolute;
-                top: 50% !important;
-                width: 16px !important;
-                height: 16px !important;
-                pointer-events: none;
-                opacity: 1;
-                transition: opacity 0.3s ease-in-out;
-                background: none !important;
-                border-radius: 0 !important;
-                z-index: 50;
-            }
-            /* Right Chevron */
-            .swipe-glow-right {
-                right: 25px;
-                border-top: 4px solid rgba(180,130,255,0.9);
-                border-right: 4px solid rgba(180,130,255,0.9);
-                border-left: none; border-bottom: none;
-                animation: neon-chevron-right 1.2s infinite alternate ease-in-out;
-            }
-            /* Left Chevron */
-            .swipe-glow-left {
-                left: 25px;
-                border-bottom: 4px solid rgba(180,130,255,0.9);
-                border-left: 4px solid rgba(180,130,255,0.9);
-                border-top: none; border-right: none;
-                animation: neon-chevron-left 1.2s infinite alternate ease-in-out;
-            }
-            .swipe-glow-right.hidden, .swipe-glow-left.hidden {
-                opacity: 0 !important;
-            }
-            @keyframes neon-chevron-right {
-                from { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(180,130,255,0.4)); transform: translateY(-50%) rotate(45deg) translateX(-3px) translateY(-3px); }
-                to { opacity: 1; filter: drop-shadow(0 0 10px rgba(180,130,255,1)); transform: translateY(-50%) rotate(45deg) translateX(3px) translateY(3px); }
-            }
-            @keyframes neon-chevron-left {
-                from { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(180,130,255,0.4)); transform: translateY(-50%) rotate(45deg) translateX(3px) translateY(3px); }
-                to { opacity: 1; filter: drop-shadow(0 0 10px rgba(180,130,255,1)); transform: translateY(-50%) rotate(45deg) translateX(-3px) translateY(-3px); }
-            }
-            `;
-            doc.head.appendChild(style);
-        }
-
-        const overlayRight = doc.querySelector('.swipe-glow-right');
-        const overlayLeft = doc.querySelector('.swipe-glow-left');
-        const firstCard = container.querySelector('.asset-card');
-
-        if (container && firstCard && overlayRight && overlayLeft) {
-            const updateGlowBounds = () => {
-                const top = firstCard.offsetTop;
-                const height = firstCard.offsetHeight;
-                overlayRight.style.top = top + 'px';
-                overlayRight.style.height = height + 'px';
-                overlayLeft.style.top = top + 'px';
-                overlayLeft.style.height = height + 'px';
-            };
-            
-            const checkScroll = () => {
-                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                    overlayRight.classList.add('hidden');
-                } else {
-                    overlayRight.classList.remove('hidden');
-                }
-                
-                if (container.scrollLeft <= 10) {
-                    overlayLeft.classList.add('hidden');
-                } else {
-                    overlayLeft.classList.remove('hidden');
-                }
-            };
-            
-            container.addEventListener('scroll', checkScroll);
-            window.parent.addEventListener('resize', () => {
-                updateGlowBounds();
-                checkScroll();
-            });
-            setTimeout(() => { updateGlowBounds(); checkScroll(); }, 200);
-            setTimeout(() => { updateGlowBounds(); checkScroll(); }, 1000); 
-            
-            // Keyboard Navigation Setup
-            const cards = container.querySelectorAll('.asset-card');
-            cards.forEach(card => {
-                card.setAttribute('tabindex', '0');
-                card.style.outline = 'none'; // Hide default focus outline for aesthetics
-                card.addEventListener('click', () => card.focus());
-            });
-            container.setAttribute('tabindex', '0');
-            container.style.outline = 'none';
-
-            if (doc.swipeKeydownHandler) {
-                doc.removeEventListener('keydown', doc.swipeKeydownHandler);
-            }
-            doc.swipeKeydownHandler = (e) => {
-                if (container.contains(doc.activeElement) || doc.activeElement === container) {
-                    if (e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        container.scrollBy({left: 280, behavior: 'smooth'}); // card width ~280
-                    } else if (e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        container.scrollBy({left: -280, behavior: 'smooth'});
-                    }
-                }
-            };
-            doc.addEventListener('keydown', doc.swipeKeydownHandler);
-        }
-        
-        // Remove old buttons if they exist
-        const oldLeft = doc.getElementById('custom-carousel-btn-left');
-        const oldRight = doc.getElementById('custom-carousel-btn-right');
-        if(oldLeft) oldLeft.parentElement.remove();
-        </script>
-        ''', height=0)
 
 
     
-    with col_right:
+    if True:  # 도넛 차트 1열 블록
         if not df_dash.empty and len(df_dash) >= summary_start_row + 8:
             df_summary_main = df_dash.iloc[summary_start_row+1:summary_start_row+5, 0:7].copy()
             cols_main = df_dash.iloc[summary_start_row, 0:7].tolist()
@@ -2389,7 +2281,7 @@ elements.forEach(el => {
             except Exception as e:
                 st.error(f"차트 렌더링 에러: {e}")
                 
-    with st.expander("📊 현황 요약 보기"):
+    with st.expander("📊 현황 요약 보기", expanded=False):
         def apply_black_style(df, is_main=True):
             styles = pd.DataFrame('', index=df.index, columns=df.columns)
             for r_idx, row_name in enumerate(df.index):
