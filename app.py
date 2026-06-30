@@ -121,7 +121,7 @@ if not st.session_state.authenticated:
     <style>
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
-        background: radial-gradient(circle at center, #0a0a1a 0%, #000000 100%);
+        background: radial-gradient(circle at center, #0d0d18 0%, #08080f 100%);
     }
     
     /* 화면 중앙 컨테이너 */
@@ -1776,7 +1776,7 @@ if menu == "대시보드":
 
         st.markdown(f'''<div class='glass-card' style='padding: 20px; padding-bottom:5px; border-radius: 15px 15px 0 0; border-bottom: none; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
-<div style="font-size:13px; color:#A0A0A0; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;">D-{d_days_dynamic}</span></div>
+<div style="font-size:15px; color:#D8D8D8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(255,255,255,0.18); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class="neon-text" style="font-size:42px;">₩{int(total_assets):,}</div>
         
 <div style="width:100%; background-color:rgba(255,255,255,0.05); border-radius:10px; height:8px; margin-top:20px; margin-bottom:10px; overflow:hidden;">
@@ -1976,7 +1976,7 @@ elements.forEach(el => {
                 plot_h = H - PAD_T - PAD_B
                 months = sorted([m for m in range(1, 13) if data_dict.get(m, 0) > 0])
                 if not months:
-                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="#111" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="#0e0e1a" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
                 vals = [data_dict.get(m, 0) for m in months]
                 y_max = max(vals) * 1.15 if max(vals) > 0 else 1
                 def xp(idx): return PAD_L + int(idx / max(len(months) - 1, 1) * plot_w)
@@ -1985,7 +1985,7 @@ elements.forEach(el => {
                 area_pts = f"{PAD_L},{H-PAD_B} " + " ".join(f"{x},{y}" for x, y in pts) + f" {pts[-1][0]},{H-PAD_B}"
                 line_pts = " ".join(f"{x},{y}" for x, y in pts)
                 svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
-                svg += f'<rect width="{W}" height="{H}" fill="#111" rx="10"/>'
+                svg += f'<rect width="{W}" height="{H}" fill="#0e0e1a" rx="10"/>'
                 for gi in range(5):
                     gy = PAD_T + int(gi / 4 * plot_h)
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
@@ -1999,20 +1999,20 @@ elements.forEach(el => {
                 svg += '</svg>'
                 return svg
 
-            _svg_d1 = _make_area_svg(_monthly_last_asset, "#FF6B00", lambda v: f"{v/100000000:.1f}억")
-            _svg_d2 = _make_area_svg(_monthly_ach, "#8A2BE2", lambda v: f"{v:.1f}%")
+            _svg_d1 = _make_area_svg(_monthly_last_asset, "#5B8DEF", lambda v: f"{v/100000000:.1f}억")
+            _svg_d2 = _make_area_svg(_monthly_ach, "#9B72CF", lambda v: f"{v:.1f}%")
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
-  <div style='flex:1;min-width:280px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
+  <div style='flex:1;min-width:280px;background:#0e0e1a;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#5B8DEF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
     <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'>{_cur_total_asset:,}원 이에요</div>
     {_svg_d1}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
   </div>
-  <div style='flex:1;min-width:280px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#127919; 목표 {formatted_gs_val}억, 지금 이만큼 왔어요</div>
-    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'><span style='color:#8A2BE2;'>{_cur_ach:.2f}%</span> 달성</div>
+  <div style='flex:1;min-width:280px;background:#0e0e1a;border-radius:12px;padding:18px 16px 12px 16px;'>
+    <div style='color:#9B72CF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#127919; 목표 {formatted_gs_val}억, 지금 이만큼 왔어요</div>
+    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'><span style='color:#9B72CF;'>{_cur_ach:.2f}%</span> 달성</div>
     {_svg_d2}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월별 목표 달성률 추이</div>
   </div>
