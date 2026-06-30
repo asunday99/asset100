@@ -890,17 +890,17 @@ def render_trade_records(urls: dict):
         _profit_text = f"+{_month_profit:,}원"
         _profit_color = "#FF4B4B"
         _msg = "벌고 있어요! 🚀"
-        _expander_title = f"📅 이번 달 +{_month_profit:,}원 벌고 있어요!"
+        _expander_title = f"📅 이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
         _profit_color = "#4B9FFF"
         _msg = "빠졌어요 💧"
-        _expander_title = f"📅 이번 달 {_month_profit:,}원 빠졌어요"
+        _expander_title = f"📅 이번 달 팔았는데 {_month_profit:,}원 빠졌어요"
     else:
         _profit_text = "0원"
         _profit_color = "#A0A0A0"
         _msg = "아직 0원이에요"
-        _expander_title = f"📅 이번 달 아직 0원이에요"
+        _expander_title = f"📅 이번 달 아직 매도 수익 0원이에요"
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
@@ -913,7 +913,7 @@ def render_trade_records(urls: dict):
     margin-bottom: 20px;
     text-align: center;
 '>
-  <div style='color:#A0A0B0; font-size:14px; letter-spacing:2px; margin-bottom:10px;'>이번 달 수익</div>
+  <div style='color:#A0A0B0; font-size:14px; letter-spacing:2px; margin-bottom:10px;'>이번 달 팔아서 번 돈</div>
   <div style='color:{_profit_color}; font-size:44px; font-weight:900; letter-spacing:-1px; margin-bottom:8px;'>{_profit_text}</div>
   <div style='color:#d0d0d0; font-size:18px; font-weight:500;'>{_msg}</div>
 </div>
@@ -957,7 +957,7 @@ def render_trade_records(urls: dict):
                 _clr = "#FF6B00" if _p > 0 else "#333"
                 _lbl = f"<div style=\'color:#FF6B00;font-size:10px;font-weight:bold;margin-bottom:2px;white-space:nowrap;\'>{int(_p/10000):,}</div>" if _p > 0 else ""
                 _bars_html_c += f"<div style=\'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:120px;width:7%;margin:0 1%;\'>{_lbl}<div style=\'background-color:{_clr};width:100%;height:{_h}%;border-radius:4px 4px 0 0;\'></div><div style=\'color:#a0a0a0;font-size:10px;margin-top:5px;\'>{_m}</div></div>"
-            _chart1 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 달성한 실현수익은<br><span style=\'font-size:20px;\'>{_year_profit_c:,}원 이에요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
+            _chart1 = f"<div style=\'background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;\'><div style=\'display:flex;align-items:center;margin-bottom:20px;\'><div style=\'width:30px;height:30px;border-radius:50%;background:conic-gradient(#FF6B00 0% 15%,#333 15% 100%);margin-right:15px;\'></div><div style=\'color:white;font-size:16px;font-weight:bold;line-height:1.4;\'>올해 팔아서 실제로 번 돈은<br><span style=\'font-size:20px;\'>{_year_profit_c:,}원 이에요</span></div></div><div style=\'display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;\'>{_bars_html_c}</div></div>"
             st.markdown(_chart1, unsafe_allow_html=True)
             # ── 올해 실현수익률 & 연말 예상: 매매기록에서 직접 계산 ──
             try:
@@ -1023,9 +1023,8 @@ def render_trade_records(urls: dict):
                 f"<div style='background-color:#111;border-radius:12px;padding:20px;margin-bottom:15px;'>"
                 f"<div style='display:flex;align-items:center;margin-bottom:20px;'>"
                 f"<div style='width:30px;height:30px;border-radius:50%;background:conic-gradient(#8A2BE2 0% 15%,#333 15% 100%);margin-right:15px;'></div>"
-                f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 실현수익률은 "
-                f"<span style='font-size:20px;color:#8A2BE2;'>{_ytd}</span> 이에요<br>"
-                f"<span style='font-size:13px;color:#A0A0A0;font-weight:normal;'>이 추세라면 연말까지 {_exp} 예상돼요</span>"
+                f"<div style='color:white;font-size:16px;font-weight:bold;line-height:1.4;'>올해 평균 수익률은 "
+                f"<span style='font-size:20px;color:#8A2BE2;'>{_ytd}</span> 이에요"
                 f"</div></div>"
                 f"<div style='display:flex;align-items:flex-end;justify-content:space-between;height:130px;border-bottom:1px solid #333;padding-bottom:5px;'>{_bars_html_rate2}</div></div>"
             )
