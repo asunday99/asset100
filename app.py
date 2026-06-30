@@ -864,27 +864,33 @@ def render_trade_records(urls: dict):
     <div style="width: 100%;">
     """, unsafe_allow_html=True)
 
-    # ── 이번 달 수익 계산 (일별 데이터 합산) ─────────────────────────────────
+    # ── 이번 달 수익 계산 (매매기록 시트에서 직접 집계, 날짜 정확 연동) ────────────────
     import datetime as _dt
     _month_profit = 0
     _today = _dt.date.today()
     try:
-        _df_daily = load_and_clean_data(urls.get("DAILY", ""))
-        if not _df_daily.empty:
-            # 날짜 컴럼 파싱 (26.6.30. 형식)
-            _date_col = _df_daily.columns[0]
-            _pnl_col = next((c for c in _df_daily.columns if "실현손익" in str(c).replace(" ", "")), None)
-            if _pnl_col:
-                _df_daily["_date"] = pd.to_datetime(
-                    _df_daily[_date_col].astype(str).str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
-                ).dt.date
-                _df_daily[_pnl_col] = pd.to_numeric(
-                    _df_daily[_pnl_col].astype(str).str.replace(",", ""), errors="coerce"
-                ).fillna(0)
-                _this_month = _df_daily[
-                    _df_daily["_date"].apply(lambda d: d is not None and not pd.isna(d) and d.year == _today.year and d.month == _today.month)
-                ]
-                _month_profit = int(_this_month[_pnl_col].sum())
+        _df_rec_hdr = load_records_data(urls.get("RECORDS", ""))
+        if not _df_rec_hdr.empty and "날짜" in _df_rec_hdr.columns and "차익실현금액" in _df_rec_hdr.columns:
+            _df_rec_hdr["계좌"] = _df_rec_hdr["계좌"].astype(str).str.strip()
+            _df_rec_hdr["날짜"] = _df_rec_hdr["날짜"].astype(str).str.strip()
+            # 모의계산 제외
+            _hdr_real = _df_rec_hdr[
+                (_df_rec_hdr["계좌"] != "모의계산") & (_df_rec_hdr["날짜"] != "모의계산")
+            ].copy()
+            _hdr_real["_hdr_date"] = pd.to_datetime(
+                _hdr_real["날짜"].str.replace(" ", ""), format="%y.%m.%d.", errors="coerce"
+            ).dt.date
+            _hdr_real["차익실현금액"] = pd.to_numeric(
+                _hdr_real["차익실현금액"].astype(str).str.replace(",", ""), errors="coerce"
+            ).fillna(0)
+            # 오늘 날짜와 일치하는 행만 합산 (연/월 정확 매칭)
+            _this_month_hdr = _hdr_real[
+                _hdr_real["_hdr_date"].apply(
+                    lambda d: d is not None and not pd.isna(d)
+                    and d.year == _today.year and d.month == _today.month
+                )
+            ]
+            _month_profit = int(_this_month_hdr["차익실현금액"].sum())
     except Exception:
         _month_profit = 0
 
@@ -1133,18 +1139,26 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             logger.warning("캘린더 데이터 파싱 실패: %s", e)
 
     # ── session_state로 현재 표시 월 관리 ───────────────────────────
-    _CAL_KEY = "_trade_cal_offset"  # 0=현재월, -1=전월, +1=다음월
+    _CAL_KEY = "_trade_cal_offset"  # 0=현재월, 음수=이전월
+    # 하한: 2026년 1월 (offset으로 환산)
+    _MIN_YEAR, _MIN_MONTH = 2026, 1
+    _min_offset = (_MIN_YEAR - today.year) * 12 + (_MIN_MONTH - today.month)
     if _CAL_KEY not in st.session_state:
         st.session_state[_CAL_KEY] = 0
 
     # 화살표 버튼 (좌/우)
     _col_prev, _col_title, _col_next = st.columns([1, 6, 1])
     with _col_prev:
-        if st.button("◀", key="_cal_prev_btn", help="이전 달"):
+        _prev_disabled = st.session_state[_CAL_KEY] <= _min_offset
+        if st.button("◀", key="_cal_prev_btn", help="이전 달", disabled=_prev_disabled):
             st.session_state[_CAL_KEY] -= 1
     with _col_next:
         if st.button("▶", key="_cal_next_btn", help="다음 달"):
             st.session_state[_CAL_KEY] += 1
+
+    # offset 하한 강제 적용
+    if st.session_state[_CAL_KEY] < _min_offset:
+        st.session_state[_CAL_KEY] = _min_offset
 
     # 현재 표시할 연/월 계산
     _offset = st.session_state[_CAL_KEY]
