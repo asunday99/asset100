@@ -1626,7 +1626,7 @@ elements.forEach(el => {
             _cur_ach = (total_assets / _goal_amount) * 100 if _goal_amount > 0 else 0
 
             # ── SVG Area Line Chart 생성 함수 ──
-            def _make_area_svg(data_dict, c_left, c_right, y_fmt, chart_idx):
+            def _make_area_svg(data_dict, c_left, c_right, y_fmt, chart_idx, c_bottom_right=None):
                 W, H = 460, 200
                 PAD_L, PAD_R, PAD_T, PAD_B = 48, 16, 20, 36
                 plot_w = W - PAD_L - PAD_R
@@ -1654,6 +1654,11 @@ elements.forEach(el => {
                 svg += f'    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>'
                 svg += f'    <stop offset="100%" stop-color="transparent" stop-opacity="0.0"/>'
                 svg += f'  </radialGradient>'
+                if c_bottom_right:
+                    svg += f'  <radialGradient id="mint_{chart_idx}" cx="90%" cy="65%" r="60%">'
+                    svg += f'    <stop offset="0%" stop-color="{c_bottom_right}" stop-opacity="0.6"/>'
+                    svg += f'    <stop offset="100%" stop-color="transparent" stop-opacity="0.0"/>'
+                    svg += f'  </radialGradient>'
                 svg += f'  <linearGradient id="fade_{mask_id}" x1="0%" y1="0%" x2="0%" y2="100%">'
                 svg += f'    <stop offset="0%" stop-color="white" stop-opacity="1.0"/>'
                 svg += f'    <stop offset="40%" stop-color="white" stop-opacity="0.7"/>'
@@ -1669,6 +1674,8 @@ elements.forEach(el => {
                     gy = PAD_T + int(gi / 4 * plot_h)
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#333" stroke-width="1"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
+                if c_bottom_right:
+                    svg += f'<polygon points="{area_pts}" fill="url(#mint_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
@@ -1680,7 +1687,7 @@ elements.forEach(el => {
                 return svg
 
             _svg_d1 = _make_area_svg(_monthly_last_asset, "#A555C8", "#7ECBEE", lambda v: f"{v/100000000:.1f}억", 1)
-            _svg_d2 = _make_area_svg(_monthly_ach, "#BB5FED", "#CEACC0", lambda v: f"{v:.1f}%", 2)
+            _svg_d2 = _make_area_svg(_monthly_ach, "#BB5FED", "#CEACC0", lambda v: f"{v:.1f}%", 2, "#98FF98")
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
