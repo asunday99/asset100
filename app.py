@@ -1495,7 +1495,7 @@ if (goalExpander) {
 
             with sc2:
                 new_date = st.date_input(
-                    "📅 목표일 설정",
+                    "목표일 설정",
                     value=st.session_state.get('target_date_dynamic', datetime.date.today()),
                     format="YYYY/MM/DD"
                 )
@@ -1516,6 +1516,26 @@ if (goalExpander) {
                     except:
                         pass
                     st.rerun()
+
+            # --- 실시간 목표 달성 시뮬레이터 ---
+            _current_asset = total_assets
+            _goal = st.session_state.goal_input_val
+            _target_date = st.session_state.get('target_date_dynamic', datetime.date.today())
+            _days_left = (_target_date - datetime.date.today()).days
+            
+            if _goal > 0 and _current_asset > 0 and _goal > _current_asset and _days_left > 0:
+                _months_left = _days_left / 30.44
+                _multiplier = _goal / _current_asset
+                _req_monthly_rate = ((_multiplier ** (1 / _months_left)) - 1) * 100
+                _sim_msg = f"💡 시뮬레이션: {_target_date.year}년 {_target_date.month}월 {_target_date.day}일까지 목표를 달성하려면, 현재 자산 기준으로 <strong style='color:#FFDAB9;'>매월 평균 +{_req_monthly_rate:.2f}%</strong>의 복리 수익이 필요합니다."
+            elif _current_asset >= _goal and _goal > 0:
+                _sim_msg = "💡 시뮬레이션: 이미 목표 금액을 달성했습니다! 새로운 목표를 향해 도전해 보세요."
+            elif _days_left <= 0 and _goal > _current_asset:
+                _sim_msg = "💡 시뮬레이션: 목표일이 지났습니다. 목표일을 미래로 변경해 주십시오."
+            else:
+                _sim_msg = "💡 시뮬레이션: 목표 금액과 목표일을 설정하시면 필요한 월평균 수익률을 계산해 드립니다."
+                
+            st.markdown(f"<div style='margin-top:15px; padding:12px; border-radius:10px; background:rgba(138, 180, 248, 0.1); border:1px solid rgba(138, 180, 248, 0.3); color:#8ab4f8; font-size:14px; letter-spacing:-0.5px; text-align:center;'>{_sim_msg}</div>", unsafe_allow_html=True)
 
 
         # -- Toss Style Bar Chart --
