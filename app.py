@@ -1889,7 +1889,7 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background: linear-gradient(135deg, rgba(255,188,165,0.5), rgba(255,240,230,0.3)) !important;
+                    background: linear-gradient(135deg, rgba(255,188,165,0.8), rgba(255,240,230,0.6)) !important;
                     border: 1.5px solid rgba(255, 188, 165, 0.8) !important;
                     border-radius: 50% !important;
                     box-shadow: 0 0 15px rgba(255, 188, 165, 0.5);
