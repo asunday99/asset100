@@ -692,7 +692,7 @@ def render_trade_records(urls: dict):
         _profit_class = "neon-zero-blue"
         _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
-        _expander_title = "달력을 눌러보세요"
+        _expander_title = "🏆 일별 매매 브리핑"
 
     # D-day 계산 로직 (대시보드와 동일)
     target_date_dynamic = st.session_state.get('target_date_dynamic')
@@ -723,7 +723,7 @@ def render_trade_records(urls: dict):
 """, unsafe_allow_html=True)
 
     # ── 매매 캘린더 ─────────────────────────────────────────────────
-    with st.expander(_expander_title, expanded=False):
+    with st.expander(_expander_title, expanded=True):
         st.components.v1.html(f'''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
 elements.forEach(el => {{
@@ -985,35 +985,55 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             unsafe_allow_html=True
         )
 
-    # ── 달력 HTML 생성 ─────────────────────────────────────────────
+    # ── 달력 HTML 생성 (Cosmic Trophy Calendar) ──────────────────────
     cal_obj = calendar.Calendar(firstweekday=6)
     weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
-    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid rgba(200, 212, 229, 0.7);margin-top:8px;">'
+    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:6px;margin-top:10px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-        tbl += f'<th style="background-color:#000000;color:#a0a0a0;padding:6px 2px;border:1px solid rgba(200, 212, 229, 0.7);text-align:center;font-size:12px;">{day_name}</th>'
+        tbl += f'<th style="color:#A0C0FF;padding:8px 0;text-align:center;font-size:13px;font-weight:bold;letter-spacing:1px;border-bottom:1px solid rgba(138, 180, 248, 0.2);">{day_name}</th>'
     tbl += "</tr>"
     for week in weeks:
         tbl += "<tr>"
         for d in week:
-            day_text   = str(d.day) if d.month == _disp_month else " "
-            style_date = "height:24px;background:linear-gradient(180deg, rgba(45, 55, 75, 0.2) 0%, rgba(13, 16, 22, 0.6) 100%);color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid rgba(200, 212, 229, 0.7);font-size:11px;"
-            tbl += f'<td style="{style_date}">{day_text}</td>'
-        tbl += "</tr><tr>"
-        for d in week:
-            if d.month == _disp_month and d in daily_pnl_dict:
-                val = daily_pnl_dict[d]
-                val_color     = get_color_by_value(val)
-                formatted_val = f"{val:,.0f}" if val != 0 else "&nbsp;"
-            elif d.month == _disp_month and d in kr_holidays:
-                val_color     = "#888888"
-                formatted_val = "휴장"
+            if d.month != _disp_month:
+                tbl += '<td style="border:none;background:transparent;"></td>'
+                continue
+
+            day_text = str(d.day)
+            is_holiday = d in kr_holidays
+            val = daily_pnl_dict.get(d, 0)
+            
+            # Base Tile Styles (Cosmic Hologram)
+            base_bg = "linear-gradient(135deg, rgba(30, 20, 60, 0.5), rgba(10, 20, 40, 0.7))"
+            border_style = "1px solid rgba(138, 180, 248, 0.15)"
+            box_shadow = "box-shadow: inset 0 0 10px rgba(138, 180, 248, 0.05);"
+            
+            profit_html = ""
+            
+            if val > 0:
+                # Trophy Style
+                base_bg = "radial-gradient(circle at top left, rgba(255, 218, 185, 0.25), rgba(30, 20, 60, 0.7)), linear-gradient(135deg, rgba(40, 20, 70, 0.6), rgba(10, 20, 40, 0.8))"
+                border_style = "1px solid rgba(255, 218, 185, 0.4)"
+                box_shadow = "box-shadow: 0 0 15px rgba(255, 218, 185, 0.15), inset 0 0 20px rgba(255, 218, 185, 0.1);"
+                profit_html = f"<div style='margin-top:14px; font-size:17px; font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-0.5px;'>+{val:,.0f}</div>"
+            elif val < 0:
+                # Loss Style
+                profit_html = f"<div style='margin-top:14px; font-size:14px; font-weight:bold; color:#4B9FFF;'>{val:,.0f}</div>"
+            elif is_holiday:
+                profit_html = f"<div style='margin-top:14px; font-size:12px; font-weight:bold; color:#666666;'>휴장</div>"
             else:
-                val_color     = "white"
-                formatted_val = "&nbsp;"
-            style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid rgba(200, 212, 229, 0.7);text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
-            tbl += f'<td style="{style_data}">{formatted_val}</td>'
+                profit_html = f"<div style='margin-top:14px; font-size:12px; color:transparent;'>-</div>"
+
+            day_color = "#FFDAB9" if val > 0 else "#8ab4f8"
+
+            cell_style = f"height:85px; border-radius:12px; background:{base_bg}; border:{border_style}; {box_shadow} backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-align:center; vertical-align:top; padding:8px 4px; transition:all 0.3s ease;"
+            
+            tbl += f'<td style="{cell_style}">'
+            tbl += f'<div style="font-size:13px; font-weight:bold; color:{day_color}; text-align:left; padding-left:4px; opacity:0.85;">{day_text}</div>'
+            tbl += profit_html
+            tbl += '</td>'
         tbl += "</tr>"
     tbl += "</table>"
     st.markdown(tbl, unsafe_allow_html=True)
