@@ -1409,6 +1409,11 @@ if menu == "대시보드":
         margin-right: auto !important;
     }
     .asset-card-stack { width: 100%; margin-bottom: 12px; position: relative; }
+    @media (min-width: 1024px) {
+        .swipe-container { flex-wrap: nowrap !important; overflow-x: visible !important; justify-content: space-between !important; }
+        .asset-card { flex: 1 1 0 !important; max-width: none !important; width: auto !important; }
+        .swipe-glow-left, .swipe-glow-right, .swipe-chevron { display: none !important; }
+    }
     </style>
     """, unsafe_allow_html=True)
     if True:  # 대시보드 1열 시작
@@ -1934,7 +1939,7 @@ elements.forEach(el => {
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:90px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:26px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:16.5px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:90px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:26px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:14px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
         # 가로 스크롤 + chevron 표시
         st.markdown(
             f'<div class="swipe-wrapper" style="position:relative;">'
