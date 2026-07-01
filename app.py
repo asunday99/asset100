@@ -634,18 +634,14 @@ def render_trade_records(urls: dict):
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
-<div style='
-    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
-    border: 1px solid {_profit_color}44;
-    border-left: 4px solid {_profit_color};
-    border-radius: 16px;
-    padding: 28px 28px 22px 28px;
-    margin-bottom: 20px;
-    text-align: center;
-'>
-  <div style='color:#A0A0B0; font-size:14px; letter-spacing:2px; margin-bottom:10px;'>이번 달 팔아서 번 돈</div>
-  <div style='color:{_profit_color}; font-size:44px; font-weight:900; letter-spacing:-1px; margin-bottom:8px;'>{_profit_text}</div>
-  <div style='color:#d0d0d0; font-size:18px; font-weight:500;'>{_msg}</div>
+<div class='glass-card-premium-blue' style='padding: 24px; padding-bottom:10px; margin-bottom: 20px;'>
+<div style="text-align:center; padding-top:10px;">
+<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번 달 팔아서 번 돈</div>
+<div style='color:{_profit_color}; font-size:44px; font-weight:900; letter-spacing:-1px; margin-bottom:8px;'>{_profit_text}</div>
+<div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
+<span style="color:#A0C0FF;">{_msg}</span>
+</div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
