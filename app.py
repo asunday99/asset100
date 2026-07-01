@@ -173,13 +173,13 @@ st.markdown("""
 
     @keyframes neonPulseBlueWhite {
         0%, 100% {
-            text-shadow: 0 0 10px rgba(138, 180, 248, 0.8), 0 0 20px rgba(138, 180, 248, 0.6), 0 0 30px rgba(138, 180, 248, 0.4);
-            color: #E6F0FF;
+            text-shadow: 0 0 10px rgba(255, 188, 165, 0.8), 0 0 20px rgba(255, 188, 165, 0.6), 0 0 30px rgba(255, 188, 165, 0.4);
+            color: #FFF0E6;
             opacity: 1;
         }
         50% {
-            text-shadow: 0 0 5px rgba(138, 180, 248, 0.5), 0 0 10px rgba(138, 180, 248, 0.3);
-            color: #C0D8FF;
+            text-shadow: 0 0 5px rgba(255, 188, 165, 0.5), 0 0 10px rgba(255, 188, 165, 0.3);
+            color: #FFDAB9;
             opacity: 0.85;
         }
     }
