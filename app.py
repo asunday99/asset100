@@ -1388,8 +1388,8 @@ if menu == "대시보드":
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(138,180,248,0.2); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class="neon-pulse-blue">₩{int(total_assets):,}</div>
         
-<div style="width:100%; background-color:rgba(138, 180, 248, 0.2); border-radius:4px; height:4px; margin-top:10px; margin-bottom:8px; overflow:hidden;">
-<div style="width:{ach}%; background:linear-gradient(90deg, #FFF2C8, #FFE066); box-shadow: 0 0 10px #FFE066; height:100%; border-radius:4px;"></div>
+<div style="width:100%; background-color:rgba(100, 181, 246, 0.35); box-shadow: inset 0 0 8px rgba(100, 181, 246, 0.6), 0 0 5px rgba(100, 181, 246, 0.3); border-radius:8px; height:8px; margin-top:15px; margin-bottom:12px; position:relative;">
+<div style="width:{ach}%; background:linear-gradient(90deg, #B8860B, #FFD700, #FFF8DC); box-shadow: 0 0 12px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.5); height:100%; border-radius:8px; position:absolute; top:0; left:0;"></div>
 </div>
 <div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:flex-start; align-items:center; letter-spacing:0.5px;">
 <span style="color:#A0C0FF;">{ach:.2f}% 달성</span>
