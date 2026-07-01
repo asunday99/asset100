@@ -145,6 +145,12 @@ if not st.session_state.authenticated:
 # 사이버펑크 & Glassmorphism 글로벌 CSS 주입
 st.markdown("""
 <style>
+    /* Force pure black background */
+    .stApp, [data-testid="stAppViewContainer"] {
+        background: #000000 !important;
+        background-color: #000000 !important;
+    }
+    
     /* Glassmorphism 카드 컨테이너 */
     .glass-card {
         background: rgba(26, 17, 42, 0.7);
