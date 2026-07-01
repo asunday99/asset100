@@ -858,16 +858,16 @@ elements.forEach(el => {{
             for i, (m, (x, y)) in enumerate(zip(months, pts)):
                 svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                 lbl = y_fmt(data_dict.get(m, 0))
-                svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold">{lbl}</text>'
+                svg += f'<text x="{x}" y="{y-14}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
                 svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
             svg += '</svg>'
             return svg
 
         # ── 4) 차트1 에리어 SVG (수익금) ──
-        _svg1 = _make_area_svg(_monthly_profits_c, "#A555C8", "#7ECBEE", lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}", 1)
+        _svg1 = _make_area_svg(_monthly_profits_c, "#9E65B7", "#88C6E3", lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}", 1)
 
         # ── 5) 차트2 에리어 SVG (평균수익률) ──
-        _svg2 = _make_area_svg(_monthly_avg_rates2, "#BB5FED", "#CEACC0", lambda v: f"{v:.1f}%", 2, "#98FF98")
+        _svg2 = _make_area_svg(_monthly_avg_rates2, "#B76CDF", "#C4B5BE", lambda v: f"{v:.1f}%", 2, "#9FF79F")
 
         # ── 6) 좌우 병렬 HTML 렌더링 ──
         _chart_html = f"""
@@ -1648,13 +1648,13 @@ if (goalExpander) {
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
-                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{y-14}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
                     svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
                 svg += '</svg>'
                 return svg
 
-            _svg_d1 = _make_area_svg(_monthly_last_asset, "#A555C8", "#7ECBEE", lambda v: f"{v/100000000:.1f}억", 1)
-            _svg_d2 = _make_area_svg(_monthly_ach, "#BB5FED", "#CEACC0", lambda v: f"{v:.1f}%", 2, "#98FF98")
+            _svg_d1 = _make_area_svg(_monthly_last_asset, "#9E65B7", "#88C6E3", lambda v: f"{v/100000000:.1f}억", 1)
+            _svg_d2 = _make_area_svg(_monthly_ach, "#B76CDF", "#C4B5BE", lambda v: f"{v:.1f}%", 2, "#9FF79F")
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
