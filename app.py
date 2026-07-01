@@ -1384,10 +1384,8 @@ if menu == "대시보드":
         formatted_gs_val = f"{gs_val:.1f}".rstrip('0').rstrip('.')
 
         st.markdown(f'''<div class='glass-card-premium-blue' style='padding: 24px; padding-bottom:10px; margin-bottom: 0;'>
-<div style="text-align:left; margin-bottom:10px;">
-<div style="font-size:18px; color:#E6F0FF; font-weight:bold; letter-spacing:1px;">The Baseline</div>
-<div style="font-size:13px; color:#8ab4f8; margin-top:2px;">현재 자산 및 제약 조건 &nbsp;|&nbsp; 목표 {formatted_gs_val}억 &nbsp;|&nbsp; D-{d_days_dynamic}</div>
-</div>
+<div style="text-align:center; padding-top:10px;">
+<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(138,180,248,0.2); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class="neon-pulse-blue">₩{int(total_assets):,}</div>
         
 <div style="width:100%; background-color:rgba(138, 180, 248, 0.2); border-radius:4px; height:4px; margin-top:10px; margin-bottom:8px; overflow:hidden;">
