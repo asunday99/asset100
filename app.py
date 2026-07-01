@@ -1908,25 +1908,25 @@ elements.forEach(el => {
                     width: 10px; height: 10px;
                 }
                 .swipe-glow-right::after {
-                    border-top: 5px solid #000000;
-                    border-right: 5px solid #000000;
+                    border-top: 5px solid #FF4B4B;
+                    border-right: 5px solid #FF4B4B;
                     animation: chevron-pulse-right 1.2s infinite alternate ease-in-out;
                 }
                 .swipe-glow-left::after {
-                    border-bottom: 5px solid #000000;
-                    border-left: 5px solid #000000;
+                    border-bottom: 5px solid #FF4B4B;
+                    border-left: 5px solid #FF4B4B;
                     animation: chevron-pulse-left 1.2s infinite alternate ease-in-out;
                 }
                 
                 .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; pointer-events: none; }
                 
                 @keyframes chevron-pulse-right {
-                    from { opacity:0.6; transform: rotate(45deg) translate(-1px, 1px); }
-                    to   { opacity:1; transform: rotate(45deg) translate(1px, -1px); }
+                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,75,75,0.6)); transform: rotate(45deg) translate(-1px, 1px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,75,75,1)); transform: rotate(45deg) translate(1px, -1px); }
                 }
                 @keyframes chevron-pulse-left {
-                    from { opacity:0.6; transform: rotate(45deg) translate(1px, -1px); }
-                    to   { opacity:1; transform: rotate(45deg) translate(-1px, 1px); }
+                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,75,75,0.6)); transform: rotate(45deg) translate(1px, -1px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,75,75,1)); transform: rotate(45deg) translate(-1px, 1px); }
                 }
                 `;
                 doc.head.appendChild(style);
