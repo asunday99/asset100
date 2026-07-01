@@ -1680,7 +1680,7 @@ elements.forEach(el => {
                 return svg
 
             _svg_d1 = _make_area_svg(_monthly_last_asset, "#AA46D6", "#70D1FC", lambda v: f"{v/100000000:.1f}억", 1)
-            _svg_d2 = _make_area_svg(_monthly_ach, "#C04DFF", "#F5B5DD", lambda v: f"{v:.1f}%", 2)
+            _svg_d2 = _make_area_svg(_monthly_ach, "#C04DFF", "#D2A8C1", lambda v: f"{v:.1f}%", 2)
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
