@@ -37,7 +37,7 @@ if not st.session_state.authenticated:
     <style>
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
-        background: radial-gradient(circle at center, #0d0d18 0%, #08080f 100%);
+        background: #000000;
     }
     
     /* 화면 중앙 컨테이너 */
@@ -272,7 +272,7 @@ st.markdown('''
             right: 80px !important;
             top: 10px !important;
             z-index: 999999 !important;
-            background-color: #0A0A0C;
+            background-color: #000000;
             border-radius: 5px;
         }
         /* Adjust main area padding when right sidebar is expanded */
@@ -385,7 +385,7 @@ st.markdown("""
             position: sticky;
             top: 60px;
             z-index: 999;
-            background-color: #0A0A0C;
+            background-color: #000000;
             padding-top: 10px;
             padding-bottom: 5px;
         }
@@ -820,7 +820,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #333;margin-top:8px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-        tbl += f'<th style="background-color:#0A0A0C;color:#FF9900;padding:6px 2px;border:1px solid #2b2e35;text-align:center;font-size:12px;">{day_name}</th>'
+        tbl += f'<th style="background-color:#000000;color:#FF9900;padding:6px 2px;border:1px solid #2b2e35;text-align:center;font-size:12px;">{day_name}</th>'
     tbl += "</tr>"
     for week in weeks:
         tbl += "<tr>"
