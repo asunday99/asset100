@@ -223,8 +223,7 @@ st.markdown("""
     .glass-card-premium-blue {
         position: relative;
         background: 
-            radial-gradient(circle at 0% 0%, rgba(138, 180, 248, 0.3) 0%, transparent 20%),
-            radial-gradient(circle at 100% 0%, rgba(138, 180, 248, 0.3) 0%, transparent 20%),
+            radial-gradient(ellipse at 50% 0%, rgba(240, 248, 255, 0.9) 0%, rgba(220, 240, 255, 0.5) 2%, transparent 4%),
             linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
