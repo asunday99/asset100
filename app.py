@@ -199,17 +199,6 @@ st.markdown("""
         animation: progressBarPulse 2s infinite ease-in-out;
     }
 
-    @keyframes progressTrackPulse {
-        0%, 100% {
-            background-color: rgba(100, 181, 246, 0.45);
-            box-shadow: inset 0 0 10px rgba(100, 181, 246, 0.8), 0 0 5px rgba(100, 181, 246, 0.4);
-        }
-        50% {
-            background-color: rgba(100, 181, 246, 0.2);
-            box-shadow: inset 0 0 4px rgba(100, 181, 246, 0.4), 0 0 2px rgba(100, 181, 246, 0.2);
-        }
-    }
-
     .progress-track-blue {
         width: 100%;
         border-radius: 8px;
@@ -217,7 +206,8 @@ st.markdown("""
         margin-top: 15px;
         margin-bottom: 12px;
         position: relative;
-        animation: progressTrackPulse 2s infinite ease-in-out;
+        background-color: rgba(100, 181, 246, 0.45);
+        box-shadow: inset 0 0 10px rgba(100, 181, 246, 0.8), 0 0 5px rgba(100, 181, 246, 0.4);
     }
 
     .glass-card-premium-blue {
