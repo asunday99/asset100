@@ -1650,8 +1650,12 @@ elements.forEach(el => {
                 svg += f'    <stop offset="0%" stop-color="{c_left}"/>'
                 svg += f'    <stop offset="100%" stop-color="{c_right}"/>'
                 svg += f'  </linearGradient>'
+                svg += f'  <radialGradient id="light_{chart_idx}" cx="100%" cy="0%" r="80%">'
+                svg += f'    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>'
+                svg += f'    <stop offset="100%" stop-color="transparent" stop-opacity="0.0"/>'
+                svg += f'  </radialGradient>'
                 svg += f'  <linearGradient id="fade_{mask_id}" x1="0%" y1="0%" x2="0%" y2="100%">'
-                svg += f'    <stop offset="0%" stop-color="white" stop-opacity="0.8"/>'
+                svg += f'    <stop offset="0%" stop-color="white" stop-opacity="0.85"/>'
                 svg += f'    <stop offset="100%" stop-color="white" stop-opacity="0.0"/>'
                 svg += f'  </linearGradient>'
                 svg += f'  <mask id="{mask_id}">'
@@ -1663,6 +1667,7 @@ elements.forEach(el => {
                     gy = PAD_T + int(gi / 4 * plot_h)
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
+                svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
