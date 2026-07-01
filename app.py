@@ -692,7 +692,7 @@ def render_trade_records(urls: dict):
         _profit_class = "neon-zero-blue"
         _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
-        _expander_title = "🏆 일별 매매 브리핑"
+        _expander_title = "달력을 눌러보세요"
 
     # 이번 달 남은 일수 계산 (월말 기준 D-day)
     import calendar
