@@ -1667,7 +1667,7 @@ elements.forEach(el => {
                 svg += f'<rect width="{W}" height="{H}" fill="transparent" rx="10"/>'
                 for gi in range(5):
                     gy = PAD_T + int(gi / 4 * plot_h)
-                    svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
+                    svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#444" stroke-width="1"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
