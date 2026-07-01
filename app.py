@@ -693,11 +693,11 @@ def render_trade_records(urls: dict):
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
-<div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 0;'>
+<div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:10px; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
-<div class='{_profit_class}' style='{_profit_color} font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
-<div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
+<div class='{_profit_class}' style='{_profit_color} font-size:46px; font-weight:900; letter-spacing:-1px; margin: 15px 0 25px 0;'>{_profit_text}</div>
+<div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px;">
 <span style="color:#FFDAB9;">{_msg}</span>
 </div>
 </div>
