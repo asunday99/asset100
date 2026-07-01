@@ -659,17 +659,17 @@ def render_trade_records(urls: dict):
     if _month_profit > 0:
         _profit_text = f"+{_month_profit:,}원"
         _profit_color = "#FF4B4B"
-        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
+        _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
         _profit_color = "#4B9FFF"
-        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
+        _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔았는데 {_month_profit:,}원 빠졌어요"
     else:
         _profit_text = "0원"
         _profit_color = "#A0A0A0"
-        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
+        _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = "달력을 눌러보세요"
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
