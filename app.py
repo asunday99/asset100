@@ -185,8 +185,8 @@ st.markdown("""
     @keyframes panelBorderPulse {
         0%, 100% {
             box-shadow: 
-                inset 0 1px 30px rgba(255,255,255,0.2), 
-                inset 0 0 60px rgba(138, 180, 248, 0.3), 
+                inset 0 1px 15px rgba(255,255,255,0.1), 
+                inset 0 0 35px rgba(138, 180, 248, 0.15), 
                 0 0 20px rgba(138, 180, 248, 0.6), 
                 0 10px 40px rgba(0,0,0,0.9);
             border-top: 2px solid rgba(255, 255, 255, 0.9);
@@ -195,8 +195,8 @@ st.markdown("""
         }
         50% {
             box-shadow: 
-                inset 0 1px 15px rgba(255,255,255,0.1), 
-                inset 0 0 30px rgba(138, 180, 248, 0.15), 
+                inset 0 1px 8px rgba(255,255,255,0.05), 
+                inset 0 0 15px rgba(138, 180, 248, 0.08), 
                 0 0 10px rgba(138, 180, 248, 0.2), 
                 0 10px 40px rgba(0,0,0,0.9);
             border-top: 2px solid rgba(255, 255, 255, 0.5);
@@ -208,10 +208,10 @@ st.markdown("""
     .glass-card-premium-blue {
         position: relative;
         background: 
-            radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.4) 0%, rgba(138, 180, 248, 0.25) 30%, transparent 70%),
+            radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.25) 15%, transparent 40%),
             radial-gradient(circle at 0% 0%, rgba(138, 180, 248, 0.6) 0%, transparent 35%),
             radial-gradient(circle at 100% 0%, rgba(138, 180, 248, 0.6) 0%, transparent 35%),
-            linear-gradient(180deg, rgba(30, 60, 100, 0.3) 0%, rgba(10, 20, 40, 0.8) 100%);
+            linear-gradient(180deg, rgba(20, 40, 70, 0.15) 0%, rgba(5, 10, 20, 0.6) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         border-bottom: 1px solid rgba(138, 180, 248, 0.2);
