@@ -1670,7 +1670,7 @@ elements.forEach(el => {
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#333" stroke-width="1"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
-                svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
+                svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
