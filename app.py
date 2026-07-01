@@ -185,8 +185,8 @@ st.markdown("""
     @keyframes panelBorderPulse {
         0%, 100% {
             box-shadow: 
-                inset 0 1px 15px rgba(255,255,255,0.1), 
-                inset 0 0 35px rgba(138, 180, 248, 0.15), 
+                inset 0 1px 10px rgba(255,255,255,0.08), 
+                inset 0 0 20px rgba(138, 180, 248, 0.1), 
                 0 0 20px rgba(138, 180, 248, 0.6), 
                 0 10px 40px rgba(0,0,0,0.9);
             border-top: 2px solid rgba(255, 255, 255, 0.9);
@@ -195,8 +195,8 @@ st.markdown("""
         }
         50% {
             box-shadow: 
-                inset 0 1px 8px rgba(255,255,255,0.05), 
-                inset 0 0 15px rgba(138, 180, 248, 0.08), 
+                inset 0 1px 5px rgba(255,255,255,0.03), 
+                inset 0 0 10px rgba(138, 180, 248, 0.05), 
                 0 0 10px rgba(138, 180, 248, 0.2), 
                 0 10px 40px rgba(0,0,0,0.9);
             border-top: 2px solid rgba(255, 255, 255, 0.5);
@@ -205,13 +205,28 @@ st.markdown("""
         }
     }
 
+    @keyframes progressBarPulse {
+        0%, 100% { box-shadow: 0 0 10px rgba(255, 218, 185, 0.8), 0 0 20px rgba(255, 218, 185, 0.5); }
+        50% { box-shadow: 0 0 5px rgba(255, 218, 185, 0.4), 0 0 10px rgba(255, 218, 185, 0.2); }
+    }
+    
+    .progress-fill-peach {
+        background: linear-gradient(90deg, #A07855, #FFBCA5, #FFF0E6);
+        height: 100%;
+        border-radius: 8px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: progressBarPulse 2s infinite ease-in-out;
+    }
+
     .glass-card-premium-blue {
         position: relative;
         background: 
             radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.25) 15%, transparent 40%),
-            radial-gradient(circle at 0% 0%, rgba(138, 180, 248, 0.6) 0%, transparent 35%),
-            radial-gradient(circle at 100% 0%, rgba(138, 180, 248, 0.6) 0%, transparent 35%),
-            linear-gradient(180deg, rgba(20, 40, 70, 0.15) 0%, rgba(5, 10, 20, 0.6) 100%);
+            radial-gradient(circle at 0% 0%, rgba(138, 180, 248, 0.3) 0%, transparent 20%),
+            radial-gradient(circle at 100% 0%, rgba(138, 180, 248, 0.3) 0%, transparent 20%),
+            linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         border-bottom: 1px solid rgba(138, 180, 248, 0.2);
@@ -1416,7 +1431,7 @@ if menu == "대시보드":
 <div class="neon-pulse-blue">₩{int(total_assets):,}</div>
         
 <div style="width:100%; background-color:rgba(100, 181, 246, 0.35); box-shadow: inset 0 0 8px rgba(100, 181, 246, 0.6), 0 0 5px rgba(100, 181, 246, 0.3); border-radius:8px; height:8px; margin-top:15px; margin-bottom:12px; position:relative;">
-<div style="width:{ach}%; background:linear-gradient(90deg, #B8860B, #FFD700, #FFF8DC); box-shadow: 0 0 12px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.5); height:100%; border-radius:8px; position:absolute; top:0; left:0;"></div>
+<div class="progress-fill-peach" style="width:{ach}%;"></div>
 </div>
 <div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:flex-start; align-items:center; letter-spacing:0.5px;">
 <span style="color:#A0C0FF;">{ach:.2f}% 달성</span>
