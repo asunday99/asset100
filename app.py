@@ -1430,7 +1430,7 @@ if menu == "대시보드":
 </div>
     </div>''', unsafe_allow_html=True)
         
-        _expander_title_goal = "🎯 비전 2027 마스터 플랜"
+        _expander_title_goal = "목표 재설정"
         with st.expander(_expander_title_goal, expanded=False):
             st.components.v1.html(f'''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
