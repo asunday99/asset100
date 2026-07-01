@@ -1622,7 +1622,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 총 금융자산은 </span>
-      <span style='color:#F5F5F5; font-size:20px; font-weight:900;'>{_cur_total_asset:,}</span>
+      <span style='color:rgba(245, 245, 245, 0.85); font-size:20px; font-weight:900;'>{_cur_total_asset:,}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 원 이에요</span>
     </div>
     {_svg_d1}
@@ -1631,7 +1631,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#127919; 목표의 </span>
-      <span style='color:#F5F5F5; font-size:20px; font-weight:900;'>{_cur_ach:.2f}</span>
+      <span style='color:rgba(245, 245, 245, 0.85); font-size:20px; font-weight:900;'>{_cur_ach:.2f}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> % 달성 중이에요</span>
     </div>
     {_svg_d2}
@@ -1862,7 +1862,7 @@ elements.forEach(el => {
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card asset-card {row['hover']}" tabindex="0" style="outline:none;position:relative;padding-right:110px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+            cards_html += f'''<div class="glass-card asset-card {row['hover']}" tabindex="0" style="outline:none;position:relative;padding-right:110px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:rgba(255, 255, 255, 0.85);margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
         # 가로 스크롤 + chevron 표시
         st.markdown(
             f'<div class="swipe-wrapper" style="position:relative;">'
@@ -2098,7 +2098,7 @@ elements.forEach(el => {
                 parents = [""]
                 values = [0]
                 colors = [""]
-                color_map = {'주식': '#FFD700', '금': '#8e44ad', '채권': '#9b59b6', '코인': '#6c5ce7', '현금성': '#a29bfe', '개인': '#1A112A', '법인': '#2D1F44'}
+                color_map = {'주식': '#FFD700', '금': '#8950a0', '채권': '#9564aa', '코인': '#7365dd', '현금성': '#a6a0f8', '개인': '#1a1327', '법인': '#2e233f'}
                 for cat in cats:
                     labels.append(cat)
                     parents.append("총자산")
