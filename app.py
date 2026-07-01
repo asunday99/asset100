@@ -432,10 +432,32 @@ menu = option_menu(
     default_index=default_index, 
     orientation="horizontal",
     styles={
-        "container": {"padding": "5px", "background-color": "#1A112A", "border": "1px solid #333333", "border-radius": "12px", "margin-bottom": "25px", "max-width": "100%"},
+        "container": {
+            "padding": "0!important", 
+            "background-color": "transparent", 
+            "border": "none", 
+            "margin-bottom": "25px", 
+            "max-width": "250px", 
+            "margin-left": "0"
+        },
         "icon": {"display": "none"}, 
-        "nav-link": {"font-size": "15px", "font-weight": "500", "text-align": "center", "margin":"0px 5px", "padding": "10px", "--hover-color": "#222222", "color": "#d0d0d0", "border-radius": "8px"},
-        "nav-link-selected": {"background-color": "#FF9900", "color": "#000000", "font-weight": "bold"},
+        "nav-link": {
+            "font-size": "16px", 
+            "font-weight": "500", 
+            "text-align": "center", 
+            "margin":"0px", 
+            "padding": "8px 0px", 
+            "--hover-color": "transparent", 
+            "color": "#7a828e", 
+            "border-radius": "0px"
+        },
+        "nav-link-selected": {
+            "background-color": "transparent", 
+            "color": "#e5e7eb", 
+            "font-weight": "bold", 
+            "border-bottom": "2px solid #8ab4f8",
+            "box-shadow": "0px 10px 15px -10px rgba(138, 180, 248, 0.5)"
+        },
     }
 )
 
