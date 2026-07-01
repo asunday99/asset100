@@ -178,8 +178,8 @@ st.markdown("""
             opacity: 1;
         }
         50% {
-            text-shadow: 0 0 5px rgba(255, 188, 165, 0.5), 0 0 10px rgba(255, 188, 165, 0.3);
-            color: #FFDAB9;
+            text-shadow: 0 0 5px rgba(138, 180, 248, 0.5), 0 0 10px rgba(138, 180, 248, 0.3);
+            color: #C0D8FF;
             opacity: 0.85;
         }
     }
