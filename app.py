@@ -1889,8 +1889,8 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background-color: rgba(181, 165, 140, 0.2) !important;
-                    border: 1.5px solid rgba(181, 165, 140, 0.3) !important;
+                    background-color: rgba(181, 165, 140, 0.6) !important;
+                    border: 1.5px solid rgba(181, 165, 140, 0.7) !important;
                     border-radius: 50% !important;
                     box-shadow: 0 0 15px rgba(181, 165, 140, 0.15);
                     pointer-events: auto; cursor: pointer; opacity: 1;
