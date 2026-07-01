@@ -2027,7 +2027,7 @@ elements.forEach(el => {
                     
                     diff_color = 'color:white;'
                     # Padding reduced to make boxes thinner as requested
-                    cards_html_list.append(f'<div style="background:#1a1a2e;border-radius:10px;padding:6px 4px;text-align:center;"><div style="color:#a0a0a0;font-size:10.5px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.3px;">{lbl}</div><div style="{diff_color}font-size:13.5px;font-weight:bold;letter-spacing:-0.3px;">{val}{change_str}</div></div>')
+                    cards_html_list.append(f'<div style="background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:10px;padding:6px 4px;text-align:center;"><div style="color:#a0a0a0;font-size:10.5px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.3px;">{lbl}</div><div style="{diff_color}font-size:13.5px;font-weight:bold;letter-spacing:-0.3px;">{val}{change_str}</div></div>')
                 
                 # 순서에 맞춰 2줄로 나눔 (5개씩)
                 row1 = "".join(cards_html_list[0:5])
