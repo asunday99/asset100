@@ -772,95 +772,111 @@ def render_trade_records(urls: dict):
         _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
         _ytd = f"{_ytd_val:.2f}%"
 
-        # ── 3) 버블차트 SVG 생성 함수 ──
-        def _make_bubble_svg(data_dict, count_dict, color_pos, color_neg, y_label, fmt_val):
-            """data_dict: {month: value}, count_dict: {month: count}
-            color_pos/neg: 양수/음수 버블 색상
-            y_label: Y축 단위 표시
-            fmt_val: value 포맷 함수
-            반환: SVG 문자열"""
-            W, H = 460, 200
-            PAD_L, PAD_R, PAD_T, PAD_B = 48, 16, 16, 32
+        # ── 3) 콤보차트 SVG 생성 함수 ──
+        def _make_combo_svg(bar_dict, line_dict, color_pos, color_neg, bar_label, line_label, fmt_bar, fmt_line):
+            W, H = 460, 220
+            PAD_L, PAD_R, PAD_T, PAD_B = 24, 16, 40, 32
             plot_w = W - PAD_L - PAD_R
             plot_h = H - PAD_T - PAD_B
 
-            months_with_data = [m for m in range(1, 13) if data_dict.get(m, 0) != 0]
+            months_with_data = [m for m in range(1, 13) if bar_dict.get(m, 0) != 0 or line_dict.get(m, 0) != 0]
             if not months_with_data:
                 return f'<svg width="{W}" height="{H}"><text x="{W//2}" y="{H//2}" fill="#666" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
 
-            all_vals = [abs(data_dict.get(m, 0)) for m in range(1, 13) if data_dict.get(m, 0) != 0]
-            max_val = max(all_vals) if all_vals else 1
-            max_count = max((count_dict.get(m, 0) for m in range(1, 13)), default=1)
-            max_count = max(max_count, 1)
+            bar_vals = [bar_dict.get(m, 0) for m in range(1, 13)]
+            b_min, b_max = min(bar_vals + [0]), max(bar_vals + [0])
+            if b_max == b_min: b_max += 1
 
-            # 최소/최대 버블 반경
-            R_MIN, R_MAX = 8, 32
+            line_vals = [line_dict.get(m, 0) for m in range(1, 13)]
+            l_min, l_max = min(line_vals + [0]), max(line_vals + [0])
+            if l_max == l_min: l_max += 1
 
-            # X 위치: 1~12월 균등 분포
             def x_pos(m):
                 return PAD_L + int((m - 1) / 11.0 * plot_w) if len(months_with_data) > 1 else PAD_L + plot_w // 2
 
-            # Y 위치: 값에 비례 (양수=위, 음수=아래)
-            y_vals = [data_dict.get(m, 0) for m in range(1, 13)]
-            y_min = min(y_vals + [0])
-            y_max = max(y_vals + [0])
-            y_range = max(y_max - y_min, 1)
+            def bar_y_pos(v):
+                return PAD_T + int((1 - (v - b_min) / (b_max - b_min)) * plot_h)
 
-            def y_pos(v):
-                return PAD_T + int((1 - (v - y_min) / y_range) * plot_h)
+            def line_y_pos(v):
+                return PAD_T + 10 + int((1 - (v - l_min) / (l_max - l_min)) * (plot_h - 20))
 
             svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
-            # 배경
             svg += f'<rect width="{W}" height="{H}" fill="#111" rx="10"/>'
-            # 0선
-            y0 = y_pos(0)
-            svg += f'<line x1="{PAD_L}" y1="{y0}" x2="{W-PAD_R}" y2="{y0}" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>'
-            # 버블 & 라벨
+            
+            y0_bar = bar_y_pos(0)
+            svg += f'<line x1="{PAD_L}" y1="{y0_bar}" x2="{W-PAD_R}" y2="{y0_bar}" stroke="#444" stroke-width="1" stroke-dasharray="4,3"/>'
+            
+            bar_width = 18
+            
             for m in range(1, 13):
-                v = data_dict.get(m, 0)
-                cnt = count_dict.get(m, 0)
-                if v == 0 and cnt == 0:
-                    # 월 라벨만
-                    svg += f'<text x="{x_pos(m)}" y="{H-PAD_B+14}" fill="#555" text-anchor="middle" font-size="10">{m}</text>'
+                bv = bar_dict.get(m, 0)
+                lv = line_dict.get(m, 0)
+                if bv == 0 and lv == 0:
+                    svg += f'<text x="{x_pos(m)}" y="{H-PAD_B+16}" fill="#555" text-anchor="middle" font-size="10">{m}</text>'
                     continue
+                    
                 cx = x_pos(m)
-                cy = y_pos(v)
-                r = R_MIN + int((cnt / max_count) * (R_MAX - R_MIN))
-                clr = color_pos if v >= 0 else color_neg
-                # 버블 (반투명)
-                svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{clr}" fill-opacity="0.75" stroke="{clr}" stroke-width="1.5"/>'
-                # 값 라벨 (버블 위)
-                lbl = fmt_val(v)
-                svg += f'<text x="{cx}" y="{cy - r - 4}" fill="{clr}" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
-                # 건수 라벨 (버블 안)
-                if cnt > 0:
-                    svg += f'<text x="{cx}" y="{cy + 4}" fill="white" text-anchor="middle" font-size="9" font-weight="bold">{cnt}건</text>'
-                # 월 라벨
-                svg += f'<text x="{cx}" y="{H-PAD_B+14}" fill="#aaa" text-anchor="middle" font-size="10">{m}월</text>'
-            # Y축 단위
-            svg += f'<text x="{PAD_L-4}" y="{PAD_T+8}" fill="#666" text-anchor="end" font-size="9">{y_label}</text>'
+                clr = color_pos if bv >= 0 else color_neg
+                
+                y_b = bar_y_pos(bv)
+                if bv >= 0:
+                    rect_y, rect_h = y_b, y0_bar - y_b
+                else:
+                    rect_y, rect_h = y0_bar, y_b - y0_bar
+                rect_h = max(rect_h, 2)
+                
+                svg += f'<rect x="{cx - bar_width//2}" y="{rect_y}" width="{bar_width}" height="{rect_h}" fill="{clr}" fill-opacity="0.3" stroke="{clr}" stroke-width="1.5" rx="3"/>'
+                
+                lbl_b = fmt_bar(bv)
+                if lbl_b:
+                    text_y = rect_y - 4 if bv >= 0 else rect_y + rect_h + 10
+                    svg += f'<text x="{cx}" y="{text_y}" fill="{clr}" fill-opacity="0.8" text-anchor="middle" font-size="9" font-weight="bold">{lbl_b}</text>'
+                
+                svg += f'<text x="{cx}" y="{H-PAD_B+16}" fill="#aaa" text-anchor="middle" font-size="10">{m}월</text>'
+
+            pts = []
+            for m in range(1, 13):
+                if bar_dict.get(m, 0) == 0 and line_dict.get(m, 0) == 0: continue
+                pts.append(f"{x_pos(m)},{line_y_pos(line_dict.get(m, 0))}")
+            if pts:
+                svg += f'<polyline points="{" ".join(pts)}" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.9"/>'
+
+            for m in range(1, 13):
+                lv = line_dict.get(m, 0)
+                if bar_dict.get(m, 0) == 0 and lv == 0: continue
+                cx = x_pos(m)
+                cy = line_y_pos(lv)
+                clr = color_pos if lv >= 0 else color_neg
+                
+                svg += f'<circle cx="{cx}" cy="{cy}" r="4" fill="{clr}" stroke="white" stroke-width="1.5"/>'
+                lbl_l = fmt_line(lv)
+                if lbl_l:
+                    svg += f'<text x="{cx}" y="{cy - 8}" fill="white" text-anchor="middle" font-size="10" font-weight="900">{lbl_l}</text>'
+
+            svg += f'<text x="{W-PAD_R}" y="{PAD_T-20}" fill="white" text-anchor="end" font-size="10" font-weight="bold">● {line_label}</text>'
+            svg += f'<text x="{W-PAD_R - 80}" y="{PAD_T-20}" fill="{color_pos}" text-anchor="end" font-size="10" font-weight="bold">■ {bar_label}</text>'
+
             svg += '</svg>'
             return svg
 
-        # ── 4) 차트1 버블 SVG (실현손익, 건수=월별 매도건수) ──
-        _svg1 = _make_bubble_svg(
-            _monthly_profits_c,
-            _monthly_counts_c2,
+        # ── 4) 차트1 콤보 SVG (수익금=Bar, 건수=Line) ──
+        _svg1 = _make_combo_svg(
+            _monthly_profits_c, _monthly_counts_c2,
             "#FF6B00", "#4B9FFF",
-            "만원",
-            lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}"
+            "수익금", "매도건수",
+            lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}",
+            lambda v: f"{int(v)}건" if v > 0 else ""
         )
 
-        # ── 5) 차트2 버블 SVG (수익률, 버블크기=실현금액) ──
-        # 버블크기용 count_dict를 실현금액 기준으로 대체
-        _profit_as_count = {m: max(int(abs(_monthly_profits_c.get(m, 0)) / 1000000), 1)
+        # ── 5) 차트2 콤보 SVG (실현규모=Bar, 수익률=Line) ──
+        _profit_as_count = {m: max(int(abs(_monthly_profits_c.get(m, 0)) / 100000), 1)
                             if _monthly_avg_rates2.get(m, 0) != 0 else 0
                             for m in range(1, 13)}
-        _svg2 = _make_bubble_svg(
-            _monthly_avg_rates2,
-            _profit_as_count,
+        _svg2 = _make_combo_svg(
+            _profit_as_count, _monthly_avg_rates2,
             "#8A2BE2", "#4B9FFF",
-            "%",
+            "실현규모", "평균수익률",
+            lambda v: "",
             lambda v: f"{v:.1f}%"
         )
 
@@ -871,13 +887,11 @@ def render_trade_records(urls: dict):
     <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 올해 팔아서 실제로 번 돈은</div>
     <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_year_profit_c:,}원 이에요</div>
     {_svg1}
-    <div style='color:#666;font-size:10px;margin-top:6px;text-align:right;'>버블 크기 = 매도 건수</div>
   </div>
   <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128201; 올해 평균 수익률은</div>
     <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_ytd} 이에요</div>
     {_svg2}
-    <div style='color:#666;font-size:10px;margin-top:6px;text-align:right;'>버블 크기 = 실현금액 규모</div>
   </div>
 </div>
 """
