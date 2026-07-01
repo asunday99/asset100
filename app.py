@@ -1960,45 +1960,46 @@ elements.forEach(el => {
                 .swipe-container::-webkit-scrollbar { display: none !important; }
                 .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
                 .swipe-glow-right, .swipe-glow-left {
-                    position: absolute; top: 50% !important;
-                    width: 16px !important; height: 16px !important;
+                    position: absolute;
+                    width: 44px !important; height: 44px !important;
+                    background-color: rgba(180, 130, 255, 0.25) !important;
+                    border: 1.5px solid rgba(180, 130, 255, 0.7) !important;
+                    border-radius: 50% !important;
+                    box-shadow: 0 0 15px rgba(180, 130, 255, 0.4);
                     pointer-events: auto; cursor: pointer; opacity: 1;
                     transition: opacity 0.3s ease-in-out;
-                    background: none !important; border-radius: 0 !important; z-index: 50;
+                    z-index: 50;
+                    transform: translateY(-50%);
+                    display: flex !important; align-items: center !important; justify-content: center !important;
                 }
-                .swipe-glow-right::before, .swipe-glow-left::before {
+                .swipe-glow-right { right: 15px; }
+                .swipe-glow-left { left: 15px; }
+                
+                .swipe-glow-right::after, .swipe-glow-left::after {
                     content: '';
-                    position: absolute;
-                    top: 50%; left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 44px; height: 44px;
-                    background-color: rgba(180, 130, 255, 0.25);
-                    border-radius: 50%;
-                    z-index: -1;
-                    box-shadow: 0 0 15px rgba(180, 130, 255, 0.4);
+                    display: block;
+                    width: 14px; height: 14px;
                 }
-                .swipe-glow-right {
-                    right: 25px;
-                    border-top: 4px solid rgba(180,130,255,0.9);
-                    border-right: 4px solid rgba(180,130,255,0.9);
-                    border-left: none; border-bottom: none;
-                    animation: neon-chevron-right 1.2s infinite alternate ease-in-out;
+                .swipe-glow-right::after {
+                    border-top: 3px solid rgba(180,130,255,0.9);
+                    border-right: 3px solid rgba(180,130,255,0.9);
+                    animation: chevron-pulse-right 1.2s infinite alternate ease-in-out;
                 }
-                .swipe-glow-left {
-                    left: 25px;
-                    border-bottom: 4px solid rgba(180,130,255,0.9);
-                    border-left: 4px solid rgba(180,130,255,0.9);
-                    border-top: none; border-right: none;
-                    animation: neon-chevron-left 1.2s infinite alternate ease-in-out;
+                .swipe-glow-left::after {
+                    border-bottom: 3px solid rgba(180,130,255,0.9);
+                    border-left: 3px solid rgba(180,130,255,0.9);
+                    animation: chevron-pulse-left 1.2s infinite alternate ease-in-out;
                 }
-                .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; }
-                @keyframes neon-chevron-right {
-                    from { opacity:0.3; transform:translateY(-50%) rotate(45deg) translateX(-3px); }
-                    to   { opacity:1;   transform:translateY(-50%) rotate(45deg) translateX(3px); filter:drop-shadow(0 0 10px rgba(180,130,255,1)); }
+                
+                .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; pointer-events: none; }
+                
+                @keyframes chevron-pulse-right {
+                    from { opacity:0.4; filter:drop-shadow(0 0 2px rgba(180,130,255,0.8)); transform: rotate(45deg) translate(-2px, 2px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 8px rgba(180,130,255,1)); transform: rotate(45deg) translate(2px, -2px); }
                 }
-                @keyframes neon-chevron-left {
-                    from { opacity:0.3; transform:translateY(-50%) rotate(45deg) translateX(3px); }
-                    to   { opacity:1;   transform:translateY(-50%) rotate(45deg) translateX(-3px); filter:drop-shadow(0 0 10px rgba(180,130,255,1)); }
+                @keyframes chevron-pulse-left {
+                    from { opacity:0.4; filter:drop-shadow(0 0 2px rgba(180,130,255,0.8)); transform: rotate(45deg) translate(2px, -2px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 8px rgba(180,130,255,1)); transform: rotate(45deg) translate(-2px, 2px); }
                 }
                 `;
                 doc.head.appendChild(style);
