@@ -197,6 +197,27 @@ st.markdown("""
         animation: progressBarPulse 2s infinite ease-in-out;
     }
 
+    @keyframes progressTrackPulse {
+        0%, 100% {
+            background-color: rgba(100, 181, 246, 0.45);
+            box-shadow: inset 0 0 10px rgba(100, 181, 246, 0.8), 0 0 5px rgba(100, 181, 246, 0.4);
+        }
+        50% {
+            background-color: rgba(100, 181, 246, 0.2);
+            box-shadow: inset 0 0 4px rgba(100, 181, 246, 0.4), 0 0 2px rgba(100, 181, 246, 0.2);
+        }
+    }
+
+    .progress-track-blue {
+        width: 100%;
+        border-radius: 8px;
+        height: 8px;
+        margin-top: 15px;
+        margin-bottom: 12px;
+        position: relative;
+        animation: progressTrackPulse 2s infinite ease-in-out;
+    }
+
     .glass-card-premium-blue {
         position: relative;
         background: 
@@ -1410,7 +1431,7 @@ if menu == "대시보드":
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(138,180,248,0.2); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class="neon-pulse-blue">₩{int(total_assets):,}</div>
         
-<div style="width:100%; background-color:rgba(100, 181, 246, 0.35); box-shadow: inset 0 0 8px rgba(100, 181, 246, 0.6), 0 0 5px rgba(100, 181, 246, 0.3); border-radius:8px; height:8px; margin-top:15px; margin-bottom:12px; position:relative;">
+<div class="progress-track-blue">
 <div class="progress-fill-peach" style="width:{ach}%;"></div>
 </div>
 <div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:flex-start; align-items:center; letter-spacing:0.5px;">
