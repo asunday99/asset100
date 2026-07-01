@@ -1889,10 +1889,10 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background-color: rgba(181, 165, 140, 0.6) !important;
-                    border: 1.5px solid rgba(181, 165, 140, 0.7) !important;
+                    background-color: rgba(0, 0, 0, 0.6) !important;
+                    border: 1.5px solid rgba(0, 0, 0, 0.8) !important;
                     border-radius: 50% !important;
-                    box-shadow: 0 0 15px rgba(181, 165, 140, 0.15);
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
                     pointer-events: auto; cursor: pointer; opacity: 1;
                     transition: opacity 0.3s ease-in-out;
                     z-index: 50;
@@ -1908,25 +1908,25 @@ elements.forEach(el => {
                     width: 14px; height: 14px;
                 }
                 .swipe-glow-right::after {
-                    border-top: 5px solid #FF4B4B;
-                    border-right: 5px solid #FF4B4B;
+                    border-top: 5px solid #FFFFFF;
+                    border-right: 5px solid #FFFFFF;
                     animation: chevron-pulse-right 1.2s infinite alternate ease-in-out;
                 }
                 .swipe-glow-left::after {
-                    border-bottom: 5px solid #FF4B4B;
-                    border-left: 5px solid #FF4B4B;
+                    border-bottom: 5px solid #FFFFFF;
+                    border-left: 5px solid #FFFFFF;
                     animation: chevron-pulse-left 1.2s infinite alternate ease-in-out;
                 }
                 
                 .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; pointer-events: none; }
                 
                 @keyframes chevron-pulse-right {
-                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,75,75,0.6)); transform: rotate(45deg) translate(-1px, 1px); }
-                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,75,75,1)); transform: rotate(45deg) translate(1px, -1px); }
+                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,255,255,0.6)); transform: rotate(45deg) translate(-1px, 1px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,255,255,1)); transform: rotate(45deg) translate(1px, -1px); }
                 }
                 @keyframes chevron-pulse-left {
-                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,75,75,0.6)); transform: rotate(45deg) translate(1px, -1px); }
-                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,75,75,1)); transform: rotate(45deg) translate(-1px, 1px); }
+                    from { opacity:0.6; filter:drop-shadow(0 0 2px rgba(255,255,255,0.6)); transform: rotate(45deg) translate(1px, -1px); }
+                    to   { opacity:1; filter:drop-shadow(0 0 6px rgba(255,255,255,1)); transform: rotate(45deg) translate(-1px, 1px); }
                 }
                 `;
                 doc.head.appendChild(style);
