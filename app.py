@@ -184,6 +184,22 @@ st.markdown("""
         }
     }
 
+    @keyframes neonPulseZeroCoolBlue {
+        0%, 100% {
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.8), 0 0 20px rgba(138, 180, 248, 0.6), 0 0 30px rgba(138, 180, 248, 0.4);
+            color: #C0D8FF;
+            opacity: 1;
+        }
+        50% {
+            text-shadow: 0 0 5px rgba(138, 180, 248, 0.4), 0 0 10px rgba(138, 180, 248, 0.2);
+            color: #C0D8FF;
+            opacity: 0.7;
+        }
+    }
+    .neon-zero-blue {
+        animation: neonPulseZeroCoolBlue 3.0s infinite ease-in-out;
+    }
+
     @keyframes progressBarPulse {
         0%, 100% { box-shadow: 0 0 10px rgba(255, 218, 185, 0.8), 0 0 20px rgba(255, 218, 185, 0.5); }
         50% { box-shadow: 0 0 5px rgba(255, 218, 185, 0.4), 0 0 10px rgba(255, 218, 185, 0.2); }
@@ -658,17 +674,20 @@ def render_trade_records(urls: dict):
 
     if _month_profit > 0:
         _profit_text = f"+{_month_profit:,}원"
-        _profit_color = "#FF4B4B"
+        _profit_class = ""
+        _profit_color = "color:#FF4B4B;"
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
-        _profit_color = "#4B9FFF"
+        _profit_class = ""
+        _profit_color = "color:#4B9FFF;"
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔았는데 {_month_profit:,}원 빠졌어요"
     else:
         _profit_text = "0원"
-        _profit_color = "#A0A0A0"
+        _profit_class = "neon-zero-blue"
+        _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = "달력을 눌러보세요"
 
@@ -677,7 +696,7 @@ def render_trade_records(urls: dict):
 <div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 20px;'>
 <div style="text-align:center; padding-top:10px;">
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
-<div style='color:{_profit_color}; font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
+<div class='{_profit_class}' style='{_profit_color} font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
 <div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
 <span style="color:#FFDAB9;">{_msg}</span>
 </div>
