@@ -1498,79 +1498,6 @@ elements.forEach(el => {
                         pass
                     st.rerun()
 
-        # -- 매크로 지표 expander --
-        with st.expander("📊 매크로 지표", expanded=False):
-            try:
-                macro_changes = get_macro_changes()
-                pairs = []
-                
-                # 강건한 데이터행 추출 (헤더 무시)
-                for lc, vc in [(13, 14), (15, 16)]:
-                    for row_i in range(min(15, len(df_dash))):
-                        try:
-                            raw_lbl = str(df_dash.iloc[row_i, lc]).replace('[','').replace(']','').strip()
-                            val = str(df_dash.iloc[row_i, vc]).strip()
-                            if raw_lbl and raw_lbl != 'nan' and 'Unnamed' not in raw_lbl and val and val != 'nan' and val != '0.0':
-                                pairs.append((raw_lbl, val))
-                        except: pass
-                
-                # 순서 보장을 위해 중복 제거 및 8개만 선택
-                TARGET_ORDER = [
-                    '[미국10년국채금리]', '[장단기 금리차]', '[USD/KRW 환율]', '[USD/JPY 환율]',
-                    '[일본10년국채금리]', '[DXY]', '[XLF-QQQ괴리율]', '[ADX 추세강도]',
-                    '[하이일드 스프레드]', '[vix지수]'
-                ]
-                
-                # Map available pairs to a dictionary by target title
-                mapped_vals = {}
-                for raw_lbl, val in pairs:
-                    lbl = MACRO_TITLE_MAP.get(raw_lbl, raw_lbl)
-                    if lbl not in mapped_vals:
-                        mapped_vals[lbl] = val
-                
-                # Add default loading values for missing items
-                for t in TARGET_ORDER:
-                    if t not in mapped_vals:
-                        mapped_vals[t] = "로드 중..."
-                        
-                cards_html_list = []
-                for lbl in TARGET_ORDER:
-                    val = mapped_vals[lbl]
-                    
-                    change_str = ""
-                    if lbl in macro_changes:
-                        chg = macro_changes[lbl]
-                        if chg is not None and not __import__('pandas').isna(chg):
-                            sign = "+" if chg > 0 else ""
-                            change_color = "#FF4B4B" if chg > 0 else "#1e90ff"
-                            change_str = f' <span style="font-size:12px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
-                    
-                    diff_color = 'color:white;'
-                    # Padding reduced to make boxes thinner as requested
-                    cards_html_list.append(f'<div style="background:#1a1a2e;border-radius:12px;padding:8px 10px;text-align:center;"><div style="color:#a0a0a0;font-size:11px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{lbl}</div><div style="{diff_color}font-size:15px;font-weight:bold;">{val}{change_str}</div></div>')
-                
-                # 순서에 맞춰 3줄로 나눔
-                row1 = "".join(cards_html_list[0:4])
-                row2 = "".join(cards_html_list[4:8])
-                row3 = "".join(cards_html_list[8:10])
-                
-                # Mobile shows 2 per line, desktop 4 per line
-                macro_grid_html = f'''
-                <style>
-                .macro-grid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; }}
-                .macro-grid-row3 {{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:8px; width:50%; margin: 0 auto; }}
-                @media(max-width:768px){{
-                    .macro-grid {{ grid-template-columns:repeat(2,1fr); }}
-                    .macro-grid-row3 {{ width:100%; }}
-                }}
-                </style>
-                <div class="macro-grid">{row1}</div>
-                <div class="macro-grid">{row2}</div>
-                <div class="macro-grid-row3">{row3}</div>
-                '''
-                st.markdown(macro_grid_html, unsafe_allow_html=True)
-            except Exception as e:
-                st.error(f"매크로 지표 로딩 실패: {e}")
 
         # -- Toss Style Bar Chart --
         try:
@@ -2051,6 +1978,80 @@ elements.forEach(el => {
 
 
     
+        # -- 매크로 지표 expander --
+        with st.expander("📊 매크로 지표", expanded=False):
+            try:
+                macro_changes = get_macro_changes()
+                pairs = []
+                
+                # 강건한 데이터행 추출 (헤더 무시)
+                for lc, vc in [(13, 14), (15, 16)]:
+                    for row_i in range(min(15, len(df_dash))):
+                        try:
+                            raw_lbl = str(df_dash.iloc[row_i, lc]).replace('[','').replace(']','').strip()
+                            val = str(df_dash.iloc[row_i, vc]).strip()
+                            if raw_lbl and raw_lbl != 'nan' and 'Unnamed' not in raw_lbl and val and val != 'nan' and val != '0.0':
+                                pairs.append((raw_lbl, val))
+                        except: pass
+                
+                # 순서 보장을 위해 중복 제거 및 8개만 선택
+                TARGET_ORDER = [
+                    '[미국10년국채금리]', '[장단기 금리차]', '[USD/KRW 환율]', '[USD/JPY 환율]',
+                    '[일본10년국채금리]', '[DXY]', '[XLF-QQQ괴리율]', '[ADX 추세강도]',
+                    '[하이일드 스프레드]', '[vix지수]'
+                ]
+                
+                # Map available pairs to a dictionary by target title
+                mapped_vals = {}
+                for raw_lbl, val in pairs:
+                    lbl = MACRO_TITLE_MAP.get(raw_lbl, raw_lbl)
+                    if lbl not in mapped_vals:
+                        mapped_vals[lbl] = val
+                
+                # Add default loading values for missing items
+                for t in TARGET_ORDER:
+                    if t not in mapped_vals:
+                        mapped_vals[t] = "로드 중..."
+                        
+                cards_html_list = []
+                for lbl in TARGET_ORDER:
+                    val = mapped_vals[lbl]
+                    
+                    change_str = ""
+                    if lbl in macro_changes:
+                        chg = macro_changes[lbl]
+                        if chg is not None and not __import__('pandas').isna(chg):
+                            sign = "+" if chg > 0 else ""
+                            change_color = "#FF4B4B" if chg > 0 else "#1e90ff"
+                            change_str = f' <span style="font-size:12px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
+                    
+                    diff_color = 'color:white;'
+                    # Padding reduced to make boxes thinner as requested
+                    cards_html_list.append(f'<div style="background:#1a1a2e;border-radius:12px;padding:8px 10px;text-align:center;"><div style="color:#a0a0a0;font-size:11px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{lbl}</div><div style="{diff_color}font-size:15px;font-weight:bold;">{val}{change_str}</div></div>')
+                
+                # 순서에 맞춰 3줄로 나눔
+                row1 = "".join(cards_html_list[0:4])
+                row2 = "".join(cards_html_list[4:8])
+                row3 = "".join(cards_html_list[8:10])
+                
+                # Mobile shows 2 per line, desktop 4 per line
+                macro_grid_html = f'''
+                <style>
+                .macro-grid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; }}
+                .macro-grid-row3 {{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:8px; width:50%; margin: 0 auto; }}
+                @media(max-width:768px){{
+                    .macro-grid {{ grid-template-columns:repeat(2,1fr); }}
+                    .macro-grid-row3 {{ width:100%; }}
+                }}
+                </style>
+                <div class="macro-grid">{row1}</div>
+                <div class="macro-grid">{row2}</div>
+                <div class="macro-grid-row3">{row3}</div>
+                '''
+                st.markdown(macro_grid_html, unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"매크로 지표 로딩 실패: {e}")
+
     if True:  # 도넛 차트 1열 블록
         if not df_dash.empty and len(df_dash) >= summary_start_row + 8:
             df_summary_main = df_dash.iloc[summary_start_row+1:summary_start_row+5, 0:7].copy()
@@ -2101,7 +2102,7 @@ elements.forEach(el => {
                         values.append(corp_amts[i])
                         colors.append(color_map['법인'])
                 fig_sb = go.Figure(go.Sunburst(labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(color='rgba(0,0,0,0)')), textinfo="label+percent parent", insidetextorientation='radial'))
-                fig_sb.update_layout(title=dict(text="자산 배분 현황", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
+                fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
                 st.plotly_chart(fig_sb, use_container_width=True)
             except Exception as e:
                 st.error(f"차트 렌더링 에러: {e}")
