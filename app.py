@@ -644,30 +644,39 @@ def render_trade_records(urls: dict):
                 )
             ]
             _month_profit = int(_this_month_hdr["차익실현금액"].sum())
+            _prev_month_date = (_today.replace(day=1) - _dt.timedelta(days=1))
+            _prev_month_hdr = _hdr_real[
+                _hdr_real["_hdr_date"].apply(
+                    lambda d: d is not None and not pd.isna(d)
+                    and d.year == _prev_month_date.year and d.month == _prev_month_date.month
+                )
+            ]
+            _prev_month_profit = int(_prev_month_hdr["차익실현금액"].sum())
     except Exception:
         _month_profit = 0
+        _prev_month_profit = 0
 
     if _month_profit > 0:
         _profit_text = f"+{_month_profit:,}원"
         _profit_color = "#FF4B4B"
-        _msg = "벌고 있어요!"
+        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
         _profit_color = "#4B9FFF"
-        _msg = "빠졌어요"
+        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔았는데 {_month_profit:,}원 빠졌어요"
     else:
         _profit_text = "0원"
         _profit_color = "#A0A0A0"
-        _msg = "달력을 눌러보세요"
+        _msg = f"전월 확정 수익금 {_prev_month_profit:,}원"
         _expander_title = "달력을 눌러보세요"
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
 <div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 20px;'>
 <div style="text-align:center; padding-top:10px;">
-<div style="font-size:15px; color:#FFDAB9; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번 달 팔아서 번 돈</div>
+<div style="font-size:15px; color:#FFDAB9; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
 <div style='color:{_profit_color}; font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
 <div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
 <span style="color:#FFDAB9;">{_msg}</span>
