@@ -2008,10 +2008,8 @@ elements.forEach(el => {
             const firstCard    = container.querySelector('.asset-card');
             if (container && firstCard && overlayRight && overlayLeft) {
                 const updateBounds = () => {
-                    overlayRight.style.top = firstCard.offsetTop + 'px';
-                    overlayRight.style.height = firstCard.offsetHeight + 'px';
-                    overlayLeft.style.top  = firstCard.offsetTop + 'px';
-                    overlayLeft.style.height = firstCard.offsetHeight + 'px';
+                    overlayRight.style.top = firstCard.offsetTop + (firstCard.offsetHeight / 2) + 'px';
+                    overlayLeft.style.top  = firstCard.offsetTop + (firstCard.offsetHeight / 2) + 'px';
                 };
                 const checkScroll = () => {
                     if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10)
