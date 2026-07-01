@@ -237,6 +237,18 @@ st.markdown("""
             0 10px 40px rgba(0,0,0,0.9);
         transition: all 0.3s ease;
     }
+    
+    .glass-card-premium-blue::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+        border: 1px solid rgba(138, 180, 248, 0.4);
+        border-radius: 8px;
+        pointer-events: none;
+    }
 
     .neon-pulse-blue {
         font-family: 'Oswald', sans-serif;
