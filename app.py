@@ -997,18 +997,18 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             is_holiday = d in kr_holidays
             val = daily_pnl_dict.get(d, 0)
             
-            # Base Tile Styles (Cosmic Hologram)
-            base_bg = "linear-gradient(135deg, rgba(30, 20, 60, 0.5), rgba(10, 20, 40, 0.7))"
-            border_style = "1px solid rgba(138, 180, 248, 0.15)"
-            box_shadow = "box-shadow: inset 0 0 10px rgba(138, 180, 248, 0.05);"
+            # Base Tile Styles (Blue Hologram)
+            base_bg = "linear-gradient(135deg, rgba(138, 180, 248, 0.08), rgba(10, 20, 40, 0.6))"
+            border_style = "1px solid rgba(138, 180, 248, 0.2)"
+            box_shadow = "box-shadow: inset 0 0 10px rgba(138, 180, 248, 0.1);"
             
             profit_html = ""
             
             if val > 0:
-                # Trophy Style
-                base_bg = "radial-gradient(circle at top left, rgba(255, 218, 185, 0.25), rgba(30, 20, 60, 0.7)), linear-gradient(135deg, rgba(40, 20, 70, 0.6), rgba(10, 20, 40, 0.8))"
-                border_style = "1px solid rgba(255, 218, 185, 0.4)"
-                box_shadow = "box-shadow: 0 0 15px rgba(255, 218, 185, 0.15), inset 0 0 20px rgba(255, 218, 185, 0.1);"
+                # Trophy Style (Blue & Cream Hologram)
+                base_bg = "radial-gradient(circle at top left, rgba(255, 218, 185, 0.2), rgba(138, 180, 248, 0.15)), linear-gradient(135deg, rgba(10, 20, 40, 0.8), rgba(0, 0, 0, 0.9))"
+                border_style = "1px solid rgba(255, 218, 185, 0.5)"
+                box_shadow = "box-shadow: 0 0 12px rgba(138, 180, 248, 0.2), inset 0 0 15px rgba(255, 218, 185, 0.15);"
                 profit_html = f"<div style='margin-top:14px; font-size:17px; font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-0.5px;'>+{val:,.0f}</div>"
             elif val < 0:
                 # Loss Style
