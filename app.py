@@ -1445,12 +1445,12 @@ if menu == "대시보드":
 </div>
     </div>''', unsafe_allow_html=True)
         
-        with st.expander("⚙️ 목표 재설정", expanded=False):
+        with st.expander("목표 재설정", expanded=False):
             st.components.v1.html('''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
 elements.forEach(el => {
     if (el.innerText.includes("목표 재설정")) {
-        el.style.fontSize = "70%";
+        el.style.fontSize = "80%";
         el.style.opacity = "0.7";
     }
 });
