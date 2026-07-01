@@ -1667,8 +1667,8 @@ elements.forEach(el => {
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
-                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
-                    svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="10">{m}월</text>'
+                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="10" font-weight="bold">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
                 svg += '</svg>'
                 return svg
 
