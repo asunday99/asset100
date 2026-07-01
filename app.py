@@ -145,6 +145,8 @@ if not st.session_state.authenticated:
 # 사이버펑크 & Glassmorphism 글로벌 CSS 주입
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+
     /* Force pure black background */
     .stApp, [data-testid="stAppViewContainer"] {
         background: #000000 !important;
@@ -237,7 +239,7 @@ st.markdown("""
     }
 
     .neon-pulse-blue {
-        font-family: 'Inter', 'Arial Black', sans-serif;
+        font-family: 'Oswald', sans-serif;
         font-size: 46px;
         font-weight: 800;
         text-align: center;
