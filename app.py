@@ -182,25 +182,6 @@ st.markdown("""
         }
     }
 
-    @keyframes panelBorderPulse {
-        0%, 100% {
-            box-shadow: 
-                inset 0 0 60px rgba(138, 180, 248, 0.7), 
-                inset 0 0 15px rgba(255, 255, 255, 0.4), 
-                0 10px 40px rgba(0,0,0,0.9);
-            border: 1px solid rgba(138, 180, 248, 0.8);
-            border-top: 2px solid rgba(255, 255, 255, 0.9);
-        }
-        50% {
-            box-shadow: 
-                inset 0 0 15px rgba(138, 180, 248, 0.15), 
-                inset 0 0 5px rgba(255, 255, 255, 0.1), 
-                0 10px 40px rgba(0,0,0,0.9);
-            border: 1px solid rgba(138, 180, 248, 0.2);
-            border-top: 2px solid rgba(255, 255, 255, 0.4);
-        }
-    }
-
     @keyframes progressBarPulse {
         0%, 100% { box-shadow: 0 0 10px rgba(255, 218, 185, 0.8), 0 0 20px rgba(255, 218, 185, 0.5); }
         50% { box-shadow: 0 0 5px rgba(255, 218, 185, 0.4), 0 0 10px rgba(255, 218, 185, 0.2); }
@@ -224,10 +205,14 @@ st.markdown("""
             linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
-        border-bottom: 1px solid rgba(138, 180, 248, 0.2);
+        border: 1px solid rgba(138, 180, 248, 0.8);
+        border-top: 2px solid rgba(255, 255, 255, 0.9);
         border-radius: 12px;
+        box-shadow: 
+            inset 0 0 60px rgba(138, 180, 248, 0.7), 
+            inset 0 0 15px rgba(255, 255, 255, 0.4), 
+            0 10px 40px rgba(0,0,0,0.9);
         transition: all 0.3s ease;
-        animation: panelBorderPulse 3s infinite ease-in-out;
     }
 
     .neon-pulse-blue {
