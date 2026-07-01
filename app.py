@@ -2112,42 +2112,6 @@ elements.forEach(el => {
             except Exception as e:
                 st.error(f"차트 렌더링 에러: {e}")
                 
-    with st.expander("📊 현황 요약 보기", expanded=False):
-        def apply_black_style(df, is_main=True):
-            styles = pd.DataFrame('', index=df.index, columns=df.columns)
-            for r_idx, row_name in enumerate(df.index):
-                for c_idx, col_name in enumerate(df.columns):
-                    val = df.iat[r_idx, c_idx]
-                    bg_color = '#150d1e'
-                    text_color = 'white'
-                    font_weight = 'normal'
-                    is_negative = isinstance(val, str) and str(val).strip().startswith('-')
-                    is_positive_num = False
-                    try:
-                        num_val = float(str(val).replace(',', '').replace('%', '').strip())
-                        if num_val > 0: is_positive_num = True
-                    except: pass
-                    if "수익률" in str(row_name):
-                        if is_negative: text_color = '#FF1493'
-                        elif is_positive_num: text_color = '#00FFFF'
-                    elif "평가손익" in str(row_name): text_color = 'white'
-                    else:
-                        if is_negative: text_color = '#FF1493'
-                    if is_main and r_idx == 0 and c_idx == 0:
-                        text_color = '#FF9900'
-                        font_weight = 'bold'
-                    styles.iat[r_idx, c_idx] = f'background-color: {bg_color}; color: {text_color}; font-weight: {font_weight}; border: 1px solid #2D1F44; text-align: right;'
-            return styles
-        
-        table_styles = [{'selector': 'th', 'props': [('background-color', '#1A112A'), ('color', '#a0a0a0'), ('border', '1px solid #2D1F44'), ('text-align', 'center'), ('font-weight', 'normal')]}, {'selector': 'th.row_heading', 'props': [('background-color', '#1A112A'), ('color', '#d0d0d0'), ('text-align', 'left')]}]
-        
-        c1, c2 = st.columns(2)
-        with c1:
-            st.markdown("<div style='font-size: 14px; color: #a0a0a0; font-weight: bold; margin-bottom: 10px;'>▪ 현황 요약</div>", unsafe_allow_html=True)
-            st.dataframe(df_summary_main.style.apply(apply_black_style, is_main=True, axis=None).pipe(format_styler).set_table_styles(table_styles), use_container_width=True)
-        with c2:
-            st.markdown("<div style='font-size: 14px; color: #a0a0a0; font-weight: bold; margin-bottom: 10px;'>▪ 주체별 구분 (법인/개인)</div>", unsafe_allow_html=True)
-            st.dataframe(df_summary_sub.style.apply(apply_black_style, is_main=False, axis=None).pipe(format_styler).set_table_styles(table_styles), use_container_width=True)
 elif menu == "매매 기록":
     urls_dict = {
         "DASHBOARD": URL_DASHBOARD,
