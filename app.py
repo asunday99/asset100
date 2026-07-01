@@ -248,7 +248,7 @@ st.markdown("""
         text-align: center;
         margin: 15px 0 25px 0;
         letter-spacing: 3px;
-        animation: neonPulseBlueWhite 2.4s infinite ease-in-out;
+        animation: neonPulseBlueWhite 3.0s infinite ease-in-out;
     }
 
     /* 핵심 결과값 텍스트 (네온 글로우 효과) */
