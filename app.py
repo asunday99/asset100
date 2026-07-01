@@ -1446,6 +1446,9 @@ elements.forEach(el => {{
                 if 'goal_input_val' not in st.session_state:
                     st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
                 st.session_state.goal_input_val += amount
+                
+            def reset_goal():
+                st.session_state.goal_input_val = 0
 
             if 'goal_input_val' not in st.session_state:
                 st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
@@ -1454,8 +1457,9 @@ elements.forEach(el => {{
             with sc1:
                 new_amt = st.number_input("목표 금액 (원)", step=100000000, key="goal_input_val")
                 
-                # 퀵 버튼 배치
-                bc1, bc2, bc3, bc4 = st.columns(4)
+                # 퀵 버튼 배치 (5열로 늘려서 초기화 버튼 추가)
+                bc0, bc1, bc2, bc3, bc4 = st.columns(5)
+                bc0.button("🔄 리셋", on_click=reset_goal, use_container_width=True)
                 bc1.button("+5천만", on_click=add_to_goal, args=(50000000,), use_container_width=True)
                 bc2.button("+1억", on_click=add_to_goal, args=(100000000,), use_container_width=True)
                 bc3.button("+10억", on_click=add_to_goal, args=(1000000000,), use_container_width=True)
