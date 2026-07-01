@@ -601,30 +601,62 @@ st.markdown('''
             margin-right: 21rem !important;
         }
     
-        /* V5 CSS */
-        .marquee-wrapper { width: 100%; overflow: hidden; background: rgba(255, 107, 0, 0.1); padding: 8px 0; border-top: 1px solid rgba(255,107,0,0.3); border-bottom: 1px solid rgba(255,107,0,0.3); margin-bottom: 25px; }
-        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 20s linear infinite; color: #FF6B00; font-weight: bold; font-size: 14px; letter-spacing: 2px; }
+        /* V5 CSS — GOLD/CYAN 리디자인 */
+
+        /* Pretendard 웹폰트 로드 */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        /* 앱 전체 폰트 교체 */
+        html, body, [class*="css"], .stApp, button, input, textarea {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        }
+
+        /* 배경: 진짜 딥 블랙 */
+        .stApp {
+            background-color: #0b0e11 !important;
+        }
+
+        /* 마퀴: 골드 계열 */
+        .marquee-wrapper { width: 100%; overflow: hidden; background: rgba(201,169,110,0.07); padding: 8px 0; border-top: 1px solid rgba(201,169,110,0.2); border-bottom: 1px solid rgba(201,169,110,0.2); margin-bottom: 25px; }
+        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 20s linear infinite; color: #C9A96E; font-weight: 600; font-size: 13px; letter-spacing: 2px; }
         @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        .glass-card { background: rgba(26, 17, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 107, 0, 0.2); border-radius: 18px; padding: 20px; margin-bottom: 20px; }
-        .swipe-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; scrollbar-width: none; scrollbar-color: rgba(255, 107, 0, 0.5) rgba(255, 255, 255, 0.05); padding-top:10px; }
+
+        /* glass-card: 딥 블랙 배경, 흰색 극미량 테두리 */
+        .glass-card {
+            background: #161b22;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.6);
+        }
+
+        .swipe-container { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; scrollbar-width: none; padding-top:10px; }
         .swipe-container::-webkit-scrollbar { display: none !important; }
-        
-        
-        
+
         .macro-card { flex: 0 0 auto; width: 40vw; max-width: 140px; scroll-snap-align: start; text-align: center; padding: 15px 10px; margin-bottom: 0; }
-        .asset-card { flex: 0 0 auto; width: 85vw; max-width: 320px; scroll-snap-align: start; margin-bottom: 0; position: relative; }
-        .neon-text { font-size: 38px; font-weight: 900; color: #FF6B00; text-shadow: 0 0 10px rgba(255, 107, 0, 0.6); margin: 5px 0; }
-        .profit-positive { color: #00E676; font-weight: bold; }
-        .profit-negative { color: #00BFFF; font-weight: bold; }
-        .progress-bar-container { background-color: rgba(255,255,255,0.1); height: 10px; border-radius: 5px; width: 100%; margin-top: 20px; overflow: hidden; }
-        .progress-bar-fill { background-color: #FF6B00; height: 10px; border-radius: 5px; }
+
+        /* 자산카드: 좌측 골드 보더 */
+        .asset-card { flex: 0 0 auto; width: 85vw; max-width: 320px; scroll-snap-align: start; margin-bottom: 0; position: relative; border-left: 3px solid #C9A96E !important; border-radius: 14px !important; }
+
+        /* 총자산 숫자: 골드, 52px */
+        .neon-text { font-size: 52px; font-weight: 900; color: #C9A96E; text-shadow: 0 0 20px rgba(201,169,110,0.4); margin: 5px 0; letter-spacing: -2px; }
+
+        .profit-positive { color: #00E676; font-weight: 700; }
+        .profit-negative { color: #FF6B6B; font-weight: 700; }
+
+        /* 달성률 바: 4px, 골드 */
+        .progress-bar-container { background-color: rgba(255,255,255,0.07); height: 4px; border-radius: 4px; width: 100%; margin-top: 18px; overflow: hidden; }
+        .progress-bar-fill { background: linear-gradient(90deg, #C9A96E, #00D4FF); height: 4px; border-radius: 4px; }
+
         /* Hover Effects */
-        .hover-macro:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); border-color: white; }
-        .hover-stock:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(30, 55, 153, 0.8); border-color: #1e3799; }
-        .hover-gold:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(241, 196, 15, 0.8); border-color: #f1c40f; }
-        .hover-bond:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0, 216, 214, 0.8); border-color: #00d8d6; }
-        .hover-coin:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(255, 107, 0, 0.8); border-color: #FF6B00; }
-        .hover-cash:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(108, 92, 231, 0.8); border-color: #6c5ce7; }
+        .hover-macro:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(201,169,110,0.2); border-color: rgba(201,169,110,0.4); }
+        .hover-stock:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(91,141,239,0.35); border-color: #5B8DEF; }
+        .hover-gold:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(201,169,110,0.4); border-color: #C9A96E; }
+        .hover-bond:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,212,255,0.35); border-color: #00D4FF; }
+        .hover-coin:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(155,114,207,0.35); border-color: #9B72CF; }
+        .hover-cash:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(108,92,231,0.35); border-color: #6c5ce7; }
 
     </style>
 ''', unsafe_allow_html=True)
@@ -749,7 +781,7 @@ menu = option_menu(
         "container": {"padding": "5px", "background-color": "#1A112A", "border": "1px solid #333333", "border-radius": "12px", "margin-bottom": "25px", "max-width": "100%"},
         "icon": {"display": "none"}, 
         "nav-link": {"font-size": "15px", "font-weight": "500", "text-align": "center", "margin":"0px 5px", "padding": "10px", "--hover-color": "#222222", "color": "#d0d0d0", "border-radius": "8px"},
-        "nav-link-selected": {"background-color": "#FF9900", "color": "#000000", "font-weight": "bold"},
+        "nav-link-selected": {"background-color": "#C9A96E", "color": "#0b0e11", "font-weight": "bold"},
     }
 )
 
@@ -1072,7 +1104,7 @@ def render_trade_records(urls: dict):
         _svg1 = _make_bubble_svg(
             _monthly_profits_c,
             _monthly_counts_c2,
-            "#FF6B00", "#4B9FFF",
+            "#C9A96E", "#00D4FF",
             "만원",
             lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}"
         )
@@ -1094,7 +1126,7 @@ def render_trade_records(urls: dict):
         _chart_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 올해 팔아서 실제로 번 돈은</div>
+    <div style='color:#C9A96E;font-size:13px;font-weight:700;margin-bottom:4px;'>📈 올해 팔아서 실제로 번 돈은</div>
     <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_year_profit_c:,}원 이에요</div>
     {_svg1}
     <div style='color:#666;font-size:10px;margin-top:6px;text-align:right;'>버블 크기 = 매도 건수</div>
@@ -1559,7 +1591,7 @@ def render_pnl(urls: dict):
         styles={
             "container": {"padding": "0!important", "background-color": "#111111", "border": "1px solid #333333", "border-radius": "8px", "margin-bottom": "15px", "max-width": "300px"},
             "nav-link": {"font-size": "14px", "text-align": "center", "margin": "0px", "padding": "8px", "--hover-color": "#222222", "color": "#d0d0d0"},
-            "nav-link-selected": {"background-color": "#FF9900", "color": "#000000", "font-weight": "bold"},
+            "nav-link-selected": {"background-color": "#C9A96E", "color": "#0b0e11", "font-weight": "bold"},
         },
     )
     if pnl_tab != st.session_state.pnl_tab:
@@ -1570,7 +1602,7 @@ def render_pnl(urls: dict):
         df_daily = load_and_clean_data(urls.get("DAILY", ""))
         if not df_daily.empty:
             df_daily = _clean_withdrawals_memos(df_daily)
-            st.markdown("<br><h4 style='color:#FF9900;'>📊 일별 실현손익 추이</h4>", unsafe_allow_html=True)
+            st.markdown("<br><h4 style='color:#C9A96E;'>📊 일별 실현손익 추이</h4>", unsafe_allow_html=True)
             _render_pnl_bar_chart(df_daily, "일별 실현손익")
             with st.expander("📋 일별 손익 상세 표", expanded=False):
                 st.dataframe(_style_pnl_dataframe(df_daily), use_container_width=True, hide_index=True)
@@ -1581,7 +1613,7 @@ def render_pnl(urls: dict):
         df_monthly = load_and_clean_data(urls.get("MONTHLY", ""))
         if not df_monthly.empty:
             df_monthly = _clean_withdrawals_memos(df_monthly)
-            st.markdown("<br><h4 style='color:#FF9900;'>📊 월별 실현손익 추이</h4>", unsafe_allow_html=True)
+            st.markdown("<br><h4 style='color:#C9A96E;'>📊 월별 실현손익 추이</h4>", unsafe_allow_html=True)
             _render_pnl_bar_chart(df_monthly, "월별 실현손익")
             with st.expander("📋 월별 손익 상세 표", expanded=False):
                 st.dataframe(_style_pnl_dataframe(df_monthly), use_container_width=True, hide_index=True)
@@ -1779,11 +1811,11 @@ if menu == "대시보드":
 <div style="font-size:15px; color:#D8D8D8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(255,255,255,0.18); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class="neon-text" style="font-size:42px;">₩{int(total_assets):,}</div>
         
-<div style="width:100%; background-color:rgba(255,255,255,0.05); border-radius:10px; height:8px; margin-top:20px; margin-bottom:10px; overflow:hidden;">
-<div style="width:{ach}%; background:linear-gradient(90deg, #FF6B00, #FF9900); height:100%; border-radius:10px;"></div>
+<div style="width:100%; background-color:rgba(255,255,255,0.05); border-radius:10px; height:4px; margin-top:18px; margin-bottom:10px; overflow:hidden;">
+<div style="width:{ach}%; background:linear-gradient(90deg, #C9A96E, #00D4FF); height:100%; border-radius:10px;"></div>
 </div>
 <div style="font-size:15px; color:#E0E0E0; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:space-between; align-items:center; letter-spacing:0.5px; gap: 4px;">
-<span style="color:#FF9900; font-weight:900; font-size:14px; white-space:nowrap;">{ach:.2f}% 달성</span>
+<span style="color:#C9A96E; font-weight:900; font-size:14px; white-space:nowrap;">{ach:.2f}% 달성</span>
 </div>
     </div>''', unsafe_allow_html=True)
         
@@ -2153,7 +2185,7 @@ elements.forEach(el => {
 """
         return f"""
 <div class="glass-card" style="padding: 20px; margin-bottom: 10px; min-height: 200px;">
-    <div style="color: #FF9900; font-size: 17px; font-weight: bold; margin-bottom: 15px;">{title}</div>
+    <div style="color: #C9A96E; font-size: 16px; font-weight: 700; margin-bottom: 15px; letter-spacing: 0.5px;">{title}</div>
     {rows_html}
 </div>
 """
@@ -2166,7 +2198,7 @@ elements.forEach(el => {
             ("주식",  2, "hover-stock", "#1e90ff"),
             ("금",    3, "hover-gold",  "#f1c40f"),
             ("채권",  4, "hover-bond",  "#00d8d6"),
-            ("코인",  5, "hover-coin",  "#FF6B00"),
+            ("코인",  5, "hover-coin",  "#9B72CF"),
             ("현금성",6, "hover-cash",  "#6c5ce7"),
         ]
         def _parse_num(val):
@@ -2191,14 +2223,14 @@ elements.forEach(el => {
                 {"category": "주식",  "amount": 1974918892, "profit": 255389985,  "return_pct": 14.85,  "hover": "hover-stock", "color": "#1e90ff"},
                 {"category": "금",    "amount": 142910490,  "profit": -17897045,  "return_pct": -11.13, "hover": "hover-gold",  "color": "#f1c40f"},
                 {"category": "채권",  "amount": 17516025,   "profit": -260227,    "return_pct": -1.46,  "hover": "hover-bond",  "color": "#00d8d6"},
-                {"category": "코인",  "amount": 298825354,  "profit": -71356901,  "return_pct": -19.28, "hover": "hover-coin",  "color": "#FF6B00"},
+                {"category": "코인",  "amount": 298825354,  "profit": -71356901,  "return_pct": -19.28, "hover": "hover-coin",  "color": "#9B72CF"},
                 {"category": "현금성","amount": 396232726,  "profit": 0,          "return_pct": 0.0,    "hover": "hover-cash",  "color": "#6c5ce7"},
             ]
         df_asset = pd.DataFrame([
             {"category": "주식", "amount": _asset_rows[0]["amount"], "profit": _asset_rows[0]["profit"], "return_pct": _asset_rows[0]["return_pct"], "hover": "hover-stock", "color": "#1e90ff"},
             {"category": "금", "amount": _asset_rows[1]["amount"], "profit": _asset_rows[1]["profit"], "return_pct": _asset_rows[1]["return_pct"], "hover": "hover-gold", "color": "#f1c40f"},
             {"category": "채권", "amount": _asset_rows[2]["amount"], "profit": _asset_rows[2]["profit"], "return_pct": _asset_rows[2]["return_pct"], "hover": "hover-bond", "color": "#00d8d6"},
-            {"category": "코인", "amount": _asset_rows[3]["amount"], "profit": _asset_rows[3]["profit"], "return_pct": _asset_rows[3]["return_pct"], "hover": "hover-coin", "color": "#FF6B00"},
+            {"category": "코인", "amount": _asset_rows[3]["amount"], "profit": _asset_rows[3]["profit"], "return_pct": _asset_rows[3]["return_pct"], "hover": "hover-coin", "color": "#9B72CF"},
             {"category": "현금성", "amount": _asset_rows[4]["amount"], "profit": _asset_rows[4]["profit"], "return_pct": _asset_rows[4]["return_pct"], "hover": "hover-cash", "color": "#6c5ce7"},
         ])
         import random
@@ -2358,7 +2390,7 @@ elements.forEach(el => {
                 parents = [""]
                 values = [0]
                 colors = [""]
-                color_map = {'주식': '#1e3799', '금': '#f1c40f', '채권': '#00d8d6', '코인': '#FF9900', '현금성': '#6c5ce7', '개인': '#1A112A', '법인': '#2D1F44'}
+                color_map = {'주식': '#1e3799', '금': '#f1c40f', '채권': '#00d8d6', '코인': '#9B72CF', '현금성': '#6c5ce7', '개인': '#1A112A', '법인': '#2D1F44'}
                 for cat in cats:
                     labels.append(cat)
                     parents.append("총자산")
@@ -2376,7 +2408,7 @@ elements.forEach(el => {
                         values.append(corp_amts[i])
                         colors.append(color_map['법인'])
                 fig_sb = go.Figure(go.Sunburst(labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(color='rgba(0,0,0,0)')), textinfo="label+percent parent", insidetextorientation='radial'))
-                fig_sb.update_layout(title=dict(text="자산 배분 현황", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
+                fig_sb.update_layout(title=dict(text="자산 배분 현황", font=dict(color="#C9A96E", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
                 st.plotly_chart(fig_sb, use_container_width=True)
             except Exception as e:
                 st.error(f"차트 렌더링 에러: {e}")
@@ -2403,7 +2435,7 @@ elements.forEach(el => {
                     else:
                         if is_negative: text_color = '#FF1493'
                     if is_main and r_idx == 0 and c_idx == 0:
-                        text_color = '#FF9900'
+                        text_color = '#C9A96E'
                         font_weight = 'bold'
                     styles.iat[r_idx, c_idx] = f'background-color: {bg_color}; color: {text_color}; font-weight: {font_weight}; border: 1px solid #2D1F44; text-align: right;'
             return styles
