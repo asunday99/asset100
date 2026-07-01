@@ -694,20 +694,12 @@ def render_trade_records(urls: dict):
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = "🏆 일별 매매 브리핑"
 
-    # D-day 계산 로직 (대시보드와 동일)
-    target_date_dynamic = st.session_state.get('target_date_dynamic')
-    if target_date_dynamic is None:
-        import os, json, datetime
-        _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
-        try:
-            with open(_ucfg_path, 'r') as _f:
-                _ucfg = json.load(_f)
-            target_date_dynamic = datetime.datetime.strptime(_ucfg.get('goal_date', ''), '%Y-%m-%d').date()
-            st.session_state.target_date_dynamic = target_date_dynamic
-        except:
-            target_date_dynamic = datetime.date.today()
-    
-    d_days_dynamic = (target_date_dynamic - datetime.date.today()).days
+    # 이번 달 남은 일수 계산 (월말 기준 D-day)
+    import calendar
+    import datetime as _dt
+    _today_date = _dt.date.today()
+    _last_day = calendar.monthrange(_today_date.year, _today_date.month)[1]
+    d_days_dynamic = _last_day - _today_date.day
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
