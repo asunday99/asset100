@@ -1433,12 +1433,25 @@ if menu == "대시보드":
         with st.expander("목표 재설정", expanded=False):
             st.components.v1.html('''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
+let goalExpander = null;
 elements.forEach(el => {
     if (el.innerText.includes("목표 재설정")) {
         el.style.fontSize = "80%";
         el.style.opacity = "1.0";
+        goalExpander = el.closest('details');
     }
 });
+if (goalExpander) {
+    const applyStyles = () => {
+        const buttons = goalExpander.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.style.border = "1px solid rgba(255, 218, 185, 0.5)";
+        });
+    };
+    applyStyles();
+    const observer = new MutationObserver(applyStyles);
+    observer.observe(goalExpander, { childList: true, subtree: true });
+}
 </script>''', height=0)
             
             def add_to_goal(amount):
