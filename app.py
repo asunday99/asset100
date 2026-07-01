@@ -884,8 +884,17 @@ elements.forEach(el => {{
     except Exception:
         pass
 
-    st.markdown("---")
-    _render_profit_loss_calculator()
+    with st.expander("🚀 익절 손절 계산기", expanded=False):
+        st.components.v1.html('''<script>
+        const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
+        elements.forEach(el => {
+            if (el.innerText.includes("익절 손절 계산기")) {
+                el.style.fontSize = "80%";
+                el.style.color = "#FFDAB9";
+            }
+        });
+        </script>''', height=0)
+        _render_profit_loss_calculator()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1118,7 +1127,6 @@ def _render_trade_table(df_rec: pd.DataFrame):
 
 def _render_profit_loss_calculator():
     """익절/손절 계산기 렌더링."""
-    st.subheader("🚀 익절/손절 계산기")
     col_input, col_up, col_down = st.columns([1, 1.5, 1.5])
 
     with col_input:
