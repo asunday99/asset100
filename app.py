@@ -1672,7 +1672,7 @@ elements.forEach(el => {
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
-                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="10" font-weight="bold">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold">{lbl}</text>'
                     svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
                 svg += '</svg>'
                 return svg
@@ -1684,18 +1684,18 @@ elements.forEach(el => {
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
-      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'>&#128200; 현재 총 금융자산은 </span>
-      <span style='color:#D8B4FE; font-size:22px; font-weight:900;'>{_cur_total_asset:,}</span>
-      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'> 원 이에요</span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 총 금융자산은 </span>
+      <span style='color:#D8B4FE; font-size:20px; font-weight:300;'>{_cur_total_asset:,}</span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 원 이에요</span>
     </div>
     {_svg_d1}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
   </div>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
-      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'>&#127919; 목표의 </span>
-      <span style='color:#D8B4FE; font-size:22px; font-weight:900;'>{_cur_ach:.2f}</span>
-      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'> % 달성 중이에요</span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#127919; 목표의 </span>
+      <span style='color:#D8B4FE; font-size:20px; font-weight:300;'>{_cur_ach:.2f}</span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> % 달성 중이에요</span>
     </div>
     {_svg_d2}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월별 목표 달성률 추이</div>
