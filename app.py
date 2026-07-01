@@ -1984,6 +1984,15 @@ elements.forEach(el => {
                 macro_changes = get_macro_changes()
                 pairs = []
                 
+                # 컬럼명(헤더)에 값이 들어간 경우를 위해 헤더도 검사
+                for lc, vc in [(13, 14), (15, 16)]:
+                    try:
+                        raw_lbl = str(df_dash.columns[lc]).replace('[','').replace(']','').strip()
+                        val = str(df_dash.columns[vc]).strip()
+                        if raw_lbl and raw_lbl != 'nan' and 'Unnamed' not in raw_lbl and val and val != 'nan' and val != '0.0':
+                            pairs.append((raw_lbl, val))
+                    except: pass
+
                 # 강건한 데이터행 추출 (헤더 무시)
                 for lc, vc in [(13, 14), (15, 16)]:
                     for row_i in range(len(df_dash)):
