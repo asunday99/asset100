@@ -693,7 +693,7 @@ def render_trade_records(urls: dict):
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
-<div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 20px;'>
+<div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
 <div class='{_profit_class}' style='{_profit_color} font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
@@ -706,6 +706,15 @@ def render_trade_records(urls: dict):
 
     # ── 매매 캘린더 ─────────────────────────────────────────────────
     with st.expander(_expander_title, expanded=False):
+        st.components.v1.html(f'''<script>
+const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
+elements.forEach(el => {{
+    if (el.innerText.includes("{_expander_title}")) {{
+        el.style.fontSize = "80%";
+        el.style.opacity = "1.0";
+    }}
+}});
+</script>''', height=0)
         df_rec = load_records_data(urls.get("RECORDS", ""))
         _render_trade_calendar(df_rec)
 
