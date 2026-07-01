@@ -676,7 +676,7 @@ def render_trade_records(urls: dict):
     st.markdown(f"""
 <div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:18px; margin-bottom: 20px;'>
 <div style="text-align:center; padding-top:10px;">
-<div style="font-size:15px; color:#FFDAB9; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
+<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
 <div style='color:{_profit_color}; font-size:46px; font-weight:900; letter-spacing:-1px; margin: 20px 0 35px 0;'>{_profit_text}</div>
 <div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
 <span style="color:#FFDAB9;">{_msg}</span>
