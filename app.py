@@ -241,6 +241,37 @@ st.markdown("""
         pointer-events: none;
     }
 
+    .glass-card-premium-gold {
+        position: relative;
+        background: 
+            radial-gradient(ellipse 120px 8px at 50% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.6) 50%, transparent 100%),
+            radial-gradient(ellipse 120px 8px at 0% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.6) 50%, transparent 100%),
+            radial-gradient(ellipse 120px 8px at 100% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.6) 50%, transparent 100%),
+            linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 215, 0, 0.8);
+        border-top: 2px solid rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 
+            inset 0 0 60px rgba(255, 215, 0, 0.7), 
+            inset 0 0 15px rgba(255, 255, 255, 0.4), 
+            0 10px 40px rgba(0,0,0,0.9);
+        transition: all 0.3s ease;
+    }
+    
+    .glass-card-premium-gold::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+        border: 1px solid rgba(255, 215, 0, 0.4);
+        border-radius: 8px;
+        pointer-events: none;
+    }
+
     .neon-pulse-blue {
         font-family: 'Oswald', sans-serif;
         font-size: 46px;
@@ -634,12 +665,12 @@ def render_trade_records(urls: dict):
 
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
-<div class='glass-card-premium-blue' style='padding: 24px; padding-bottom:10px; margin-bottom: 20px;'>
+<div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:10px; margin-bottom: 20px;'>
 <div style="text-align:center; padding-top:10px;">
-<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번 달 팔아서 번 돈</div>
+<div style="font-size:15px; color:#FFDAB9; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번 달 팔아서 번 돈</div>
 <div style='color:{_profit_color}; font-size:44px; font-weight:900; letter-spacing:-1px; margin-bottom:8px;'>{_profit_text}</div>
-<div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
-<span style="color:#A0C0FF;">{_msg}</span>
+<div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px; padding-bottom: 10px;">
+<span style="color:#FFDAB9;">{_msg}</span>
 </div>
 </div>
 </div>
