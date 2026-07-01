@@ -1633,7 +1633,7 @@ elements.forEach(el => {
                 plot_h = H - PAD_T - PAD_B
                 months = sorted([m for m in range(1, 13) if data_dict.get(m, 0) > 0])
                 if not months:
-                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="#0e0e1a" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="transparent" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
                 vals = [data_dict.get(m, 0) for m in months]
                 y_max = max(vals) * 1.15 if max(vals) > 0 else 1
                 def xp(idx): return PAD_L + int(idx / max(len(months) - 1, 1) * plot_w)
@@ -1642,7 +1642,7 @@ elements.forEach(el => {
                 area_pts = f"{PAD_L},{H-PAD_B} " + " ".join(f"{x},{y}" for x, y in pts) + f" {pts[-1][0]},{H-PAD_B}"
                 line_pts = " ".join(f"{x},{y}" for x, y in pts)
                 svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
-                svg += f'<rect width="{W}" height="{H}" fill="#0e0e1a" rx="10"/>'
+                svg += f'<rect width="{W}" height="{H}" fill="transparent" rx="10"/>'
                 for gi in range(5):
                     gy = PAD_T + int(gi / 4 * plot_h)
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
@@ -1661,13 +1661,13 @@ elements.forEach(el => {
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
-  <div style='flex:1;min-width:280px;background:#000000;border:1px solid #333333;border-radius:12px;padding:18px 16px 12px 16px;'>
+  <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='color:#5B8DEF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
     <div style='margin-bottom:10px;'><span style='color:#5B8DEF;font-size:22px;font-weight:900;'>{_cur_total_asset:,}</span> <span style='color:#aaaaaa;font-size:15px;font-weight:300;'>원 이에요</span></div>
     {_svg_d1}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
   </div>
-  <div style='flex:1;min-width:280px;background:#000000;border:1px solid #333333;border-radius:12px;padding:18px 16px 12px 16px;'>
+  <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='color:#9B72CF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#127919; 목표 {formatted_gs_val}억, 지금 이만큼 왔어요</div>
     <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'><span style='color:#9B72CF;'>{_cur_ach:.2f}%</span> 달성</div>
     {_svg_d2}
