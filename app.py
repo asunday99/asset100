@@ -2122,10 +2122,6 @@ elements.forEach(el => {
                   </defs>
                 </svg>
                 <style>
-                path[style*="rgb(255, 215, 0)"], path[style*="rgb(255,215,0)"], path[fill="#FFD700" i] {
-                    fill: url(#goldGradient) !important;
-                }
-                
                 @keyframes donutNeonPulse {
                     0%, 100% {
                         filter: drop-shadow(0px 0px 8px rgba(180, 158, 86, 0.4)) brightness(1.0);
@@ -2134,15 +2130,21 @@ elements.forEach(el => {
                         filter: drop-shadow(0px 0px 22px rgba(180, 158, 86, 0.85)) brightness(1.15);
                     }
                 }
-                .js-plotly-plot .slice path {
+                path[style*="rgb(255, 215, 0)"], path[style*="rgb(255,215,0)"], path[fill="#FFD700" i] {
+                    fill: url(#goldGradient) !important;
                     animation: donutNeonPulse 2.5s infinite ease-in-out;
+                }
+                path[style*="rgb(255, 215, 0)"]:hover, path[style*="rgb(255,215,0)"]:hover, path[fill="#FFD700" i]:hover {
+                    animation: none !important;
+                    filter: drop-shadow(0px 0px 30px rgba(255, 255, 255, 1.0)) brightness(1.3) !important;
+                }
+                .js-plotly-plot .slice path {
                     stroke: rgba(255, 255, 255, 0.1) !important;
                     stroke-width: 1px !important;
                     transform-origin: center;
                 }
                 .js-plotly-plot .slice path:hover {
-                    animation: none;
-                    filter: drop-shadow(0px 0px 30px rgba(255, 255, 255, 1.0)) brightness(1.3);
+                    filter: brightness(1.1);
                 }
                 </style>
                 """, unsafe_allow_html=True)
