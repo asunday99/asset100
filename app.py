@@ -1687,7 +1687,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 총 금융자산은 </span>
-      <span style='color:#D8B4FE; font-size:20px; font-weight:900;'>{_cur_total_asset:,}</span>
+      <span style='color:#1A112A; font-size:20px; font-weight:900;'>{_cur_total_asset:,}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 원 이에요</span>
     </div>
     {_svg_d1}
@@ -1696,7 +1696,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#127919; 목표의 </span>
-      <span style='color:#D8B4FE; font-size:20px; font-weight:900;'>{_cur_ach:.2f}</span>
+      <span style='color:#1A112A; font-size:20px; font-weight:900;'>{_cur_ach:.2f}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> % 달성 중이에요</span>
     </div>
     {_svg_d2}
