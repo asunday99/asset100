@@ -691,11 +691,26 @@ def render_trade_records(urls: dict):
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = "달력을 눌러보세요"
 
+    # D-day 계산 로직 (대시보드와 동일)
+    target_date_dynamic = st.session_state.get('target_date_dynamic')
+    if target_date_dynamic is None:
+        import os, json, datetime
+        _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
+        try:
+            with open(_ucfg_path, 'r') as _f:
+                _ucfg = json.load(_f)
+            target_date_dynamic = datetime.datetime.strptime(_ucfg.get('goal_date', ''), '%Y-%m-%d').date()
+            st.session_state.target_date_dynamic = target_date_dynamic
+        except:
+            target_date_dynamic = datetime.date.today()
+    
+    d_days_dynamic = (target_date_dynamic - datetime.date.today()).days
+
     # ── 임팩트 있는 이번 달 수익 헤더 ──────────────────────────────────────
     st.markdown(f"""
 <div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:10px; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
-<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정된 수익이에요</div>
+<div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정수익 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(138,180,248,0.2); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
 <div class='{_profit_class}' style='{_profit_color} font-size:46px; font-weight:900; letter-spacing:-1px; margin: 15px 0 25px 0;'>{_profit_text}</div>
 <div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px;">
 <span style="color:#FFDAB9;">{_msg}</span>
