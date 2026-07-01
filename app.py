@@ -884,17 +884,6 @@ elements.forEach(el => {{
     except Exception:
         pass
 
-    with st.expander("🚀 익절 손절 계산기", expanded=False):
-        st.components.v1.html('''<script>
-        const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
-        elements.forEach(el => {
-            if (el.innerText.includes("익절 손절 계산기")) {
-                el.style.fontSize = "80%";
-                el.style.color = "#FFDAB9";
-            }
-        });
-        </script>''', height=0)
-        _render_profit_loss_calculator()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1124,94 +1113,6 @@ def _render_trade_table(df_rec: pd.DataFrame):
 
 
 # get_cached_previous_close는 logic.py에서 import 됨
-
-def _render_profit_loss_calculator():
-    """익절/손절 계산기 렌더링."""
-    col_input, col_up, col_down = st.columns([1, 1.5, 1.5])
-
-    with col_input:
-        stock_name  = st.text_input("종목명 (입력 후 Enter)", value="SK하이닉스")
-        auto_ticker = get_ticker_from_name(stock_name)
-        # 특정 종목 폴백 처리
-        FALLBACK_TICKERS = {"SK하이닉스": "000660", "삼성전자": "005930"}
-        if auto_ticker == stock_name and stock_name in FALLBACK_TICKERS:
-            auto_ticker = FALLBACK_TICKERS[stock_name]
-
-        ticker_symbol = st.text_input("야후 파이낸스 티커", value=auto_ticker)
-
-        is_foreign = bool(ticker_symbol) and not (
-            ticker_symbol.endswith(".KS") or ticker_symbol.endswith(".KQ") or
-            (ticker_symbol.isdigit() and len(ticker_symbol) == 6)
-        )
-
-        prev_close = None
-        if ticker_symbol:
-            prev_close = get_cached_previous_close(ticker_symbol)
-            if prev_close is None:
-                st.warning(f"⚠️ 전일 종가 조회 실패 ({ticker_symbol}). 수동으로 입력하거나 티커를 확인해 주세요.")
-
-        if prev_close is None:
-            prev_close = 150.0 if is_foreign else 215_000.0
-
-        if is_foreign:
-            st.markdown(f"<div style='font-size:14px;font-weight:600;color:#FF9900;margin-top:25px;'>전일 종가: ${prev_close:,.2f}</div>", unsafe_allow_html=True)
-        else:
-            st.markdown(f"<div style='font-size:14px;font-weight:600;color:#FF9900;margin-top:25px;'>전일 종가: {prev_close:,.0f} 원</div>", unsafe_allow_html=True)
-
-    # 수익률 테이블 초기화
-    
-    up_rates_list = st.session_state.get('config', {}).get("up_rates", [4.0, 6.0, 8.0, 10.0, 12.0, 20.0])
-    down_rates_list = st.session_state.get('config', {}).get("down_rates", [-3.0, -5.0, -7.0, -10.0, -15.0, -20.0])
-
-    if "up_rates_df" not in st.session_state:
-        st.session_state.up_rates_df = pd.DataFrame({
-            "수익률(%)": up_rates_list,
-            "목표 가격": [0.0] * len(up_rates_list),
-            "목표 손익": [0.0] * len(up_rates_list)
-        })
-    if "down_rates_df" not in st.session_state:
-        st.session_state.down_rates_df = pd.DataFrame({
-            "하락률(%)": down_rates_list,
-            "손절 가격": [0.0] * len(down_rates_list),
-            "예상 손익": [0.0] * len(down_rates_list)
-        })
-
-    price_format = "{:,.2f}" if is_foreign else "{:,.0f}"
-    up_prices   = prev_close * (1 + st.session_state.up_rates_df["수익률(%)"] / 100.0)
-    down_prices = prev_close * (1 + st.session_state.down_rates_df["하락률(%)"] / 100.0)
-
-    st.session_state.up_rates_df["목표 가격"]  = up_prices.round(2) if is_foreign else up_prices.astype(int)
-    st.session_state.down_rates_df["손절 가격"] = down_prices.round(2) if is_foreign else down_prices.astype(int)
-
-    with col_up:
-        edited_up = st.data_editor(
-            st.session_state.up_rates_df.style.format(formatter={"목표 가격": price_format}),
-            use_container_width=True, hide_index=True, num_rows="dynamic",
-            column_config={"수익률(%)": st.column_config.NumberColumn(format="%.1f%%")},
-            disabled=["목표 가격"], key="up_rates_editor",
-        )
-    with col_down:
-        edited_down = st.data_editor(
-            st.session_state.down_rates_df.style.format(formatter={"손절 가격": price_format}),
-            use_container_width=True, hide_index=True, num_rows="dynamic",
-            column_config={"하락률(%)": st.column_config.NumberColumn(format="%.1f%%")},
-            disabled=["손절 가격"], key="down_rates_editor",
-        )
-
-    # 변경 감지 후 저장 (rerun 조건 명확화)
-    changed_rates = False
-    if not edited_up.equals(st.session_state.up_rates_df):
-        st.session_state.up_rates_df = edited_up
-        st.session_state.config["up_rates"] = edited_up["수익률(%)"].tolist()
-        changed_rates = True
-    if not edited_down.equals(st.session_state.down_rates_df):
-        st.session_state.down_rates_df = edited_down
-        st.session_state.config["down_rates"] = edited_down["하락률(%)"].tolist()
-        changed_rates = True
-
-    if changed_rates:
-        save_config(st.session_state.config)
-        st.rerun()  # 변경 시에만 rerun (무한 루프 방지)
 
 # =============================================================================
 # ── 탭 4: 손익 현황 ──
