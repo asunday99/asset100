@@ -1409,11 +1409,7 @@ if menu == "대시보드":
         margin-right: auto !important;
     }
     .asset-card-stack { width: 100%; margin-bottom: 12px; position: relative; }
-    @media (min-width: 1024px) {
-        .swipe-container { flex-wrap: nowrap !important; overflow-x: visible !important; justify-content: space-between !important; }
-        .asset-card { flex: 1 1 0 !important; max-width: none !important; width: auto !important; }
-        .swipe-glow-left, .swipe-glow-right, .swipe-chevron { display: none !important; }
-    }
+
     </style>
     """, unsafe_allow_html=True)
     if True:  # 대시보드 1열 시작
