@@ -1667,7 +1667,7 @@ elements.forEach(el => {
                 svg += f'<rect width="{W}" height="{H}" fill="transparent" rx="10"/>'
                 for gi in range(5):
                     gy = PAD_T + int(gi / 4 * plot_h)
-                    svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#444" stroke-width="1"/>'
+                    svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#333" stroke-width="1"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
@@ -1687,7 +1687,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 총 금융자산은 </span>
-      <span style='color:#D8B4FE; font-size:20px; font-weight:300;'>{_cur_total_asset:,}</span>
+      <span style='color:#D8B4FE; font-size:20px; font-weight:900;'>{_cur_total_asset:,}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 원 이에요</span>
     </div>
     {_svg_d1}
@@ -1696,7 +1696,7 @@ elements.forEach(el => {
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#127919; 목표의 </span>
-      <span style='color:#D8B4FE; font-size:20px; font-weight:300;'>{_cur_ach:.2f}</span>
+      <span style='color:#D8B4FE; font-size:20px; font-weight:900;'>{_cur_ach:.2f}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> % 달성 중이에요</span>
     </div>
     {_svg_d2}
