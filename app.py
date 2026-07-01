@@ -1527,7 +1527,7 @@ if (goalExpander) {
                 _months_left = _days_left / 30.44
                 _multiplier = _goal / _current_asset
                 _req_monthly_rate = ((_multiplier ** (1 / _months_left)) - 1) * 100
-                _sim_msg = f"💡 시뮬레이션: {_target_date.year}년 {_target_date.month}월 {_target_date.day}일까지 목표를 달성하려면, 현재 자산 기준으로 <strong style='color:#FFDAB9;'>매월 평균 +{_req_monthly_rate:.2f}%</strong>의 복리 수익이 필요합니다."
+                _sim_msg = f"💡 목표달성을 위해, <strong style='color:#FFDAB9;'>매월 평균 +{_req_monthly_rate:.2f}%</strong>의 복리수익이 필요해요"
             elif _current_asset >= _goal and _goal > 0:
                 _sim_msg = "💡 시뮬레이션: 이미 목표 금액을 달성했습니다! 새로운 목표를 향해 도전해 보세요."
             elif _days_left <= 0 and _goal > _current_asset:
