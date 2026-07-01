@@ -1476,7 +1476,7 @@ elements.forEach(el => {
 
             with sc2:
                 new_date = st.date_input(
-                    "📅 목표일 달력 (선택)",
+                    "📅 목표일 설정",
                     value=st.session_state.get('target_date_dynamic', datetime.date.today()),
                     format="YYYY/MM/DD"
                 )
