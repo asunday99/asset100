@@ -169,6 +169,40 @@ st.markdown("""
         box-shadow: 0 8px 32px 0 rgba(255, 153, 0, 0.1);
     }
 
+    @keyframes neonPulseBlueWhite {
+        0%, 100% {
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.8), 0 0 20px rgba(138, 180, 248, 0.6), 0 0 30px rgba(138, 180, 248, 0.4);
+            color: #E6F0FF;
+            opacity: 1;
+        }
+        50% {
+            text-shadow: 0 0 5px rgba(138, 180, 248, 0.5), 0 0 10px rgba(138, 180, 248, 0.3);
+            color: #C0D8FF;
+            opacity: 0.85;
+        }
+    }
+
+    .glass-card-premium-blue {
+        background: linear-gradient(180deg, rgba(30, 60, 90, 0.4) 0%, rgba(10, 25, 40, 0.6) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(138, 180, 248, 0.3);
+        border-top: 2px solid rgba(255, 255, 255, 0.6);
+        border-radius: 12px;
+        box-shadow: inset 0 1px 15px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.8);
+        transition: all 0.3s ease;
+    }
+
+    .neon-pulse-blue {
+        font-family: 'Inter', 'Arial Black', sans-serif;
+        font-size: 46px;
+        font-weight: 800;
+        text-align: center;
+        margin: 15px 0 25px 0;
+        letter-spacing: 1px;
+        animation: neonPulseBlueWhite 2s infinite ease-in-out;
+    }
+
     /* 핵심 결과값 텍스트 (네온 글로우 효과) */
     .neon-result {
         font-size: 4.5rem;
@@ -1349,16 +1383,18 @@ if menu == "대시보드":
         d_days_dynamic = (target_date_dynamic - datetime.date.today()).days
         formatted_gs_val = f"{gs_val:.1f}".rstrip('0').rstrip('.')
 
-        st.markdown(f'''<div class='glass-card' style='padding: 20px; padding-bottom:5px; border-radius: 15px 15px 0 0; border-bottom: none; margin-bottom: 0;'>
-<div style="text-align:center; padding-top:10px;">
-<div style="font-size:15px; color:#D8D8D8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">목표 {formatted_gs_val}억 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(255,255,255,0.18); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
-<div class="neon-text" style="font-size:42px;">₩{int(total_assets):,}</div>
-        
-<div style="width:100%; background-color:rgba(255,255,255,0.05); border-radius:10px; height:8px; margin-top:20px; margin-bottom:10px; overflow:hidden;">
-<div style="width:{ach}%; background:linear-gradient(90deg, #FF6B00, #FF9900); height:100%; border-radius:10px;"></div>
+        st.markdown(f'''<div class='glass-card-premium-blue' style='padding: 24px; padding-bottom:10px; margin-bottom: 0;'>
+<div style="text-align:left; margin-bottom:10px;">
+<div style="font-size:18px; color:#E6F0FF; font-weight:bold; letter-spacing:1px;">The Baseline</div>
+<div style="font-size:13px; color:#8ab4f8; margin-top:2px;">현재 자산 및 제약 조건 &nbsp;|&nbsp; 목표 {formatted_gs_val}억 &nbsp;|&nbsp; D-{d_days_dynamic}</div>
 </div>
-<div style="font-size:15px; color:#E0E0E0; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:space-between; align-items:center; letter-spacing:0.5px; gap: 4px;">
-<span style="color:#FF9900; font-weight:900; font-size:14px; white-space:nowrap;">{ach:.2f}% 달성</span>
+<div class="neon-pulse-blue">₩{int(total_assets):,}</div>
+        
+<div style="width:100%; background-color:rgba(138, 180, 248, 0.2); border-radius:4px; height:4px; margin-top:10px; margin-bottom:8px; overflow:hidden;">
+<div style="width:{ach}%; background:linear-gradient(90deg, #FFF2C8, #FFE066); box-shadow: 0 0 10px #FFE066; height:100%; border-radius:4px;"></div>
+</div>
+<div style="font-size:13px; color:#A0C0FF; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:flex-start; align-items:center; letter-spacing:0.5px;">
+<span style="color:#A0C0FF;">{ach:.2f}% 달성</span>
 </div>
     </div>''', unsafe_allow_html=True)
         
