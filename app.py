@@ -1430,19 +1430,37 @@ if menu == "대시보드":
 </div>
     </div>''', unsafe_allow_html=True)
         
-        with st.expander("목표 재설정", expanded=False):
-            st.components.v1.html('''<script>
+        _expander_title_goal = "🎯 비전 2027 마스터 플랜"
+        with st.expander(_expander_title_goal, expanded=False):
+            st.components.v1.html(f'''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
-elements.forEach(el => {
-    if (el.innerText.includes("목표 재설정")) {
+elements.forEach(el => {{
+    if (el.innerText.includes("{_expander_title_goal}")) {{
         el.style.fontSize = "80%";
         el.style.opacity = "1.0";
-    }
-});
+    }}
+}});
 </script>''', height=0)
+            
+            def add_to_goal(amount):
+                if 'goal_input_val' not in st.session_state:
+                    st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
+                st.session_state.goal_input_val += amount
+
+            if 'goal_input_val' not in st.session_state:
+                st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
+
             sc1, sc2 = st.columns(2)
             with sc1:
-                new_amt = st.number_input("목표 금액 (원)", value=int(st.session_state.gs_val * 100000000), step=100000000)
+                new_amt = st.number_input("목표 금액 (원)", step=100000000, key="goal_input_val")
+                
+                # 퀵 버튼 배치
+                bc1, bc2, bc3, bc4 = st.columns(4)
+                bc1.button("+5천만", on_click=add_to_goal, args=(50000000,), use_container_width=True)
+                bc2.button("+1억", on_click=add_to_goal, args=(100000000,), use_container_width=True)
+                bc3.button("+10억", on_click=add_to_goal, args=(1000000000,), use_container_width=True)
+                bc4.button("+50억", on_click=add_to_goal, args=(5000000000,), use_container_width=True)
+
                 if new_amt != int(st.session_state.gs_val * 100000000):
                     st.session_state.gs_val = new_amt / 100000000.0
                     _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
