@@ -1929,13 +1929,13 @@ elements.forEach(el => {
             # Using shadow filter for a neon effect on the line
             sparkline = f'''
             <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.9;">
-                <svg width="70" height="40" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="90" height="40" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="{path_d}" stroke="{stroke_color}" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 0px 3px {stroke_color});"/>
                 </svg>
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:90px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:110px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
         # 가로 스크롤 + chevron 표시
         st.markdown(
             f'<div class="swipe-wrapper" style="position:relative;">'
