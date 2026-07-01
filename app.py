@@ -244,7 +244,7 @@ st.markdown("""
         font-weight: 800;
         text-align: center;
         margin: 15px 0 25px 0;
-        letter-spacing: 1px;
+        letter-spacing: 3px;
         animation: neonPulseBlueWhite 2s infinite ease-in-out;
     }
 
