@@ -185,23 +185,19 @@ st.markdown("""
     @keyframes panelBorderPulse {
         0%, 100% {
             box-shadow: 
-                inset 0 1px 10px rgba(255,255,255,0.08), 
-                inset 0 0 20px rgba(138, 180, 248, 0.1), 
-                0 0 20px rgba(138, 180, 248, 0.6), 
+                inset 0 0 60px rgba(138, 180, 248, 0.7), 
+                inset 0 0 15px rgba(255, 255, 255, 0.4), 
                 0 10px 40px rgba(0,0,0,0.9);
+            border: 1px solid rgba(138, 180, 248, 0.8);
             border-top: 2px solid rgba(255, 255, 255, 0.9);
-            border-left: 1px solid rgba(138, 180, 248, 0.6);
-            border-right: 1px solid rgba(138, 180, 248, 0.6);
         }
         50% {
             box-shadow: 
-                inset 0 1px 5px rgba(255,255,255,0.03), 
-                inset 0 0 10px rgba(138, 180, 248, 0.05), 
-                0 0 10px rgba(138, 180, 248, 0.2), 
+                inset 0 0 15px rgba(138, 180, 248, 0.15), 
+                inset 0 0 5px rgba(255, 255, 255, 0.1), 
                 0 10px 40px rgba(0,0,0,0.9);
-            border-top: 2px solid rgba(255, 255, 255, 0.5);
-            border-left: 1px solid rgba(138, 180, 248, 0.2);
-            border-right: 1px solid rgba(138, 180, 248, 0.2);
+            border: 1px solid rgba(138, 180, 248, 0.2);
+            border-top: 2px solid rgba(255, 255, 255, 0.4);
         }
     }
 
