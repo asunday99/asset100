@@ -1663,7 +1663,7 @@ elements.forEach(el => {
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:280px;background:#0e0e1a;border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='color:#5B8DEF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
-    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'>{_cur_total_asset:,}원 이에요</div>
+    <div style='margin-bottom:10px;'><span style='color:#5B8DEF;font-size:22px;font-weight:900;'>{_cur_total_asset:,}</span> <span style='color:#aaaaaa;font-size:15px;font-weight:300;'>원 이에요</span></div>
     {_svg_d1}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
   </div>
