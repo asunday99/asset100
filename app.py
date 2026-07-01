@@ -1626,7 +1626,7 @@ elements.forEach(el => {
             _cur_ach = (total_assets / _goal_amount) * 100 if _goal_amount > 0 else 0
 
             # ── SVG Area Line Chart 생성 함수 ──
-            def _make_area_svg(data_dict, color, y_fmt):
+            def _make_area_svg(data_dict, c_left, c_right, y_fmt, chart_idx):
                 W, H = 460, 200
                 PAD_L, PAD_R, PAD_T, PAD_B = 48, 16, 20, 36
                 plot_w = W - PAD_L - PAD_R
@@ -1641,23 +1641,39 @@ elements.forEach(el => {
                 pts = [(xp(i), yp(data_dict.get(m, 0))) for i, m in enumerate(months)]
                 area_pts = f"{PAD_L},{H-PAD_B} " + " ".join(f"{x},{y}" for x, y in pts) + f" {pts[-1][0]},{H-PAD_B}"
                 line_pts = " ".join(f"{x},{y}" for x, y in pts)
+                
+                grad_id = f"grad_{chart_idx}"
+                mask_id = f"mask_{chart_idx}"
                 svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
+                svg += f'<defs>'
+                svg += f'  <linearGradient id="{grad_id}" x1="0%" y1="0%" x2="100%" y2="0%">'
+                svg += f'    <stop offset="0%" stop-color="{c_left}"/>'
+                svg += f'    <stop offset="100%" stop-color="{c_right}"/>'
+                svg += f'  </linearGradient>'
+                svg += f'  <linearGradient id="fade_{mask_id}" x1="0%" y1="0%" x2="0%" y2="100%">'
+                svg += f'    <stop offset="0%" stop-color="white" stop-opacity="0.8"/>'
+                svg += f'    <stop offset="100%" stop-color="white" stop-opacity="0.0"/>'
+                svg += f'  </linearGradient>'
+                svg += f'  <mask id="{mask_id}">'
+                svg += f'    <rect width="{W}" height="{H}" fill="url(#fade_{mask_id})" />'
+                svg += f'  </mask>'
+                svg += f'</defs>'
                 svg += f'<rect width="{W}" height="{H}" fill="transparent" rx="10"/>'
                 for gi in range(5):
                     gy = PAD_T + int(gi / 4 * plot_h)
                     svg += f'<line x1="{PAD_L}" y1="{gy}" x2="{W-PAD_R}" y2="{gy}" stroke="#222" stroke-width="1"/>'
-                svg += f'<polygon points="{area_pts}" fill="{color}" fill-opacity="0.18"/>'
-                svg += f'<polyline points="{line_pts}" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px {color})"/>'
+                svg += f'<polygon points="{area_pts}" fill="url(#{grad_id})" mask="url(#{mask_id})"/>'
+                svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
-                    svg += f'<circle cx="{x}" cy="{y}" r="4" fill="{color}" stroke="#111" stroke-width="1.5"/>'
+                    svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
-                    svg += f'<text x="{x}" y="{y-8}" fill="{color}" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{y-8}" fill="#ffffff" text-anchor="middle" font-size="9" font-weight="bold">{lbl}</text>'
                     svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="10">{m}월</text>'
                 svg += '</svg>'
                 return svg
 
-            _svg_d1 = _make_area_svg(_monthly_last_asset, "#5B8DEF", lambda v: f"{v/100000000:.1f}억")
-            _svg_d2 = _make_area_svg(_monthly_ach, "#9B72CF", lambda v: f"{v:.1f}%")
+            _svg_d1 = _make_area_svg(_monthly_last_asset, "#7a3b99", "#48cae4", lambda v: f"{v/100000000:.1f}억", 1)
+            _svg_d2 = _make_area_svg(_monthly_ach, "#5e35b1", "#82b1ff", lambda v: f"{v:.1f}%", 2)
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
