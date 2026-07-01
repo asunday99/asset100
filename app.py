@@ -263,8 +263,6 @@ st.markdown("""
             radial-gradient(ellipse 150px 10px at 50% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.8) 50%, transparent 100%),
             radial-gradient(ellipse 150px 10px at 0% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.8) 50%, transparent 100%),
             radial-gradient(ellipse 150px 10px at 100% 0%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.8) 50%, transparent 100%),
-            radial-gradient(circle 80px at 0% 100%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.6) 50%, transparent 100%),
-            radial-gradient(circle 80px at 100% 100%, rgba(240, 248, 255, 1.0) 0%, rgba(220, 240, 255, 0.6) 50%, transparent 100%),
             linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
