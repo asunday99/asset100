@@ -1857,10 +1857,10 @@ elements.forEach(el => {
         # 구조: summary_start_row 기준 헤더행=row+0, 평가금액=row+1, 평가손익=row+2, 수익률=row+3
         # 컬럼: col0=항목명, col1=총합계, col2=주식, col3=금, col4=채권, col5=코인, col6=현금성
         _cat_meta = [
-            ("주식",  2, "hover-stock", "#1e90ff"),
+            ("주식",  2, "hover-coin", "#FF6B00"),
             ("금",    3, "hover-gold",  "#f1c40f"),
             ("채권",  4, "hover-bond",  "#00d8d6"),
-            ("코인",  5, "hover-coin",  "#FF6B00"),
+            ("코인",  5, "hover-stock",  "#1e90ff"),
             ("현금성",6, "hover-cash",  "#6c5ce7"),
         ]
         def _parse_num(val):
@@ -1882,17 +1882,17 @@ elements.forEach(el => {
         except Exception as _e:
             # fallback: 하드코딩값
             _asset_rows = [
-                {"category": "주식",  "amount": 1974918892, "profit": 255389985,  "return_pct": 14.85,  "hover": "hover-stock", "color": "#1e90ff"},
+                {"category": "주식",  "amount": 1974918892, "profit": 255389985,  "return_pct": 14.85,  "hover": "hover-coin", "color": "#FF6B00"},
                 {"category": "금",    "amount": 142910490,  "profit": -17897045,  "return_pct": -11.13, "hover": "hover-gold",  "color": "#f1c40f"},
                 {"category": "채권",  "amount": 17516025,   "profit": -260227,    "return_pct": -1.46,  "hover": "hover-bond",  "color": "#00d8d6"},
-                {"category": "코인",  "amount": 298825354,  "profit": -71356901,  "return_pct": -19.28, "hover": "hover-coin",  "color": "#FF6B00"},
+                {"category": "코인",  "amount": 298825354,  "profit": -71356901,  "return_pct": -19.28, "hover": "hover-stock",  "color": "#1e90ff"},
                 {"category": "현금성","amount": 396232726,  "profit": 0,          "return_pct": 0.0,    "hover": "hover-cash",  "color": "#6c5ce7"},
             ]
         df_asset = pd.DataFrame([
-            {"category": "주식", "amount": _asset_rows[0]["amount"], "profit": _asset_rows[0]["profit"], "return_pct": _asset_rows[0]["return_pct"], "hover": "hover-stock", "color": "#1e90ff"},
+            {"category": "주식", "amount": _asset_rows[0]["amount"], "profit": _asset_rows[0]["profit"], "return_pct": _asset_rows[0]["return_pct"], "hover": "hover-coin", "color": "#FF6B00"},
             {"category": "금", "amount": _asset_rows[1]["amount"], "profit": _asset_rows[1]["profit"], "return_pct": _asset_rows[1]["return_pct"], "hover": "hover-gold", "color": "#f1c40f"},
             {"category": "채권", "amount": _asset_rows[2]["amount"], "profit": _asset_rows[2]["profit"], "return_pct": _asset_rows[2]["return_pct"], "hover": "hover-bond", "color": "#00d8d6"},
-            {"category": "코인", "amount": _asset_rows[3]["amount"], "profit": _asset_rows[3]["profit"], "return_pct": _asset_rows[3]["return_pct"], "hover": "hover-coin", "color": "#FF6B00"},
+            {"category": "코인", "amount": _asset_rows[3]["amount"], "profit": _asset_rows[3]["profit"], "return_pct": _asset_rows[3]["return_pct"], "hover": "hover-stock", "color": "#1e90ff"},
             {"category": "현금성", "amount": _asset_rows[4]["amount"], "profit": _asset_rows[4]["profit"], "return_pct": _asset_rows[4]["return_pct"], "hover": "hover-cash", "color": "#6c5ce7"},
         ])
         import random
