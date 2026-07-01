@@ -1430,16 +1430,15 @@ if menu == "대시보드":
 </div>
     </div>''', unsafe_allow_html=True)
         
-        _expander_title_goal = "목표 재설정"
-        with st.expander(_expander_title_goal, expanded=False):
-            st.components.v1.html(f'''<script>
+        with st.expander("목표 재설정", expanded=False):
+            st.components.v1.html('''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
-elements.forEach(el => {{
-    if (el.innerText.includes("{_expander_title_goal}")) {{
+elements.forEach(el => {
+    if (el.innerText.includes("목표 재설정")) {
         el.style.fontSize = "80%";
         el.style.opacity = "1.0";
-    }}
-}});
+    }
+});
 </script>''', height=0)
             
             def add_to_goal(amount):
