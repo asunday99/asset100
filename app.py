@@ -955,16 +955,16 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     cal_obj = calendar.Calendar(firstweekday=6)
     weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
-    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid rgba(138, 180, 248, 0.3);margin-top:8px;">'
+    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #C0D8FF;margin-top:8px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-        tbl += f'<th style="background-color:#000000;color:#a0a0a0;padding:6px 2px;border:1px solid rgba(138, 180, 248, 0.3);text-align:center;font-size:12px;">{day_name}</th>'
+        tbl += f'<th style="background-color:#000000;color:#a0a0a0;padding:6px 2px;border:1px solid #C0D8FF;text-align:center;font-size:12px;">{day_name}</th>'
     tbl += "</tr>"
     for week in weeks:
         tbl += "<tr>"
         for d in week:
             day_text   = str(d.day) if d.month == _disp_month else " "
-            style_date = "height:24px;background-color:#000000;color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid rgba(138, 180, 248, 0.3);font-size:11px;"
+            style_date = "height:24px;background-color:#000000;color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #C0D8FF;font-size:11px;"
             tbl += f'<td style="{style_date}">{day_text}</td>'
         tbl += "</tr><tr>"
         for d in week:
@@ -978,7 +978,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             else:
                 val_color     = "white"
                 formatted_val = "&nbsp;"
-            style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid rgba(138, 180, 248, 0.3);text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
+            style_data = f"height:60px;background-color:#000000;color:{val_color};border:1px solid #C0D8FF;text-align:center;vertical-align:middle;padding:3px;font-size:12px;font-weight:bold;"
             tbl += f'<td style="{style_data}">{formatted_val}</td>'
         tbl += "</tr>"
     tbl += "</table>"
