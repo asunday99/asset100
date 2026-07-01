@@ -250,11 +250,11 @@ st.markdown("""
             linear-gradient(180deg, rgba(10, 20, 40, 0.05) 0%, rgba(5, 10, 20, 0.3) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
-        border: 1px solid rgba(255, 215, 0, 0.8);
+        border: 1px solid rgba(225, 195, 135, 0.8);
         border-top: 2px solid rgba(255, 255, 255, 0.9);
         border-radius: 12px;
         box-shadow: 
-            inset 0 0 60px rgba(255, 215, 0, 0.7), 
+            inset 0 0 60px rgba(225, 195, 135, 0.7), 
             inset 0 0 15px rgba(255, 255, 255, 0.4), 
             0 10px 40px rgba(0,0,0,0.9);
         transition: all 0.3s ease;
@@ -267,7 +267,7 @@ st.markdown("""
         left: 6px;
         right: 6px;
         bottom: 6px;
-        border: 1px solid rgba(255, 215, 0, 0.4);
+        border: 1px solid rgba(225, 195, 135, 0.4);
         border-radius: 8px;
         pointer-events: none;
     }
