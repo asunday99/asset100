@@ -964,7 +964,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
         tbl += "<tr>"
         for d in week:
             day_text   = str(d.day) if d.month == _disp_month else " "
-            style_date = "height:24px;background-color:#000000;color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #C0D8FF;font-size:11px;"
+            style_date = "height:24px;background:linear-gradient(180deg, rgba(35, 55, 90, 0.5) 0%, rgba(10, 15, 25, 0.9) 100%);color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid #C0D8FF;font-size:11px;"
             tbl += f'<td style="{style_date}">{day_text}</td>'
         tbl += "</tr><tr>"
         for d in week:
