@@ -1986,7 +1986,7 @@ elements.forEach(el => {
                 
                 # 강건한 데이터행 추출 (헤더 무시)
                 for lc, vc in [(13, 14), (15, 16)]:
-                    for row_i in range(min(15, len(df_dash))):
+                    for row_i in range(len(df_dash)):
                         try:
                             raw_lbl = str(df_dash.iloc[row_i, lc]).replace('[','').replace(']','').strip()
                             val = str(df_dash.iloc[row_i, vc]).strip()
