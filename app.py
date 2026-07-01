@@ -1678,14 +1678,20 @@ elements.forEach(el => {
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#5B8DEF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 현재까지 총 자산은</div>
-    <div style='margin-bottom:10px;'><span style='color:#5B8DEF;font-size:22px;font-weight:900;'>{_cur_total_asset:,}</span> <span style='color:#aaaaaa;font-size:15px;font-weight:300;'>원 이에요</span></div>
+    <div style='margin-bottom:16px; white-space:nowrap;'>
+      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'>&#128200; 현재 총 금융자산은 </span>
+      <span style='color:#D8B4FE; font-size:22px; font-weight:900;'>{_cur_total_asset:,}</span>
+      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'> 원 이에요</span>
+    </div>
     {_svg_d1}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월말 자산 추이</div>
   </div>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#9B72CF;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#127919; 목표 {formatted_gs_val}억, 지금 이만큼 왔어요</div>
-    <div style='color:white;font-size:20px;font-weight:900;margin-bottom:10px;'><span style='color:#9B72CF;'>{_cur_ach:.2f}%</span> 달성</div>
+    <div style='margin-bottom:16px; white-space:nowrap;'>
+      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'>&#127919; 목표의 </span>
+      <span style='color:#D8B4FE; font-size:22px; font-weight:900;'>{_cur_ach:.2f}</span>
+      <span style='color:#FFDAB9; font-size:16px; font-weight:bold;'> % 달성 중이에요</span>
+    </div>
     {_svg_d2}
     <div style='color:#555;font-size:10px;margin-top:4px;text-align:right;'>월별 목표 달성률 추이</div>
   </div>
