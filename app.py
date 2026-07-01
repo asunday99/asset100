@@ -2023,30 +2023,26 @@ elements.forEach(el => {
                         if chg is not None and not __import__('pandas').isna(chg):
                             sign = "+" if chg > 0 else ""
                             change_color = "#FF4B4B" if chg > 0 else "#1e90ff"
-                            change_str = f' <span style="font-size:12px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
+                            change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
                     
                     diff_color = 'color:white;'
                     # Padding reduced to make boxes thinner as requested
-                    cards_html_list.append(f'<div style="background:#1a1a2e;border-radius:12px;padding:8px 10px;text-align:center;"><div style="color:#a0a0a0;font-size:11px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{lbl}</div><div style="{diff_color}font-size:15px;font-weight:bold;">{val}{change_str}</div></div>')
+                    cards_html_list.append(f'<div style="background:#1a1a2e;border-radius:10px;padding:6px 4px;text-align:center;"><div style="color:#a0a0a0;font-size:10.5px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.3px;">{lbl}</div><div style="{diff_color}font-size:13.5px;font-weight:bold;letter-spacing:-0.3px;">{val}{change_str}</div></div>')
                 
-                # 순서에 맞춰 3줄로 나눔
-                row1 = "".join(cards_html_list[0:4])
-                row2 = "".join(cards_html_list[4:8])
-                row3 = "".join(cards_html_list[8:10])
+                # 순서에 맞춰 2줄로 나눔 (5개씩)
+                row1 = "".join(cards_html_list[0:5])
+                row2 = "".join(cards_html_list[5:10])
                 
-                # Mobile shows 2 per line, desktop 4 per line
+                # Mobile shows 2 per line, desktop 5 per line
                 macro_grid_html = f'''
                 <style>
-                .macro-grid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; }}
-                .macro-grid-row3 {{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:8px; width:50%; margin: 0 auto; }}
+                .macro-grid {{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:6px; }}
                 @media(max-width:768px){{
-                    .macro-grid {{ grid-template-columns:repeat(2,1fr); }}
-                    .macro-grid-row3 {{ width:100%; }}
+                    .macro-grid {{ grid-template-columns:repeat(3,1fr); }}
                 }}
                 </style>
                 <div class="macro-grid">{row1}</div>
                 <div class="macro-grid">{row2}</div>
-                <div class="macro-grid-row3">{row3}</div>
                 '''
                 st.markdown(macro_grid_html, unsafe_allow_html=True)
             except Exception as e:
