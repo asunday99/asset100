@@ -2089,7 +2089,7 @@ elements.forEach(el => {
                 parents = [""]
                 values = [0]
                 colors = [""]
-                color_map = {'주식': '#B5A58C', '금': '#8e44ad', '채권': '#9b59b6', '코인': '#6c5ce7', '현금성': '#a29bfe', '개인': '#1A112A', '법인': '#2D1F44'}
+                color_map = {'주식': '#FFD700', '금': '#8e44ad', '채권': '#9b59b6', '코인': '#6c5ce7', '현금성': '#a29bfe', '개인': '#1A112A', '법인': '#2D1F44'}
                 for cat in cats:
                     labels.append(cat)
                     parents.append("총자산")
@@ -2110,13 +2110,28 @@ elements.forEach(el => {
                 fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
                 
                 st.markdown("""
+                <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="goldGradient" x1="10%" y1="0%" x2="90%" y2="100%">
+                      <stop offset="0%" stop-color="#F9F5D9" />
+                      <stop offset="25%" stop-color="#D4AF37" />
+                      <stop offset="50%" stop-color="#8A5A19" />
+                      <stop offset="75%" stop-color="#D4AF37" />
+                      <stop offset="100%" stop-color="#F9F5D9" />
+                    </linearGradient>
+                  </defs>
+                </svg>
                 <style>
+                path[style*="rgb(255, 215, 0)"], path[style*="rgb(255,215,0)"], path[fill="#FFD700" i] {
+                    fill: url(#goldGradient) !important;
+                }
+                
                 @keyframes donutNeonPulse {
                     0%, 100% {
-                        filter: drop-shadow(0px 0px 8px rgba(181, 165, 140, 0.4)) brightness(1.0);
+                        filter: drop-shadow(0px 0px 8px rgba(212, 175, 55, 0.4)) brightness(1.0);
                     }
                     50% {
-                        filter: drop-shadow(0px 0px 22px rgba(181, 165, 140, 0.85)) brightness(1.15);
+                        filter: drop-shadow(0px 0px 22px rgba(212, 175, 55, 0.85)) brightness(1.15);
                     }
                 }
                 .js-plotly-plot .slice path {
