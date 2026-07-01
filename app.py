@@ -1677,7 +1677,7 @@ elements.forEach(el => {
                 svg += '</svg>'
                 return svg
 
-            _svg_d1 = _make_area_svg(_monthly_last_asset, "#AA46D6", "#48cae4", lambda v: f"{v/100000000:.1f}억", 1)
+            _svg_d1 = _make_area_svg(_monthly_last_asset, "#AA46D6", "#1CDBF0", lambda v: f"{v/100000000:.1f}억", 1)
             _svg_d2 = _make_area_svg(_monthly_ach, "#C04DFF", "#82b1ff", lambda v: f"{v:.1f}%", 2)
 
             _charts_html = f"""
