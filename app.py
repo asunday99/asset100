@@ -1979,7 +1979,16 @@ elements.forEach(el => {
 
     
         # -- 매크로 지표 expander --
-        with st.expander("📊 매크로 지표", expanded=False):
+        with st.expander("매크로 지표", expanded=False):
+            st.components.v1.html('''<script>
+            const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
+            elements.forEach(el => {
+                if (el.innerText.includes("매크로 지표")) {
+                    el.style.fontSize = "80%";
+                    el.style.color = "#FFDAB9";
+                }
+            });
+            </script>''', height=0)
             try:
                 macro_changes = get_macro_changes()
                 pairs = []
@@ -2107,7 +2116,7 @@ elements.forEach(el => {
                         values.append(corp_amts[i])
                         colors.append(color_map['법인'])
                 fig_sb = go.Figure(go.Sunburst(labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(color='rgba(0,0,0,0)')), textinfo="label+percent parent", insidetextorientation='radial'))
-                fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
+                fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FFDAB9", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
                 
                 st.markdown("""
                 <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
