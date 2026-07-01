@@ -1966,6 +1966,17 @@ elements.forEach(el => {
                     transition: opacity 0.3s ease-in-out;
                     background: none !important; border-radius: 0 !important; z-index: 50;
                 }
+                .swipe-glow-right::before, .swipe-glow-left::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 44px; height: 44px;
+                    background-color: rgba(180, 130, 255, 0.25);
+                    border-radius: 50%;
+                    z-index: -1;
+                    box-shadow: 0 0 15px rgba(180, 130, 255, 0.4);
+                }
                 .swipe-glow-right {
                     right: 25px;
                     border-top: 4px solid rgba(180,130,255,0.9);
