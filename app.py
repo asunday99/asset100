@@ -772,7 +772,7 @@ def render_trade_records(urls: dict):
         # YTD 전체 평균
         _all_rates2 = [r for rates in _monthly_rates_c2.values() for r in rates]
         _ytd_val = sum(_all_rates2) / len(_all_rates2) if _all_rates2 else 0.0
-        _ytd = f"{_ytd_val:.2f}%"
+        _ytd = f"+{_ytd_val:.2f}%" if _ytd_val > 0 else f"{_ytd_val:.2f}%"
 
         # ── 3) 콤보차트 SVG 생성 함수 ──
         def _make_combo_svg(bar_dict, line_dict, color_pos, color_neg, bar_label, line_label, fmt_bar, fmt_line):
@@ -886,12 +886,12 @@ def render_trade_records(urls: dict):
         _chart_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 올해 팔아서 실제로 번 돈은</div>
+    <div style='color:#FF6B00;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128200; 올해 확정된 수익은</div>
     <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_year_profit_c:,}원 이에요</div>
     {_svg1}
   </div>
   <div style='flex:1;min-width:300px;background:#111;border-radius:12px;padding:18px 16px 12px 16px;'>
-    <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128201; 올해 평균 수익률은</div>
+    <div style='color:#8A2BE2;font-size:13px;font-weight:bold;margin-bottom:4px;'>&#128201; 올해 매매 평균수익률은</div>
     <div style='color:white;font-size:22px;font-weight:900;margin-bottom:12px;'>{_ytd} 이에요</div>
     {_svg2}
   </div>
