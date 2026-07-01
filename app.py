@@ -1889,8 +1889,8 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background: linear-gradient(135deg, rgba(255,188,165,0.8), rgba(255,240,230,0.6)) !important;
-                    border: 1.5px solid rgba(255, 188, 165, 0.8) !important;
+                    background-color: rgba(255, 188, 165, 0.8) !important;
+                    border: 1.5px solid rgba(255, 188, 165, 0.9) !important;
                     border-radius: 50% !important;
                     box-shadow: 0 0 15px rgba(255, 188, 165, 0.5);
                     pointer-events: auto; cursor: pointer; opacity: 1;
@@ -1905,7 +1905,7 @@ elements.forEach(el => {
                 .swipe-glow-right::after, .swipe-glow-left::after {
                     content: '';
                     display: block;
-                    width: 10px; height: 10px;
+                    width: 14px; height: 14px;
                 }
                 .swipe-glow-right::after {
                     border-top: 5px solid #FF4B4B;
