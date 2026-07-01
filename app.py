@@ -1935,7 +1935,7 @@ elements.forEach(el => {
             </div>
             '''
             
-            cards_html += f'''<div class="glass-card asset-card {row['hover']}" style="position:relative;padding-right:110px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
+            cards_html += f'''<div class="glass-card asset-card {row['hover']}" tabindex="0" style="outline:none;position:relative;padding-right:110px;background:rgba(181,165,140,0.1);"><div style="font-size:13px;color:#B5A58C;font-weight:bold;margin-bottom:5px;">🔹{row['category']}</div><div style="font-family:'Oswald', sans-serif;font-size:25px;letter-spacing:1px;font-weight:300;color:#FFFFFF;margin-bottom:5px;white-space:nowrap;">₩{int(row['amount']):,}</div><div class="{c_class}" style="font-size:13px;">{p_sign}{int(row['profit']):,} ({p_sign}{row['return_pct']}%)</div>{sparkline}</div>'''
         # 가로 스크롤 + chevron 표시
         st.markdown(
             f'<div class="swipe-wrapper" style="position:relative;">'
@@ -1962,7 +1962,7 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute; top: 50% !important;
                     width: 16px !important; height: 16px !important;
-                    pointer-events: none; opacity: 1;
+                    pointer-events: auto; cursor: pointer; opacity: 1;
                     transition: opacity 0.3s ease-in-out;
                     background: none !important; border-radius: 0 !important; z-index: 50;
                 }
@@ -2024,6 +2024,27 @@ elements.forEach(el => {
                 window.parent.addEventListener('resize', () => { updateBounds(); checkScroll(); });
                 setTimeout(() => { updateBounds(); checkScroll(); }, 300);
                 setTimeout(() => { updateBounds(); checkScroll(); }, 1200);
+
+                const cardWidth = firstCard.offsetWidth + 15;
+                overlayRight.addEventListener('click', () => {
+                    container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                });
+                overlayLeft.addEventListener('click', () => {
+                    container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                });
+
+                const cards = container.querySelectorAll('.asset-card');
+                cards.forEach(card => {
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowRight') {
+                            e.preventDefault();
+                            container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                        } else if (e.key === 'ArrowLeft') {
+                            e.preventDefault();
+                            container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                        }
+                    });
+                });
             }
         })();
         </script>
