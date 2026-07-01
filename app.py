@@ -957,13 +957,13 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid rgba(255, 218, 185, 0.5);margin-top:8px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
-        tbl += f'<th style="background-color:#000000;color:#FFDAB9;padding:6px 2px;border:1px solid rgba(255, 218, 185, 0.5);text-align:center;font-size:12px;">{day_name}</th>'
+        tbl += f'<th style="background-color:#000000;color:#a0a0a0;padding:6px 2px;border:1px solid rgba(255, 218, 185, 0.5);text-align:center;font-size:12px;">{day_name}</th>'
     tbl += "</tr>"
     for week in weeks:
         tbl += "<tr>"
         for d in week:
             day_text   = str(d.day) if d.month == _disp_month else " "
-            style_date = "height:24px;background-color:#000000;color:#FFDAB9;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid rgba(255, 218, 185, 0.5);font-size:11px;"
+            style_date = "height:24px;background-color:#000000;color:#a0a0a0;font-weight:bold;text-align:left;padding:3px 4px;border:1px solid rgba(255, 218, 185, 0.5);font-size:11px;"
             tbl += f'<td style="{style_date}">{day_text}</td>'
         tbl += "</tr><tr>"
         for d in week:
