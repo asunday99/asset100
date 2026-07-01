@@ -1451,7 +1451,7 @@ const elements = parent.document.querySelectorAll('div[data-testid="stExpander"]
 elements.forEach(el => {
     if (el.innerText.includes("목표 재설정")) {
         el.style.fontSize = "80%";
-        el.style.opacity = "0.7";
+        el.style.opacity = "1.0";
     }
 });
 </script>''', height=0)
@@ -1889,10 +1889,10 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background-color: rgba(255, 188, 165, 0.8) !important;
-                    border: 1.5px solid rgba(255, 188, 165, 0.9) !important;
+                    background-color: rgba(181, 165, 140, 0.2) !important;
+                    border: 1.5px solid rgba(181, 165, 140, 0.3) !important;
                     border-radius: 50% !important;
-                    box-shadow: 0 0 15px rgba(255, 188, 165, 0.5);
+                    box-shadow: 0 0 15px rgba(181, 165, 140, 0.15);
                     pointer-events: auto; cursor: pointer; opacity: 1;
                     transition: opacity 0.3s ease-in-out;
                     z-index: 50;
@@ -2116,7 +2116,7 @@ elements.forEach(el => {
                         values.append(corp_amts[i])
                         colors.append(color_map['법인'])
                 fig_sb = go.Figure(go.Sunburst(labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(color='rgba(0,0,0,0)')), textinfo="label+percent parent", insidetextorientation='radial'))
-                fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FFDAB9", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
+                fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#B5A58C", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
                 
                 st.markdown("""
                 <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
