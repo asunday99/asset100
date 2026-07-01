@@ -2144,7 +2144,7 @@ elements.forEach(el => {
                 parents = [""]
                 values = [0]
                 colors = [""]
-                color_map = {'주식': '#FFD700', '금': '#8950a0', '채권': '#9564aa', '코인': '#7365dd', '현금성': '#a6a0f8', '개인': '#1a1327', '법인': '#2e233f'}
+                color_map = {'주식': '#FFD700', '금': '#8e44ad', '채권': '#9b59b6', '코인': '#6c5ce7', '현금성': '#a29bfe', '개인': '#1A112A', '법인': '#2D1F44'}
                 for cat in cats:
                     labels.append(cat)
                     parents.append("총자산")
