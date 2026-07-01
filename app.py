@@ -1962,10 +1962,10 @@ elements.forEach(el => {
                 .swipe-glow-right, .swipe-glow-left {
                     position: absolute;
                     width: 32px !important; height: 32px !important;
-                    background-color: rgba(180, 130, 255, 0.25) !important;
-                    border: 1.5px solid rgba(180, 130, 255, 0.7) !important;
+                    background: linear-gradient(135deg, rgba(255,188,165,0.5), rgba(255,240,230,0.3)) !important;
+                    border: 1.5px solid rgba(255, 188, 165, 0.8) !important;
                     border-radius: 50% !important;
-                    box-shadow: 0 0 15px rgba(180, 130, 255, 0.4);
+                    box-shadow: 0 0 15px rgba(255, 188, 165, 0.5);
                     pointer-events: auto; cursor: pointer; opacity: 1;
                     transition: opacity 0.3s ease-in-out;
                     z-index: 50;
@@ -1981,25 +1981,25 @@ elements.forEach(el => {
                     width: 10px; height: 10px;
                 }
                 .swipe-glow-right::after {
-                    border-top: 5px solid rgba(180,130,255,0.9);
-                    border-right: 5px solid rgba(180,130,255,0.9);
+                    border-top: 5px solid #000000;
+                    border-right: 5px solid #000000;
                     animation: chevron-pulse-right 1.2s infinite alternate ease-in-out;
                 }
                 .swipe-glow-left::after {
-                    border-bottom: 5px solid rgba(180,130,255,0.9);
-                    border-left: 5px solid rgba(180,130,255,0.9);
+                    border-bottom: 5px solid #000000;
+                    border-left: 5px solid #000000;
                     animation: chevron-pulse-left 1.2s infinite alternate ease-in-out;
                 }
                 
                 .swipe-glow-right.hidden, .swipe-glow-left.hidden { opacity: 0 !important; pointer-events: none; }
                 
                 @keyframes chevron-pulse-right {
-                    from { opacity:0.4; filter:drop-shadow(0 0 2px rgba(180,130,255,0.8)); transform: rotate(45deg) translate(-1px, 1px); }
-                    to   { opacity:1; filter:drop-shadow(0 0 8px rgba(180,130,255,1)); transform: rotate(45deg) translate(1px, -1px); }
+                    from { opacity:0.6; transform: rotate(45deg) translate(-1px, 1px); }
+                    to   { opacity:1; transform: rotate(45deg) translate(1px, -1px); }
                 }
                 @keyframes chevron-pulse-left {
-                    from { opacity:0.4; filter:drop-shadow(0 0 2px rgba(180,130,255,0.8)); transform: rotate(45deg) translate(1px, -1px); }
-                    to   { opacity:1; filter:drop-shadow(0 0 8px rgba(180,130,255,1)); transform: rotate(45deg) translate(-1px, 1px); }
+                    from { opacity:0.6; transform: rotate(45deg) translate(1px, -1px); }
+                    to   { opacity:1; transform: rotate(45deg) translate(-1px, 1px); }
                 }
                 `;
                 doc.head.appendChild(style);
