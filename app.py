@@ -2089,7 +2089,7 @@ elements.forEach(el => {
                 parents = [""]
                 values = [0]
                 colors = [""]
-                color_map = {'주식': '#1e3799', '금': '#f1c40f', '채권': '#00d8d6', '코인': '#FF9900', '현금성': '#6c5ce7', '개인': '#1A112A', '법인': '#2D1F44'}
+                color_map = {'주식': '#B5A58C', '금': '#8e44ad', '채권': '#9b59b6', '코인': '#6c5ce7', '현금성': '#a29bfe', '개인': '#1A112A', '법인': '#2D1F44'}
                 for cat in cats:
                     labels.append(cat)
                     parents.append("총자산")
@@ -2108,6 +2108,30 @@ elements.forEach(el => {
                         colors.append(color_map['법인'])
                 fig_sb = go.Figure(go.Sunburst(labels=labels, parents=parents, values=values, marker=dict(colors=colors, line=dict(color='rgba(0,0,0,0)')), textinfo="label+percent parent", insidetextorientation='radial'))
                 fig_sb.update_layout(title=dict(text="자산비중", font=dict(color="#FF9900", size=16)), margin=dict(t=50, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color='white'), height=450)
+                
+                st.markdown("""
+                <style>
+                @keyframes donutNeonPulse {
+                    0%, 100% {
+                        filter: drop-shadow(0px 0px 8px rgba(181, 165, 140, 0.4)) brightness(1.0);
+                    }
+                    50% {
+                        filter: drop-shadow(0px 0px 22px rgba(181, 165, 140, 0.85)) brightness(1.15);
+                    }
+                }
+                .js-plotly-plot .slice path {
+                    animation: donutNeonPulse 2.5s infinite ease-in-out;
+                    stroke: rgba(255, 255, 255, 0.1) !important;
+                    stroke-width: 1px !important;
+                    transform-origin: center;
+                }
+                .js-plotly-plot .slice path:hover {
+                    animation: none;
+                    filter: drop-shadow(0px 0px 30px rgba(255, 255, 255, 1.0)) brightness(1.3);
+                }
+                </style>
+                """, unsafe_allow_html=True)
+                
                 st.plotly_chart(fig_sb, use_container_width=True)
             except Exception as e:
                 st.error(f"차트 렌더링 에러: {e}")
