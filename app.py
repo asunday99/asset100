@@ -1656,7 +1656,7 @@ elements.forEach(el => {
                 svg += f'  </radialGradient>'
                 if c_bottom_right:
                     svg += f'  <radialGradient id="mint_{chart_idx}" cx="90%" cy="65%" r="60%">'
-                    svg += f'    <stop offset="0%" stop-color="{c_bottom_right}" stop-opacity="0.6"/>'
+                    svg += f'    <stop offset="0%" stop-color="{c_bottom_right}" stop-opacity="0.42"/>'
                     svg += f'    <stop offset="100%" stop-color="transparent" stop-opacity="0.0"/>'
                     svg += f'  </radialGradient>'
                 svg += f'  <linearGradient id="fade_{mask_id}" x1="0%" y1="0%" x2="0%" y2="100%">'
