@@ -2113,11 +2113,11 @@ elements.forEach(el => {
                 <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
                   <defs>
                     <linearGradient id="goldGradient" x1="10%" y1="0%" x2="90%" y2="100%">
-                      <stop offset="0%" stop-color="#F9F5D9" />
-                      <stop offset="25%" stop-color="#D4AF37" />
-                      <stop offset="50%" stop-color="#8A5A19" />
-                      <stop offset="75%" stop-color="#D4AF37" />
-                      <stop offset="100%" stop-color="#F9F5D9" />
+                      <stop offset="0%" stop-color="#F2EFE1" />
+                      <stop offset="25%" stop-color="#B49E56" />
+                      <stop offset="50%" stop-color="#73562F" />
+                      <stop offset="75%" stop-color="#B49E56" />
+                      <stop offset="100%" stop-color="#F2EFE1" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -2128,10 +2128,10 @@ elements.forEach(el => {
                 
                 @keyframes donutNeonPulse {
                     0%, 100% {
-                        filter: drop-shadow(0px 0px 8px rgba(212, 175, 55, 0.4)) brightness(1.0);
+                        filter: drop-shadow(0px 0px 8px rgba(180, 158, 86, 0.4)) brightness(1.0);
                     }
                     50% {
-                        filter: drop-shadow(0px 0px 22px rgba(212, 175, 55, 0.85)) brightness(1.15);
+                        filter: drop-shadow(0px 0px 22px rgba(180, 158, 86, 0.85)) brightness(1.15);
                     }
                 }
                 .js-plotly-plot .slice path {
