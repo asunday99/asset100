@@ -952,7 +952,7 @@ elements.forEach(el => {{
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
-      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 올해 확정된 수익은 </span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128200; 올해 확정수익은 </span>
       <span style='color:rgba(245, 245, 245, 0.85); font-size:20px; font-weight:900;'>{_year_profit_c:,}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 원 이에요</span>
     </div>
@@ -960,7 +960,7 @@ elements.forEach(el => {{
   </div>
   <div style='flex:1;min-width:280px;background:#000000;border:1px solid rgba(255, 218, 185, 0.5);border-radius:12px;padding:18px 16px 12px 16px;'>
     <div style='margin-bottom:16px; white-space:nowrap;'>
-      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128201; 올해 매매 평균수익률은 </span>
+      <span style='color:#FFDAB9; font-size:14px; font-weight:300;'>&#128201; 올해 매매수익률은 평균 </span>
       <span style='color:rgba(245, 245, 245, 0.85); font-size:20px; font-weight:900;'>{_ytd}</span>
       <span style='color:#FFDAB9; font-size:14px; font-weight:300;'> 이에요</span>
     </div>
