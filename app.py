@@ -655,6 +655,30 @@ _components.html('''
             appRoot.style.setProperty('width', '100vw', 'important');
             appRoot.style.setProperty('overflow-x', 'hidden', 'important');
         }
+
+        // 4) 달력 상단 메뉴 모바일에서 세로로 깨지는 현상 방지 (gap 초과 회피 방식)
+        var buttons = Array.from(doc.querySelectorAll('button'));
+        var prevBtn = buttons.find(b => b.innerText && b.innerText.includes('◄'));
+        if (prevBtn) {
+            var hzBlock = prevBtn.closest('[data-testid="stHorizontalBlock"]');
+            if (hzBlock) {
+                hzBlock.style.setProperty('flex-wrap', 'nowrap', 'important');
+                var cols = hzBlock.children;
+                if(cols.length >= 3) {
+                    cols[0].style.setProperty('width', 'auto', 'important');
+                    cols[0].style.setProperty('flex', '1 1 0%', 'important');
+                    cols[0].style.setProperty('min-width', '0', 'important');
+                    
+                    cols[1].style.setProperty('width', 'auto', 'important');
+                    cols[1].style.setProperty('flex', '6 1 0%', 'important');
+                    cols[1].style.setProperty('min-width', '0', 'important');
+                    
+                    cols[2].style.setProperty('width', 'auto', 'important');
+                    cols[2].style.setProperty('flex', '1 1 0%', 'important');
+                    cols[2].style.setProperty('min-width', '0', 'important');
+                }
+            }
+        }
     }
 
     // 즉시 실행
@@ -1049,9 +1073,9 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
         _nav_color = "#FF4B4B" if _monthly_total_nav > 0 else ("#4B9FFF" if _monthly_total_nav < 0 else "#888")
         _nav_sign  = "+" if _monthly_total_nav > 0 else ""
         st.markdown(
-            f"<div style='text-align:center;font-size:16px;font-weight:900;color:#fff;padding-top:6px;'>"
+            f"<div style='text-align:center;font-size:clamp(12px, 3.5vw, 16px);font-weight:900;color:#fff;padding-top:6px;line-height:1.2;'>"
             f"{_disp_year}년 {_disp_month}월 "
-            f"<span style='color:{_nav_color};font-size:14px;'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
+            f"<span style='color:{_nav_color};font-size:clamp(11px, 3vw, 14px);'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
             unsafe_allow_html=True
         )
 
@@ -1087,10 +1111,10 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 base_bg = "radial-gradient(circle at top left, rgba(255, 218, 185, 0.2), rgba(138, 180, 248, 0.15)), linear-gradient(135deg, rgba(10, 20, 40, 0.8), rgba(0, 0, 0, 0.9))"
                 border_style = "1px solid rgba(255, 218, 185, 0.5)"
                 box_shadow = "box-shadow: 0 0 12px rgba(138, 180, 248, 0.2), inset 0 0 15px rgba(255, 218, 185, 0.15);"
-                profit_html = f"<div style='margin-top:14px; font-size:17px; font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-0.5px;'>+{val:,.0f}</div>"
+                profit_html = f"<div style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 17px); font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-1px; word-break:break-all; line-height:1.1;'>+{val:,.0f}</div>"
             elif val < 0:
                 # Loss Style
-                profit_html = f"<div style='margin-top:14px; font-size:14px; font-weight:bold; color:#4B9FFF;'>{val:,.0f}</div>"
+                profit_html = f"<div style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 14px); font-weight:bold; color:#4B9FFF; letter-spacing:-1px; word-break:break-all; line-height:1.1;'>{val:,.0f}</div>"
             elif is_holiday:
                 profit_html = f"<div style='margin-top:14px; font-size:12px; font-weight:bold; color:#666666;'>휴장</div>"
             else:
