@@ -790,7 +790,7 @@ def render_trade_records(urls: dict):
     if _month_profit > 0:
         _profit_text = f"+{_month_profit:,}원"
         _profit_class = ""
-        _profit_color = "color:#FF4B4B;"
+        _profit_color = "color:#4B9FFF;"
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = f"이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
     elif _month_profit < 0:
