@@ -804,7 +804,7 @@ def render_trade_records(urls: dict):
         _profit_class = "neon-zero-blue"
         _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
-        _expander_title = "달력을 눌러보세요"
+        _expander_title = "여기를 눌러보세요"
 
     # 이번 달 남은 일수 계산 (월말 기준 D-day)
     import calendar
@@ -827,7 +827,7 @@ def render_trade_records(urls: dict):
 """, unsafe_allow_html=True)
 
     # ── 매매 캘린더 ─────────────────────────────────────────────────
-    with st.expander(_expander_title, expanded=True):
+    with st.expander(_expander_title, expanded=False):
         st.components.v1.html(f'''<script>
 const elements = parent.document.querySelectorAll('div[data-testid="stExpander"] details summary p');
 elements.forEach(el => {{
