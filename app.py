@@ -28,25 +28,9 @@ if 'ty_val' not in st.session_state:
 
 st.set_page_config(page_title="금융 자산 대시보드", layout="wide", initial_sidebar_state="collapsed")
 
-import extra_streamlit_components as stx
-
-# 반드시 set_page_config 이후에 선언하여 레이아웃 깨짐(2단 메뉴 사라짐 등) 방지
-cookie_manager = stx.CookieManager(key="cookie_manager")
-
+# === [보안 PIN 잠금 화면 로직] ===
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
-
-# 쿠키에서 인증 토큰 확인 (새로고침 시 비번 생략)
-auth_cookie = cookie_manager.get(cookie="auth_token")
-if auth_cookie == "authenticated":
-    st.session_state.authenticated = True
-
-# 로그인 성공 직후(rerun 이후) 쿠키 굽기
-if st.session_state.get('set_auth_cookie', False):
-    cookie_manager.set("auth_token", "authenticated", key="set_cookie_comp") # max_age 생략 시 브라우저 종료 시 삭제됨
-    st.session_state.set_auth_cookie = False
-
-# === [보안 PIN 잠금 화면 로직] ===
 
 if not st.session_state.authenticated:
     st.markdown('''
@@ -161,7 +145,6 @@ if not st.session_state.authenticated:
                 
             if pin == app_pin:
                 st.session_state.authenticated = True
-                st.session_state.set_auth_cookie = True
                 st.rerun()
             else:
                 st.error("❌ 비밀번호가 틀렸습니다.")
