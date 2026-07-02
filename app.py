@@ -1185,12 +1185,15 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                         if (profitStr.includes('+')) {
                             profitEl.style.color = '#FFDAB9';
                             profitEl.style.textShadow = '0 0 15px rgba(255, 218, 185, 0.4)';
+                            profitEl.style.fontSize = '32px';
                         } else if (profitStr !== '휴장' && profitStr !== '매매 없음') {
                             profitEl.style.color = '#4B9FFF';
                             profitEl.style.textShadow = '0 0 15px rgba(75, 159, 255, 0.4)';
+                            profitEl.style.fontSize = '32px';
                         } else {
                             profitEl.style.color = '#888';
                             profitEl.style.textShadow = 'none';
+                            profitEl.style.fontSize = '16px';
                         }
                         
                         modal.style.display = 'flex';
