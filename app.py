@@ -1690,9 +1690,31 @@ if (goalExpander) {
             with sc1:
                 new_amt = st.number_input("목표 금액 (원)", step=100000000, key="goal_input_val")
                 
-                # 퀵 버튼 배치 (5열로 늘려서 초기화 버튼 추가)
-                bc0, bc1, bc2, bc3, bc4 = st.columns(5)
-                bc0.button("🔄 리셋", on_click=reset_goal, use_container_width=True)
+                st.button("🔄 리셋", on_click=reset_goal)
+                
+                # 모바일 환경에서 금액 추가 버튼 4개가 세로로 무너지는 현상 방지
+                st.markdown("""<style>
+                @media (max-width: 820px) {
+                    /* 정확히 4개의 컬럼을 가진 HorizontalBlock(금액 추가 버튼들)을 타겟팅 */
+                    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4):last-child) {
+                        flex-wrap: nowrap !important;
+                        gap: 6px !important;
+                    }
+                    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4):last-child) > div[data-testid="column"] {
+                        width: auto !important;
+                        min-width: 0 !important;
+                        flex: 1 1 0px !important;
+                    }
+                    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4):last-child) button {
+                        padding: 6px 0 !important;
+                        font-size: clamp(10px, 3vw, 13px) !important;
+                        white-space: nowrap !important;
+                    }
+                }
+                </style>""", unsafe_allow_html=True)
+                
+                # 금액 추가 버튼 4개를 한 줄로 배치
+                bc1, bc2, bc3, bc4 = st.columns(4)
                 bc1.button("+5천만", on_click=add_to_goal, args=(50000000,), use_container_width=True)
                 bc2.button("+1억", on_click=add_to_goal, args=(100000000,), use_container_width=True)
                 bc3.button("+10억", on_click=add_to_goal, args=(1000000000,), use_container_width=True)
