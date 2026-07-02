@@ -69,8 +69,9 @@ if not st.session_state.authenticated:
     .oracle-title {
         font-size: clamp(3.0rem, 13vw, 4.5rem);
         font-weight: 900;
+        -webkit-text-stroke: 1px #ffffff;
         color: #ffffff;
-        letter-spacing: 4px;
+        letter-spacing: 2px;
         white-space: nowrap;
         margin-bottom: 5px;
         text-align: center;
