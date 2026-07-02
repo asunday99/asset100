@@ -119,8 +119,8 @@ if not st.session_state.authenticated:
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title">ASSET 333</div>
-        <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
+        <div class="oracle-title"><span style="display: inline-block; transform: scaleX(0.75) scaleY(1.25); transform-origin: right bottom; margin-right: -10px;">ASSET</span> 333</div>
+        <div class="pin-subtitle">Infinite Asset Expansion</div>
     </div>
     ''', unsafe_allow_html=True)
     
