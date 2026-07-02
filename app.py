@@ -792,13 +792,13 @@ def render_trade_records(urls: dict):
         _profit_class = "neon-zero-blue"
         _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
-        _expander_title = f"이번 달 팔아서 +{_month_profit:,}원 벌고 있어요!"
+        _expander_title = "여기를 눌러보세요"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
         _profit_class = ""
         _profit_color = "color:#4B9FFF;"
         _msg = f"전월 {_prev_month_profit:,}원"
-        _expander_title = f"이번 달 팔았는데 {_month_profit:,}원 빠졌어요"
+        _expander_title = "여기를 눌러보세요"
     else:
         _profit_text = "0원"
         _profit_class = "neon-zero-blue"
