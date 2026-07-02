@@ -35,7 +35,7 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Days+One&family=Russo+One&family=Michroma&family=Orbitron:wght@700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@700;900&display=swap');
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
         background: #000000;
@@ -119,7 +119,7 @@ if not st.session_state.authenticated:
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title"><span style="font-family: 'Days One', 'Russo One', sans-serif;">A</span>SSET 333</div>
+        <div class="oracle-title">ASSET 333</div>
         <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
     </div>
     ''', unsafe_allow_html=True)
