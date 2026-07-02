@@ -1073,9 +1073,9 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
         _nav_color = "#FF4B4B" if _monthly_total_nav > 0 else ("#4B9FFF" if _monthly_total_nav < 0 else "#888")
         _nav_sign  = "+" if _monthly_total_nav > 0 else ""
         st.markdown(
-            f"<div style='text-align:center;font-size:clamp(14px, 4vw, 18px);font-weight:900;color:#fff;padding-top:6px;line-height:1.2;'>"
-            f"{_disp_year}년 {_disp_month}월 "
-            f"<span style='color:{_nav_color};font-size:clamp(13px, 3.5vw, 16px);'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
+            f"<div style='text-align:center;font-size:clamp(16px, 4.5vw, 20px);font-weight:900;color:#fff;padding-top:6px;line-height:1.2;'>"
+            f"<span class='hide-on-mobile'>{str(_disp_year)[:2]}</span>{str(_disp_year)[2:]}년 {_disp_month}월 "
+            f"<span style='color:{_nav_color};font-size:clamp(15px, 4.2vw, 18px); margin-left:4px;'>{_nav_sign}{_monthly_total_nav:,.0f}원</span></div>",
             unsafe_allow_html=True
         )
 
@@ -1083,8 +1083,8 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     cal_obj = calendar.Calendar(firstweekday=6)
     weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
-    # 주말(토,일) 모바일 숨김 처리 CSS 추가
-    tbl  = '<style>\n@media (max-width: 820px) {\n    #trade-calendar-table th:nth-child(1), #trade-calendar-table td:nth-child(1),\n    #trade-calendar-table th:nth-child(7), #trade-calendar-table td:nth-child(7) {\n        display: none !important;\n    }\n}\n</style>\n'
+    # 주말(토,일) 모바일 숨김 처리 및 모바일 전용 텍스트 숨김 CSS 추가
+    tbl  = '<style>\n@media (max-width: 820px) {\n    #trade-calendar-table th:nth-child(1), #trade-calendar-table td:nth-child(1),\n    #trade-calendar-table th:nth-child(7), #trade-calendar-table td:nth-child(7) {\n        display: none !important;\n    }\n    .hide-on-mobile { display: none !important; }\n}\n</style>\n'
     tbl += '<table id="trade-calendar-table" style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:6px;margin-top:10px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
