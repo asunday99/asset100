@@ -279,6 +279,16 @@ st.markdown("""
         transition: all 0.3s ease;
     }
     
+    @media (max-width: 820px) {
+        .glass-card-premium-blue {
+            padding-bottom: 30px !important;
+            min-height: 230px !important;
+        }
+        .glass-card-premium-gold {
+            min-height: 230px !important;
+        }
+    }
+    
     .glass-card-premium-gold::before {
         content: '';
         position: absolute;
@@ -293,7 +303,7 @@ st.markdown("""
 
     .neon-pulse-blue {
         font-family: 'Oswald', sans-serif;
-        font-size: clamp(28px, 9.5vw, 46px);
+        font-size: clamp(32px, 11.5vw, 49px);
         font-weight: 800;
         text-align: center;
         margin: 15px 0 25px 0;
@@ -774,7 +784,7 @@ def render_trade_records(urls: dict):
 <div class='glass-card-premium-gold' style='padding: 24px; padding-bottom:30px; margin-bottom: 0;'>
 <div style="text-align:center; padding-top:10px;">
 <div style="font-size:15px; color:#8ab4f8; font-weight:bold; margin-bottom:6px; letter-spacing:1px;">이번달 확정수익 &nbsp;|&nbsp; <span style="color:#FFFFFF; background-color:rgba(138,180,248,0.2); padding:2px 10px; border-radius:10px; font-weight:900;">D-{d_days_dynamic}</span></div>
-<div class='{_profit_class}' style='{_profit_color} font-size:clamp(28px, 9.5vw, 46px); font-weight:900; letter-spacing:-1px; margin: 15px 0 25px 0; white-space:nowrap;'>{_profit_text}</div>
+<div class='{_profit_class}' style='{_profit_color} font-size:clamp(32px, 11.5vw, 49px); font-weight:900; letter-spacing:-1px; margin: 15px 0 25px 0; white-space:nowrap;'>{_profit_text}</div>
 <div style="font-size:13px; color:#FFDAB9; font-weight:bold; display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; letter-spacing:0.5px;">
 <span style="color:#FFDAB9;">{_msg}</span>
 </div>
