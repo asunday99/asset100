@@ -118,6 +118,11 @@ if not st.session_state.authenticated:
         caret-color: #FF9900 !important;
         padding: 20px !important;
     }
+
+    /* "Press Enter to apply" 문구 숨김 */
+    div[data-testid="InputInstructions"] {
+        display: none !important;
+    }
     </style>
     
     <div class="pin-container">
