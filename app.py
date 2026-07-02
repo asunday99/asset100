@@ -35,6 +35,7 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@700;900&display=swap');
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
         background: #000000;
@@ -72,7 +73,7 @@ if not st.session_state.authenticated:
         letter-spacing: 8px;
         margin-bottom: 5px;
         text-align: center;
-        font-family: 'Inter', 'Arial Black', sans-serif;
+        font-family: 'Michroma', 'Orbitron', 'Arial Black', sans-serif;
         animation: neonBreathe 3s infinite ease-in-out;
     }
     
@@ -82,6 +83,7 @@ if not st.session_state.authenticated:
         margin-bottom: 40px;
         text-align: center;
         letter-spacing: 2px;
+        font-family: 'Michroma', 'Orbitron', 'Inter', sans-serif;
     }
 
     /* 입력창 폭 좁게 중앙 정렬 */
