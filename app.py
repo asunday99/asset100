@@ -35,9 +35,9 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
-    /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
+    /* 배경: 딥 네이비에서 블랙으로 우주 그라데이션 */
     .stApp {
-        background: #000000;
+        background: radial-gradient(circle at 50% 20%, #1a103c 0%, #0a0515 50%, #000000 100%) !important;
     }
     
     /* 화면 중앙 컨테이너 */
@@ -50,38 +50,32 @@ if not st.session_state.authenticated:
         color: white;
     }
     
-    /* 야광 점멸 애니메이션 정의 (연보라 & 주황 믹스) */
+    /* 야광 점멸 애니메이션 정의 (화이트-라이트블루 네온 믹스) */
     @keyframes neonBreathe {
-        0% {
-            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
-        }
-        50% {
-            text-shadow: 0 0 20px rgba(255, 153, 0, 0.8), 0 0 40px rgba(255, 107, 0, 0.5), 0 0 60px rgba(255, 107, 0, 0.3);
-            color: #ffffff;
-        }
-        100% {
-            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
-        }
+        0% { text-shadow: 0 0 10px rgba(138, 180, 248, 0.4), 0 0 20px rgba(138, 180, 248, 0.2); }
+        50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 35px rgba(138, 180, 248, 0.6), 0 0 50px rgba(138, 180, 248, 0.3); color: #ffffff; }
+        100% { text-shadow: 0 0 10px rgba(138, 180, 248, 0.4), 0 0 20px rgba(138, 180, 248, 0.2); }
     }
 
-    /* 타이틀 텍스트 (흰색 기본 + 야광 애니메이션) */
+    /* 타이틀 텍스트 (Asset333) */
     .oracle-title {
         font-size: 3.5rem;
         font-weight: 900;
         color: #ffffff;
-        letter-spacing: 8px;
+        letter-spacing: 4px;
         margin-bottom: 5px;
         text-align: center;
         font-family: 'Inter', 'Arial Black', sans-serif;
-        animation: neonBreathe 3s infinite ease-in-out;
+        animation: neonBreathe 4s infinite ease-in-out;
     }
     
     .pin-subtitle {
-        color: #888888;
+        color: rgba(138, 180, 248, 0.8);
         font-size: 1.1rem;
         margin-bottom: 40px;
         text-align: center;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
+        font-weight: 300;
     }
 
     /* 입력창 폭 좁게 중앙 정렬 */
@@ -90,19 +84,22 @@ if not st.session_state.authenticated:
         margin: 0 auto !important;
     }
     
-    /* 텍스트 인풋 디자인 */
+    /* 텍스트 인풋 디자인 (글래스모피즘 박스) */
     div[data-baseweb="input"] {
-        background-color: rgba(20, 20, 30, 0.8) !important;
-        border: 1px solid rgba(184, 154, 255, 0.3) !important;
-        border-radius: 20px !important;
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(138, 180, 248, 0.2) !important;
+        border-radius: 16px !important;
+        box-shadow: inset 0 0 15px rgba(138, 180, 248, 0.05), 0 8px 32px rgba(0, 0, 0, 0.5) !important;
         transition: all 0.3s ease;
     }
     
-    /* 텍스트 인풋 포커스 시 주황색 네온 띠 */
+    /* 텍스트 인풋 포커스 시 라이트블루 네온 띠 */
     div[data-baseweb="input"]:focus-within {
-        border-color: #FF9900 !important;
-        box-shadow: 0 0 20px rgba(255, 153, 0, 0.4) !important;
-        background-color: rgba(0, 0, 0, 0.9) !important;
+        border-color: rgba(138, 180, 248, 0.6) !important;
+        box-shadow: 0 0 20px rgba(138, 180, 248, 0.3), inset 0 0 10px rgba(138, 180, 248, 0.2) !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
     }
 
     div[data-baseweb="input"] input {
@@ -110,14 +107,14 @@ if not st.session_state.authenticated:
         font-size: 3rem !important;
         text-align: center !important;
         letter-spacing: 25px !important;
-        caret-color: #FF9900 !important;
+        caret-color: #8ab4f8 !important;
         padding: 20px !important;
     }
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title">ASSET 333</div>
-        <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
+        <div class="oracle-title">Asset333</div>
+        <div class="pin-subtitle">Infinite Asset Expansion</div>
     </div>
     ''', unsafe_allow_html=True)
     
