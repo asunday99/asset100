@@ -35,7 +35,6 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@700;900&display=swap');
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
         background: #000000;
@@ -67,14 +66,13 @@ if not st.session_state.authenticated:
 
     /* 타이틀 텍스트 (흰색 기본 + 야광 애니메이션) */
     .oracle-title {
-        font-size: clamp(2rem, 11vw, 3.5rem);
+        font-size: 3.5rem;
         font-weight: 900;
         color: #ffffff;
-        letter-spacing: 2px;
-        white-space: nowrap;
+        letter-spacing: 8px;
         margin-bottom: 5px;
         text-align: center;
-        font-family: 'Michroma', 'Orbitron', 'Arial Black', sans-serif;
+        font-family: 'Inter', 'Arial Black', sans-serif;
         animation: neonBreathe 3s infinite ease-in-out;
     }
     
@@ -84,7 +82,6 @@ if not st.session_state.authenticated:
         margin-bottom: 40px;
         text-align: center;
         letter-spacing: 2px;
-        font-family: 'Michroma', 'Orbitron', 'Inter', sans-serif;
     }
 
     /* 입력창 폭 좁게 중앙 정렬 */
@@ -119,8 +116,8 @@ if not st.session_state.authenticated:
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title"><span style="display: inline-block; transform: scaleX(0.75) scaleY(1.25); transform-origin: right bottom; margin-right: -10px;">ASSET</span> 333</div>
-        <div class="pin-subtitle">Infinite Asset Expansion</div>
+        <div class="oracle-title">ASSET 333</div>
+        <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
     </div>
     ''', unsafe_allow_html=True)
     
