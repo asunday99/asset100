@@ -74,7 +74,7 @@ if not st.session_state.authenticated:
         white-space: nowrap;
         margin-bottom: 5px;
         text-align: center;
-        font-family: 'Days One', 'Russo One', 'Michroma', 'Orbitron', 'Arial Black', sans-serif;
+        font-family: 'Michroma', 'Orbitron', 'Arial Black', sans-serif;
         animation: neonBreathe 3s infinite ease-in-out;
     }
     
@@ -119,7 +119,7 @@ if not st.session_state.authenticated:
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title">Asset 333</div>
+        <div class="oracle-title"><span style="font-family: 'Days One', 'Russo One', sans-serif;">A</span>SSET 333</div>
         <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
     </div>
     ''', unsafe_allow_html=True)
