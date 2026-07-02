@@ -1083,7 +1083,9 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     cal_obj = calendar.Calendar(firstweekday=6)
     weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
-    tbl  = '<table style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:6px;margin-top:10px;">'
+    # 주말(토,일) 모바일 숨김 처리 CSS 추가
+    tbl  = '<style>\n@media (max-width: 820px) {\n    #trade-calendar-table th:nth-child(1), #trade-calendar-table td:nth-child(1),\n    #trade-calendar-table th:nth-child(7), #trade-calendar-table td:nth-child(7) {\n        display: none !important;\n    }\n}\n</style>\n'
+    tbl += '<table id="trade-calendar-table" style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:6px;margin-top:10px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
         tbl += f'<th style="color:#A0C0FF;padding:8px 0;text-align:center;font-size:13px;font-weight:bold;letter-spacing:1px;border-bottom:1px solid rgba(138, 180, 248, 0.2);">{day_name}</th>'
@@ -1122,15 +1124,99 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
 
             day_color = "#FFDAB9" if val > 0 else "#8ab4f8"
 
-            cell_style = f"height:85px; border-radius:12px; background:{base_bg}; border:{border_style}; {box_shadow} backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-align:center; vertical-align:top; padding:8px 4px; transition:all 0.3s ease;"
+            cell_style = f"height:85px; border-radius:12px; background:{base_bg}; border:{border_style}; {box_shadow} backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-align:center; vertical-align:top; padding:8px 4px; transition:all 0.1s ease; cursor:pointer;"
             
-            tbl += f'<td style="{cell_style}">'
-            tbl += f'<div style="font-size:13px; font-weight:bold; color:{day_color}; text-align:left; padding-left:4px; opacity:0.85;">{day_text}</div>'
+            # Modal 데이터를 위한 속성 (날짜, 수익금액)
+            date_str = f"{_disp_year}년 {_disp_month}월 {d.day}일"
+            if val > 0: val_str = f"+{val:,.0f}원"
+            elif val < 0: val_str = f"{val:,.0f}원"
+            elif is_holiday: val_str = "휴장"
+            else: val_str = "매매 없음"
+            
+            cell_id = f"calcell__{date_str}__{val_str}"
+            
+            # 클릭 시 애니메이션
+            tbl += f'<td id="{cell_id}" style="{cell_style}" onmousedown="this.style.transform=\'scale(0.92)\';" onmouseup="this.style.transform=\'scale(1)\';" onmouseleave="this.style.transform=\'scale(1)\';" ontouchstart="this.style.transform=\'scale(0.92)\';" ontouchend="this.style.transform=\'scale(1)\';">'
+            tbl += f'<div style="font-size:13px; font-weight:bold; color:{day_color}; text-align:left; padding-left:4px; opacity:0.85; pointer-events:none;">{day_text}</div>'
+            tbl = tbl.replace(profit_html, profit_html.replace("<div", "<div style='pointer-events:none;' "))
             tbl += profit_html
             tbl += '</td>'
         tbl += "</tr>"
     tbl += "</table>"
-    st.markdown(tbl, unsafe_allow_html=True)
+    
+    # 모달(팝업) HTML 정의 (들여쓰기 없이 작성하여 st.markdown이 코드블록으로 인식하지 않게 함)
+    modal_html = """
+<div id="calModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.75); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); opacity:0; transition:opacity 0.2s ease;">
+<div id="calModalBox" style="background:linear-gradient(135deg, rgba(20, 30, 50, 0.95), rgba(10, 15, 25, 0.98)); border:1px solid rgba(138, 180, 248, 0.4); border-radius:20px; padding:35px 25px; width:85%; max-width:320px; text-align:center; box-shadow:0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(138,180,248,0.15); transform:scale(0.95); transition:transform 0.2s ease;">
+<div id="calModalDate" style="color:#A0C0FF; font-size:15px; font-weight:bold; margin-bottom:10px; letter-spacing:1px; text-transform:uppercase;"></div>
+<div id="calModalProfit" style="font-size:32px; font-weight:900; margin-bottom:30px; word-break:keep-all; letter-spacing:-1px;"></div>
+<button id="calModalCloseBtn" style="background:rgba(138, 180, 248, 0.15); border:1px solid rgba(138, 180, 248, 0.5); color:#fff; padding:12px 0; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; transition:all 0.2s;">닫기</button>
+</div>
+</div>
+"""
+    st.markdown(tbl + modal_html, unsafe_allow_html=True)
+
+    # 이벤트 리스너 JS 주입
+    import streamlit.components.v1 as _comp
+    _comp.html('''
+    <script>
+    (function() {
+        var doc = window.parent.document;
+        if(doc.calModalInited) return; 
+        doc.calModalInited = true;
+        
+        doc.body.addEventListener('click', function(e) {
+            var td = e.target.closest('td[id^="calcell__"]');
+            if(td) {
+                var parts = td.id.split('__');
+                if(parts.length >= 3) {
+                    var dateStr = parts[1];
+                    var profitStr = parts[2];
+                    
+                    var modal = doc.getElementById('calModalOverlay');
+                    var box = doc.getElementById('calModalBox');
+                    var dateEl = doc.getElementById('calModalDate');
+                    var profitEl = doc.getElementById('calModalProfit');
+                    
+                    if(modal && dateEl && profitEl && box) {
+                        dateEl.innerText = dateStr;
+                        profitEl.innerText = profitStr;
+                        
+                        if (profitStr.includes('+')) {
+                            profitEl.style.color = '#FFDAB9';
+                            profitEl.style.textShadow = '0 0 15px rgba(255, 218, 185, 0.4)';
+                        } else if (profitStr !== '휴장' && profitStr !== '매매 없음') {
+                            profitEl.style.color = '#4B9FFF';
+                            profitEl.style.textShadow = '0 0 15px rgba(75, 159, 255, 0.4)';
+                        } else {
+                            profitEl.style.color = '#888';
+                            profitEl.style.textShadow = 'none';
+                        }
+                        
+                        modal.style.display = 'flex';
+                        setTimeout(function() {
+                            modal.style.opacity = '1';
+                            box.style.transform = 'scale(1)';
+                        }, 10);
+                    }
+                }
+            }
+            
+            if(e.target.closest('#calModalCloseBtn') || e.target.id === 'calModalOverlay') {
+                var modal = doc.getElementById('calModalOverlay');
+                var box = doc.getElementById('calModalBox');
+                if(modal && box) {
+                    modal.style.opacity = '0';
+                    box.style.transform = 'scale(0.95)';
+                    setTimeout(function() {
+                        modal.style.display = 'none';
+                    }, 200); 
+                }
+            }
+        });
+    })();
+    </script>
+    ''', height=0)
 
 def _render_trade_table(df_rec: pd.DataFrame):
     """매매 기록 표 및 모의계산 렌더링."""
