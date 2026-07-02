@@ -1138,7 +1138,8 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             # 클릭 시 애니메이션
             tbl += f'<td id="{cell_id}" style="{cell_style}" onmousedown="this.style.transform=\'scale(0.92)\';" onmouseup="this.style.transform=\'scale(1)\';" onmouseleave="this.style.transform=\'scale(1)\';" ontouchstart="this.style.transform=\'scale(0.92)\';" ontouchend="this.style.transform=\'scale(1)\';">'
             tbl += f'<div style="font-size:13px; font-weight:bold; color:{day_color}; text-align:left; padding-left:4px; opacity:0.85; pointer-events:none;">{day_text}</div>'
-            tbl = tbl.replace(profit_html, profit_html.replace("<div", "<div style='pointer-events:none;' "))
+            # profit_html에 직접 pointer-events:none; 삽입 (이중 style 속성 방지)
+            profit_html = profit_html.replace("style='", "style='pointer-events:none; ")
             tbl += profit_html
             tbl += '</td>'
         tbl += "</tr>"
