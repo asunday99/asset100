@@ -1141,8 +1141,11 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 box_shadow = "box-shadow: 0 0 12px rgba(138, 180, 248, 0.2), inset 0 0 15px rgba(255, 218, 185, 0.15);"
                 profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 17px); font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-1px; word-break:break-all; line-height:1.1;'>+{val:,.0f}</div>"
             elif val < 0:
-                # Loss Style
-                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 14px); font-weight:bold; color:#4B9FFF; letter-spacing:-1px; word-break:break-all; line-height:1.1;'>{val:,.0f}</div>"
+                # Loss Style (Blue Button)
+                base_bg = "radial-gradient(circle at top right, rgba(138, 180, 248, 0.25), transparent), linear-gradient(135deg, rgba(10, 20, 50, 0.8), rgba(0, 5, 15, 0.9))"
+                border_style = "1px solid rgba(138, 180, 248, 0.4)"
+                box_shadow = "box-shadow: 0 0 12px rgba(138, 180, 248, 0.3), inset 0 0 15px rgba(138, 180, 248, 0.15);"
+                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 14px); font-weight:bold; color:#4B9FFF; text-shadow: 0 0 8px rgba(75, 159, 255, 0.5); letter-spacing:-1px; word-break:break-all; line-height:1.1;'>{val:,.0f}</div>"
             elif is_holiday:
                 profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:12px; font-weight:bold; color:#666666;'>휴장</div>"
             else:
