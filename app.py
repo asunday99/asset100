@@ -1073,9 +1073,9 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
         _nav_color = "#FF4B4B" if _monthly_total_nav > 0 else ("#4B9FFF" if _monthly_total_nav < 0 else "#888")
         _nav_sign  = "+" if _monthly_total_nav > 0 else ""
         st.markdown(
-            f"<div style='text-align:center;font-size:clamp(12px, 3.5vw, 16px);font-weight:900;color:#fff;padding-top:6px;line-height:1.2;'>"
+            f"<div style='text-align:center;font-size:clamp(14px, 4vw, 18px);font-weight:900;color:#fff;padding-top:6px;line-height:1.2;'>"
             f"{_disp_year}년 {_disp_month}월 "
-            f"<span style='color:{_nav_color};font-size:clamp(11px, 3vw, 14px);'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
+            f"<span style='color:{_nav_color};font-size:clamp(13px, 3.5vw, 16px);'>({_nav_sign}{_monthly_total_nav:,.0f}원)</span></div>",
             unsafe_allow_html=True
         )
 
