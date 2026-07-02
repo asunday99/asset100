@@ -799,7 +799,7 @@ elements.forEach(el => {{
             plot_h = H - PAD_T - PAD_B
             months = sorted([m for m in range(1, 13) if data_dict.get(m, 0) != 0])
             if not months:
-                return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="transparent" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+                return f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto;display:block;"><rect width="{W}" height="{H}" fill="transparent" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
             
             vals = [data_dict.get(m, 0) for m in months]
             y_max = max(vals) if max(vals) > 0 else 0
@@ -820,7 +820,7 @@ elements.forEach(el => {{
             
             grad_id = f"grad_trade_{chart_idx}"
             mask_id = f"mask_trade_{chart_idx}"
-            svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
+            svg = f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">'
             svg += f'<defs>'
             svg += f'  <linearGradient id="{grad_id}" x1="0%" y1="0%" x2="100%" y2="0%">'
             svg += f'    <stop offset="0%" stop-color="{c_left}"/>'
@@ -1600,7 +1600,7 @@ if (goalExpander) {
                 plot_h = H - PAD_T - PAD_B
                 months = sorted([m for m in range(1, 13) if data_dict.get(m, 0) > 0])
                 if not months:
-                    return f'<svg width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="transparent" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
+                    return f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto;display:block;"><rect width="{W}" height="{H}" fill="transparent" rx="10"/><text x="{W//2}" y="{H//2}" fill="#555" text-anchor="middle" font-size="13">데이터 없음</text></svg>'
                 vals = [data_dict.get(m, 0) for m in months]
                 y_max = max(vals) * 1.15 if max(vals) > 0 else 1
                 def xp(idx): return PAD_L + int(idx / max(len(months) - 1, 1) * plot_w)
@@ -1611,7 +1611,7 @@ if (goalExpander) {
                 
                 grad_id = f"grad_{chart_idx}"
                 mask_id = f"mask_{chart_idx}"
-                svg = f'<svg width="{W}" height="{H}" xmlns="http://www.w3.org/2000/svg">'
+                svg = f'<svg viewBox="0 0 {W} {H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">'
                 svg += f'<defs>'
                 svg += f'  <linearGradient id="{grad_id}" x1="0%" y1="0%" x2="100%" y2="0%">'
                 svg += f'    <stop offset="0%" stop-color="{c_left}"/>'
