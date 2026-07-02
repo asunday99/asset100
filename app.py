@@ -20,25 +20,6 @@ import plotly.express as px
 import logging
 logger = __import__('logging').getLogger(__name__)
 
-import extra_streamlit_components as stx
-
-# Streamlit 1.35+에서 위젯 경고를 피하기 위해 st.cache_resource 사용을 제거합니다.
-cookie_manager = stx.CookieManager(key="cookie_manager")
-
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-
-# 쿠키에서 인증 토큰 확인 (새로고침 시 비번 생략)
-auth_cookie = cookie_manager.get(cookie="auth_token")
-if auth_cookie == "authenticated":
-    st.session_state.authenticated = True
-
-# 로그인 성공 직후(rerun 이후) 쿠키 굽기
-if st.session_state.get('set_auth_cookie', False):
-    # max_age를 설정하지 않으면 브라우저 종료 시 삭제되는 세션 쿠키가 됩니다.
-    cookie_manager.set("auth_token", "authenticated", key="set_cookie_comp") 
-    st.session_state.set_auth_cookie = False
-
 if 'gs_val' not in st.session_state:
     st.session_state.gs_val = 100
 if 'ty_val' not in st.session_state:
@@ -48,6 +29,8 @@ if 'ty_val' not in st.session_state:
 st.set_page_config(page_title="금융 자산 대시보드", layout="wide", initial_sidebar_state="collapsed")
 
 # === [보안 PIN 잠금 화면 로직] ===
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
     st.markdown('''
@@ -162,7 +145,6 @@ if not st.session_state.authenticated:
                 
             if pin == app_pin:
                 st.session_state.authenticated = True
-                st.session_state.set_auth_cookie = True
                 st.rerun()
             else:
                 st.error("❌ 비밀번호가 틀렸습니다.")
