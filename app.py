@@ -89,34 +89,66 @@ if not st.session_state.authenticated:
         font-weight: 700;
     }
 
-    /* 입력창 폭 좁게 중앙 정렬 */
+    /* 입력창 & 버튼 중앙 정렬 */
     div[data-testid="stTextInput"] {
-        width: 300px !important;
+        width: 320px !important;
         margin: 0 auto !important;
     }
     
-    /* 텍스트 인풋 디자인 */
+    /* 텍스트 인풋 디자인 (스크린샷 스타일 블루 박스) */
     div[data-baseweb="input"] {
-        background-color: rgba(20, 20, 30, 0.8) !important;
-        border: 1px solid rgba(184, 154, 255, 0.3) !important;
-        border-radius: 20px !important;
+        background: linear-gradient(180deg, rgba(80, 100, 140, 0.3) 0%, rgba(40, 60, 90, 0.6) 100%) !important;
+        border: 2px solid rgba(138, 180, 248, 0.5) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 15px rgba(138, 180, 248, 0.2) !important;
         transition: all 0.3s ease;
     }
     
-    /* 텍스트 인풋 포커스 시 주황색 네온 띠 */
     div[data-baseweb="input"]:focus-within {
-        border-color: #FF9900 !important;
-        box-shadow: 0 0 20px rgba(255, 153, 0, 0.4) !important;
-        background-color: rgba(0, 0, 0, 0.9) !important;
+        border-color: rgba(138, 180, 248, 0.9) !important;
+        box-shadow: 0 0 20px rgba(138, 180, 248, 0.5) !important;
+        background: linear-gradient(180deg, rgba(80, 100, 140, 0.5) 0%, rgba(40, 60, 90, 0.8) 100%) !important;
     }
 
     div[data-baseweb="input"] input {
         color: white !important;
-        font-size: 3rem !important;
+        font-size: 2.5rem !important;
         text-align: center !important;
+        letter-spacing: 20px !important;
+        caret-color: #8ab4f8 !important;
+        padding: 15px !important;
+    }
+    
+    div[data-baseweb="input"] input::placeholder {
+        color: rgba(255, 255, 255, 0.4) !important;
+        font-size: 1.5rem !important;
         letter-spacing: 25px !important;
-        caret-color: #FF9900 !important;
-        padding: 20px !important;
+        transform: translateY(-2px);
+    }
+
+    /* 로그인 버튼 스타일 */
+    button[data-testid="baseButton-secondary"] {
+        width: 320px !important;
+        margin: 20px auto 0 auto !important;
+        display: block !important;
+        background: linear-gradient(180deg, rgba(138, 180, 248, 0.5) 0%, rgba(60, 120, 160, 0.8) 100%) !important;
+        border: 2px solid rgba(138, 180, 248, 0.4) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 15px rgba(138, 180, 248, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.15) !important;
+        color: white !important;
+        font-family: 'Gothic A1', 'Arial Black', sans-serif !important;
+        font-weight: 900 !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 1px !important;
+        padding: 12px 0 !important;
+        transition: all 0.3s ease;
+    }
+    
+    button[data-testid="baseButton-secondary"]:hover {
+        background: linear-gradient(180deg, rgba(138, 180, 248, 0.7) 0%, rgba(80, 140, 180, 1.0) 100%) !important;
+        border-color: rgba(138, 180, 248, 0.8) !important;
+        box-shadow: 0 0 20px rgba(138, 180, 248, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
     }
     </style>
     
@@ -129,8 +161,9 @@ if not st.session_state.authenticated:
     st.write("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        pin = st.text_input("PIN", type="password", label_visibility="collapsed", key="pin_input")
-        if pin:
+        pin = st.text_input("PIN", type="password", label_visibility="collapsed", key="pin_input", placeholder="○ ○ ○ ○")
+        
+        if st.button("LOG IN", use_container_width=True):
             app_pin = ""
             try:
                 # secrets에서 PIN을 가져옴. 없으면 "1234"
