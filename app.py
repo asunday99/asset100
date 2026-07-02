@@ -67,10 +67,11 @@ if not st.session_state.authenticated:
 
     /* 타이틀 텍스트 (흰색 기본 + 야광 애니메이션) */
     .oracle-title {
-        font-size: 3.5rem;
+        font-size: clamp(2rem, 11vw, 3.5rem);
         font-weight: 900;
         color: #ffffff;
-        letter-spacing: 8px;
+        letter-spacing: 2px;
+        white-space: nowrap;
         margin-bottom: 5px;
         text-align: center;
         font-family: 'Michroma', 'Orbitron', 'Arial Black', sans-serif;
