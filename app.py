@@ -936,7 +936,7 @@ elements.forEach(el => {{
             for i, (m, (x, y)) in enumerate(zip(months, pts)):
                 svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                 lbl = y_fmt(data_dict.get(m, 0))
-                svg += f'<text x="{x}" y="{y-14}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
+                svg += f'<text x="{x}" y="{y-15}" fill="#ffffff" text-anchor="middle" font-size="13" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
                 svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
             svg += '</svg>'
             return svg
@@ -1726,7 +1726,7 @@ if (goalExpander) {
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
-                    svg += f'<text x="{x}" y="{y-14}" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
+                    svg += f'<text x="{x}" y="{y-15}" fill="#ffffff" text-anchor="middle" font-size="13" font-weight="bold" style="text-shadow: 0px 1px 3px rgba(0,0,0,0.9);">{lbl}</text>'
                     svg += f'<text x="{x}" y="{H-PAD_B+14}" fill="#888" text-anchor="middle" font-size="11">{m}월</text>'
                 svg += '</svg>'
                 return svg
