@@ -1094,7 +1094,23 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
     weeks = cal_obj.monthdatescalendar(_disp_year, _disp_month)
 
     # 주말(토,일) 모바일 숨김 처리 및 모바일 전용 텍스트 숨김 CSS 추가
-    tbl  = '<style>\n@media (max-width: 820px) {\n    #trade-calendar-table th:nth-child(1), #trade-calendar-table td:nth-child(1),\n    #trade-calendar-table th:nth-child(7), #trade-calendar-table td:nth-child(7) {\n        display: none !important;\n    }\n    .hide-on-mobile { display: none !important; }\n}\n</style>\n'
+    tbl  = '<style>\n'
+    tbl += '@media (max-width: 820px) {\n'
+    tbl += '    #trade-calendar-table th:nth-child(1), #trade-calendar-table td:nth-child(1),\n'
+    tbl += '    #trade-calendar-table th:nth-child(7), #trade-calendar-table td:nth-child(7) {\n'
+    tbl += '        display: none !important;\n'
+    tbl += '    }\n'
+    tbl += '    .hide-on-mobile { display: none !important; }\n'
+    tbl += '    #trade-calendar-table .cal-cell {\n'
+    tbl += '        height: auto !important;\n'
+    tbl += '        min-height: 50px !important;\n'
+    tbl += '        padding: 6px 2px !important;\n'
+    tbl += '    }\n'
+    tbl += '    #trade-calendar-table .cal-cell .profit-text {\n'
+    tbl += '        margin-top: 6px !important;\n'
+    tbl += '    }\n'
+    tbl += '}\n'
+    tbl += '</style>\n'
     tbl += '<table id="trade-calendar-table" style="width:100%;table-layout:fixed;border-collapse:separate;border-spacing:6px;margin-top:10px;">'
     tbl += "<tr>"
     for day_name in ["일", "월", "화", "수", "목", "금", "토"]:
@@ -1123,14 +1139,14 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
                 base_bg = "radial-gradient(circle at top left, rgba(255, 218, 185, 0.2), rgba(138, 180, 248, 0.15)), linear-gradient(135deg, rgba(10, 20, 40, 0.8), rgba(0, 0, 0, 0.9))"
                 border_style = "1px solid rgba(255, 218, 185, 0.5)"
                 box_shadow = "box-shadow: 0 0 12px rgba(138, 180, 248, 0.2), inset 0 0 15px rgba(255, 218, 185, 0.15);"
-                profit_html = f"<div style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 17px); font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-1px; word-break:break-all; line-height:1.1;'>+{val:,.0f}</div>"
+                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 17px); font-weight:900; color:#FFDAB9; text-shadow: 0 0 8px rgba(255, 218, 185, 0.7); letter-spacing:-1px; word-break:break-all; line-height:1.1;'>+{val:,.0f}</div>"
             elif val < 0:
                 # Loss Style
-                profit_html = f"<div style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 14px); font-weight:bold; color:#4B9FFF; letter-spacing:-1px; word-break:break-all; line-height:1.1;'>{val:,.0f}</div>"
+                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:clamp(8.5px, 2.5vw, 14px); font-weight:bold; color:#4B9FFF; letter-spacing:-1px; word-break:break-all; line-height:1.1;'>{val:,.0f}</div>"
             elif is_holiday:
-                profit_html = f"<div style='margin-top:14px; font-size:12px; font-weight:bold; color:#666666;'>휴장</div>"
+                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:12px; font-weight:bold; color:#666666;'>휴장</div>"
             else:
-                profit_html = f"<div style='margin-top:14px; font-size:12px; color:transparent;'>-</div>"
+                profit_html = f"<div class='profit-text' style='margin-top:14px; font-size:12px; color:transparent;'>-</div>"
 
             day_color = "#FFDAB9" if val > 0 else "#8ab4f8"
 
@@ -1146,7 +1162,7 @@ def _render_trade_calendar(df_rec: pd.DataFrame):
             cell_id = f"calcell__{date_str}__{val_str}"
             
             # 클릭 시 애니메이션
-            tbl += f'<td id="{cell_id}" style="{cell_style}" onmousedown="this.style.transform=\'scale(0.92)\';" onmouseup="this.style.transform=\'scale(1)\';" onmouseleave="this.style.transform=\'scale(1)\';" ontouchstart="this.style.transform=\'scale(0.92)\';" ontouchend="this.style.transform=\'scale(1)\';">'
+            tbl += f'<td class="cal-cell" id="{cell_id}" style="{cell_style}" onmousedown="this.style.transform=\'scale(0.92)\';" onmouseup="this.style.transform=\'scale(1)\';" onmouseleave="this.style.transform=\'scale(1)\';" ontouchstart="this.style.transform=\'scale(0.92)\';" ontouchend="this.style.transform=\'scale(1)\';">'
             tbl += f'<div style="font-size:13px; font-weight:bold; color:{day_color}; text-align:left; padding-left:4px; opacity:0.85; pointer-events:none;">{day_text}</div>'
             # profit_html에 직접 pointer-events:none; 삽입 (이중 style 속성 방지)
             profit_html = profit_html.replace("style='", "style='pointer-events:none; ")
