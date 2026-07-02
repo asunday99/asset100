@@ -598,6 +598,73 @@ if menu != st.session_state.menu_selection:
     st.query_params["page"] = menu
 
 st.query_params["page"] = menu
+
+# ── [모바일 풀너비 강제] JS로 Streamlit 부모 DOM 직접 조작 ──────────────
+import streamlit.components.v1 as _components
+_components.html('''
+<script>
+(function() {
+    function applyMobileFix() {
+        var doc = window.parent.document;
+        var isMobile = window.parent.innerWidth <= 820;
+        if (!isMobile) return;
+
+        // 1) 모든 가능한 block-container 선택자 순서대로 시도
+        var selectors = [
+            '[data-testid="stAppViewBlockContainer"]',
+            '[data-testid="stMainBlockContainer"]',
+            '.stMainBlockContainer',
+            '.block-container',
+            'section[data-testid="stMain"] > div > div > div'
+        ];
+        selectors.forEach(function(sel) {
+            var els = doc.querySelectorAll(sel);
+            els.forEach(function(el) {
+                el.style.setProperty('max-width', '100vw', 'important');
+                el.style.setProperty('width', '100%', 'important');
+                el.style.setProperty('padding-left', '0.6rem', 'important');
+                el.style.setProperty('padding-right', '0.6rem', 'important');
+                el.style.setProperty('margin-left', '0', 'important');
+                el.style.setProperty('margin-right', '0', 'important');
+                el.style.setProperty('box-sizing', 'border-box', 'important');
+            });
+        });
+
+        // 2) stMain 섹션 자체 패딩 제거
+        var mainSections = doc.querySelectorAll('section[data-testid="stMain"]');
+        mainSections.forEach(function(el) {
+            el.style.setProperty('padding-left', '0', 'important');
+            el.style.setProperty('padding-right', '0', 'important');
+            el.style.setProperty('width', '100vw', 'important');
+        });
+
+        // 3) stApp 루트도 처리
+        var appRoot = doc.querySelector('.stApp');
+        if (appRoot) {
+            appRoot.style.setProperty('width', '100vw', 'important');
+            appRoot.style.setProperty('overflow-x', 'hidden', 'important');
+        }
+    }
+
+    // 즉시 실행
+    applyMobileFix();
+    // 100ms / 500ms / 1500ms 후 재실행 (Streamlit 렌더링 타이밍 대응)
+    setTimeout(applyMobileFix, 100);
+    setTimeout(applyMobileFix, 500);
+    setTimeout(applyMobileFix, 1500);
+
+    // MutationObserver: Streamlit 재렌더링 때마다 자동 재적용
+    var observer = new MutationObserver(function() {
+        applyMobileFix();
+    });
+    observer.observe(window.parent.document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false
+    });
+})();
+</script>
+''', height=0)
 # ===== Imported Functions from app_8507.py =====
 import logging
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s [%(levelname)s] %(message)s")
