@@ -35,6 +35,7 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;900&display=swap');
     /* 배경: 완전한 블랙에서 아주 깊은 남색 그라데이션 */
     .stApp {
         background: #000000;
@@ -72,7 +73,7 @@ if not st.session_state.authenticated:
         letter-spacing: 8px;
         margin-bottom: 5px;
         text-align: center;
-        font-family: 'Inter', 'Arial Black', sans-serif;
+        font-family: 'Gothic A1', 'Arial Black', sans-serif;
         animation: neonBreathe 3s infinite ease-in-out;
     }
     
@@ -82,6 +83,8 @@ if not st.session_state.authenticated:
         margin-bottom: 40px;
         text-align: center;
         letter-spacing: 2px;
+        font-family: 'Gothic A1', sans-serif;
+        font-weight: 700;
     }
 
     /* 입력창 폭 좁게 중앙 정렬 */
@@ -117,7 +120,7 @@ if not st.session_state.authenticated:
     
     <div class="pin-container">
         <div class="oracle-title">ASSET 333</div>
-        <div class="pin-subtitle">4자리 보안 PIN을 입력하세요</div>
+        <div class="pin-subtitle">Infinite Asset Expansion</div>
     </div>
     ''', unsafe_allow_html=True)
     
