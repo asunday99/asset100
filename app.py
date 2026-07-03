@@ -526,6 +526,11 @@ st.markdown("""
             padding-top: 10px;
             padding-bottom: 5px;
         }
+        @media (max-width: 820px) {
+            div[data-testid="stElementContainer"]:has(iframe[title="streamlit_option_menu.option_menu"]) {
+                margin-bottom: -15px !important;
+            }
+        }
     
         /* V5 CSS */
         .marquee-wrapper { width: 100%; overflow: hidden; background: rgba(255, 107, 0, 0.1); padding: 8px 0; border-top: 1px solid rgba(255,107,0,0.3); border-bottom: 1px solid rgba(255,107,0,0.3); margin-bottom: 25px; }
