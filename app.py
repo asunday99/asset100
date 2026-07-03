@@ -86,7 +86,7 @@ if not st.session_state.authenticated:
         font-weight: 700;
         
         /* 글자 내부 중앙에 맺히는 빛 (텍스트 밖으로 새어나가지 않음) */
-        background: radial-gradient(circle, #FFE4A0 0%, #A78E5C 60%, #7d6a45 100%);
+        background: radial-gradient(circle, #FFE4A0 0%, #A78E5C 75%, #7d6a45 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
