@@ -485,59 +485,14 @@ st.markdown('''
 
 with st.sidebar:
     st.title("💡 이용 매뉴얼")
-    st.markdown('''
-    <div style="background-color: #1A112A; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
-        <h5 style="color: #FF9900; margin-top: 0;">⬇️ 노션(Notion)에 저장하는 방법</h5>
-        <ol style="color: #d0d0d0; line-height: 1.6; font-size: 13px; padding-left: 15px;">
-            <li>아래 <b>다운로드</b> 버튼으로 <code>.md</code> 파일을 받습니다.</li>
-            <li>노션 빈 페이지에 <b>드래그 앤 드롭</b> 하면 완료!</li>
-        </ol>
-    </div>
-    ''', unsafe_allow_html=True)
     
     manual_md = '''
-# 📈 개인 주식 및 자산 관리 대시보드 이용 매뉴얼
+**📊 대시보드**  
+전체 계좌의 총 금융자산 흐름과 목표 달성률을 한눈에 파악하는 요약 화면입니다.
 
-본 대시보드는 구글 스프레드시트와 연동하여 나의 모든 자산 흐름과 시장 지표를 파악하고, 체계적인 매매 기록 및 모의 투자를 지원하는 툴입니다.
-
----
-
-## 0. 시작하기 전에: 구글 시트 연동 🔑
-개인 자산 데이터가 저장된 구글 스프레드시트를 가장 먼저 연결해야 합니다.
-1. 앱 좌측의 사이드바 메뉴 하단에서 `Google Sheets URL 입력` 칸을 찾습니다.
-2. **<span style="color: #4ade80; font-weight: bold;">본인의 구글 시트 주소(URL)를 복사하여 붙여넣기</span>** 합니다.
-3. 입력 즉시 모든 정보가 대시보드에 실시간으로 연동됩니다!
-
----
-
-## 1. 대시보드 (Dashboard) 📊
-현재 자산 총합과 목표 달성률, 그리고 시장 흐름을 한눈에 보는 화면입니다.
-
-* **목표 설정**: 최상단에서 **<span style="color: #4ade80; font-weight: bold;">목표 금액</span>**과 **<span style="color: #4ade80; font-weight: bold;">목표일</span>**을 입력하면 달성률(%)과 D-Day가 자동 계산됩니다.
-* **자산 요약**: 자산 총액 및 투자 비중이 도넛 차트로 제공됩니다.
-* **거시 경제 & 공포탐욕지수**: 코스피, 나스닥, 환율 등 핵심 지표와 시장 심리를 제공합니다.
-
-## 2. 증권계좌현황 (Account Status) 💼
-구글 시트에 기록된 각 계좌별 보유 종목의 실시간 평가금액과 수익률을 제공합니다.
-
-## 3. 매매 기록 (Trade Records) ✍️
-* **매매 캘린더**: 이번 달 달력에 일별 실현 손익을 표시합니다. (수익은 적색, 손실은 청색)
-* **매매 기록**: 상세 매매 내역을 표로 확인합니다.
-* **모의계산**: 가상의 **<span style="color: #4ade80; font-weight: bold;">매수 수량 및 단가</span>**를 표에 직접 입력해 보세요. 예상 금액과 수익률이 즉시 자동 계산됩니다!
-* **익절/손절 계산기**: 표에 원하는 **<span style="color: #4ade80; font-weight: bold;">목표 수익률(%)과 하락률(%)</span>**을 입력하면 정확한 매도 단가를 산출해 줍니다.
-
-## 4. 손익 현황 (PnL Status) 💰
-* **일별 손익**: 매일매일의 수익/손실 및 입출금 내역을 파악합니다.
-* **월별 손익**: 월 단위 누적 손익 표와 막대형 차트를 제공합니다.
+**✍️ 매매 기록**  
+이번 달의 확정된 수익과 상세 매매 내역, 달력을 통한 일별 손익을 추적하는 화면입니다.
 '''
-    st.download_button(
-        label="📥 매뉴얼 다운로드 (.md)",
-        data=manual_md,
-        file_name="stock_dashboard_manual.md",
-        mime="text/markdown",
-        use_container_width=True
-    )
-    st.markdown("---")
     st.markdown(manual_md)
 # ----------------------------
 
