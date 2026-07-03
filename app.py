@@ -87,9 +87,9 @@ if not st.session_state.authenticated:
         font-weight: 700;
     }
 
-    /* 입력창 폭 좁게 중앙 정렬 (PC: 부제목 길이에 맞춤) */
+    /* 입력창 중앙 정렬 (PC: 대제목 'ASSET 333' 가로 길이에 맞춤) */
     div[data-testid="stTextInput"] {
-        width: 240px !important;
+        width: 420px !important;
         margin: 0 auto !important;
     }
 
@@ -98,7 +98,7 @@ if not st.session_state.authenticated:
             font-size: 0.8rem;
             letter-spacing: 1.6px;
         }
-        /* 모바일은 PC의 240px 설정을 덮어쓰고 오리지널 너비 유지 */
+        /* 모바일은 PC 설정을 덮어쓰고 오리지널 너비 유지 */
         div[data-testid="stTextInput"] {
             width: 300px !important;
         }
