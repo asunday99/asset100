@@ -207,7 +207,7 @@ st.markdown("""
         }
     }
     .neon-zero-blue {
-        animation: neonPulseZeroCoolBlue 3.0s infinite ease-in-out;
+        animation: neonPulseZeroCoolBlue 3.45s infinite ease-in-out;
     }
 
     @keyframes progressBarPulse {
@@ -319,7 +319,7 @@ st.markdown("""
         margin: 15px 0 25px 0;
         letter-spacing: -1px;
         white-space: nowrap;
-        animation: neonPulseBlueWhite 3.0s infinite ease-in-out;
+        animation: neonPulseBlueWhite 3.45s infinite ease-in-out;
     }
 
     /* 핵심 결과값 텍스트 (네온 글로우 효과) */
