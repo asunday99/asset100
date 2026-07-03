@@ -78,7 +78,7 @@ if not st.session_state.authenticated:
     }
     
     .pin-subtitle {
-        color: #E1C387;
+        color: #B49250;
         font-size: 1.0rem;
         margin-bottom: 40px;
         text-align: center;
