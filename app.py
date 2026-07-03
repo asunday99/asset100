@@ -632,8 +632,7 @@ menu = option_menu(
 if menu != st.session_state.menu_selection:
     st.session_state.menu_selection = menu
     st.query_params["page"] = menu
-
-st.query_params["page"] = menu
+    st.rerun()
 
 # ── [모바일 풀너비 강제] JS로 Streamlit 부모 DOM 직접 조작 ──────────────
 import streamlit.components.v1 as _components
