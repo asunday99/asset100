@@ -55,15 +55,17 @@ if not st.session_state.authenticated:
     @keyframes neonBreathe {
         0%, 12.5%, 100% {
             text-shadow: 0 0 8.5px rgba(138, 180, 248, 0.95), 0 0 17px rgba(138, 180, 248, 0.75), 0 0 25.5px rgba(138, 180, 248, 0.55);
+            color: #C0D8FF;
             opacity: 1;
         }
         62.5% {
             text-shadow: 0 0 4px rgba(138, 180, 248, 0.25), 0 0 8px rgba(138, 180, 248, 0.1);
+            color: #C0D8FF;
             opacity: 0.5;
         }
     }
 
-    /* 타이틀 텍스트 (클리핑 그라데이션 + 야광 애니메이션) */
+    /* 타이틀 텍스트 (흰색 기본 + 야광 애니메이션) */
     .oracle-title {
         font-size: clamp(3.0rem, 13vw, 4.5rem);
         font-weight: 900;
@@ -73,13 +75,6 @@ if not st.session_state.authenticated:
         text-align: center;
         font-family: 'Gothic A1', 'Arial Black', sans-serif;
         animation: neonBreathe 8.0s infinite ease-in-out;
-        
-        /* 글자 내부 중앙에 맺히는 빛 (텍스트 밖으로 새어나가지 않음) */
-        background: radial-gradient(circle, #FFFFFF 0%, #C0D8FF 60%, #8AB4F8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        color: transparent;
     }
     
     .pin-subtitle {
