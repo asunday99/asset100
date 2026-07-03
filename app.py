@@ -979,7 +979,7 @@ elements.forEach(el => {{
         _svg1 = _make_area_svg(_monthly_profits_c, "#9E65B7", "#88C6E3", lambda v: f"{int(v/10000):,}만" if abs(v) >= 10000 else f"{int(v):,}", 1)
 
         # ── 5) 차트2 에리어 SVG (평균수익률) ──
-        _svg2 = _make_area_svg(_monthly_avg_rates2, "#B76CDF", "#C4B5BE", lambda v: f"{v:.1f}%", 2, "#9FF79F")
+        _svg2 = _make_area_svg(_monthly_avg_rates2, "#A3A0D8", "#C4B5BE", lambda v: f"{v:.1f}%", 2, "#9FF79F")
 
         # ── 6) 좌우 병렬 HTML 렌더링 ──
         _chart_html = f"""
