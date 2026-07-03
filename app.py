@@ -1889,7 +1889,7 @@ if (goalExpander) {
                 return svg
 
             _svg_d1 = _make_area_svg(_monthly_last_asset, "#9E65B7", "#88C6E3", lambda v: f"{v/100000000:.1f}억", 1)
-            _svg_d2 = _make_area_svg(_monthly_ach, "#B76CDF", "#C4B5BE", lambda v: f"{v:.1f}%", 2, "#9FF79F")
+            _svg_d2 = _make_area_svg(_monthly_ach, "#B76CDF", "#88C6E3", lambda v: f"{v:.1f}%", 2)
 
             _charts_html = f"""
 <div style='display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;'>
