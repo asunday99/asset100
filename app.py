@@ -211,7 +211,7 @@ st.markdown("""
 
     @keyframes neonPulseZeroCoolBlue {
         0%, 100% {
-            text-shadow: 0 0 8.5px rgba(138, 180, 248, 0.8), 0 0 17px rgba(138, 180, 248, 0.6), 0 0 25.5px rgba(138, 180, 248, 0.4);
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.8), 0 0 20px rgba(138, 180, 248, 0.6), 0 0 30px rgba(138, 180, 248, 0.4);
             color: #C0D8FF;
             opacity: 1;
         }
@@ -809,8 +809,8 @@ def render_trade_records(urls: dict):
         _expander_title = "여기를 눌러보세요"
     elif _month_profit < 0:
         _profit_text = f"{_month_profit:,}원"
-        _profit_class = ""
-        _profit_color = "color:#4B9FFF;"
+        _profit_class = "neon-zero-blue"
+        _profit_color = ""
         _msg = f"전월 {_prev_month_profit:,}원"
         _expander_title = "여기를 눌러보세요"
     else:
