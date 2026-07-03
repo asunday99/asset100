@@ -87,6 +87,13 @@ if not st.session_state.authenticated:
         font-weight: 700;
     }
 
+    @media (max-width: 768px) {
+        .pin-subtitle {
+            font-size: 0.8rem;
+            letter-spacing: 1.6px;
+        }
+    }
+
     /* 입력창 폭 좁게 중앙 정렬 */
     div[data-testid="stTextInput"] {
         width: 300px !important;
