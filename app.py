@@ -497,8 +497,12 @@ with st.sidebar:
 **✍️ 매매기록**  
 **= 확정수익 기록**
 * 달력을 누르면 해당일의 매매 손익이 얼마인지 볼 수 있어요
+
+<div style="margin-top: 35px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 0.85rem; font-family: 'Gothic A1', sans-serif; font-weight: 700; background: radial-gradient(circle, #FFE4A0 0%, #A78E5C 75%, #7d6a45 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; line-height: 1.5; letter-spacing: -0.5px;">
+이 앱은 구글시트에 기록된 방대한 데이터를<br>한눈에 시각화하고 관리할 목적으로 제작되었습니다
+</div>
 '''
-    st.markdown(manual_md)
+    st.markdown(manual_md, unsafe_allow_html=True)
 # ----------------------------
 
 menu_options = ["대시보드", "매매 기록"]
