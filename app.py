@@ -58,7 +58,7 @@ if not st.session_state.authenticated:
             color: #C0D8FF;
             opacity: 1;
         }
-        50%, 62.5% {
+        62.5% {
             text-shadow: 0 0 4px rgba(138, 180, 248, 0.25), 0 0 8px rgba(138, 180, 248, 0.1);
             color: #C0D8FF;
             opacity: 0.5;
