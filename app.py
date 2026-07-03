@@ -492,14 +492,14 @@ with st.sidebar:
 
 **<span style="color: #8AB4F8;">대시보드 (총 금융자산)</span>**  
 **= 평가수익 + 확정수익**
-* <span style="font-size: 0.85rem;">*평가수익*: 주식가치를 평가한 장부상 수익</span>
-* <span style="font-size: 0.85rem;">*확정수익*: 주식매도후 통장에 들어온 수익</span>
+* <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">*평가수익*: 주식가치를 평가한 장부상 수익</span>
+* <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">*확정수익*: 주식매도후 통장에 들어온 수익</span>
 
 ---
 
 **<span style="color: #8AB4F8;">매매기록</span>**  
 **= 확정수익 기록**
-* <span style="font-size: 0.85rem;">달력을 누르면 해당일의 매매 손익이 얼마인지 볼 수 있어요</span>
+* <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">달력을 누르면 해당일의 매매 손익이 얼마인지 볼 수 있어요</span>
 '''
     st.markdown(manual_md, unsafe_allow_html=True)
 # ----------------------------
