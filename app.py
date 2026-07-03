@@ -104,9 +104,9 @@ if not st.session_state.authenticated:
             font-size: 0.8rem;
             letter-spacing: 1.6px;
         }
-        /* 모바일은 PC 설정을 덮어쓰고 오리지널 너비 유지 */
+        /* 모바일은 PC 설정을 덮어쓰고 모바일 대제목(3.0rem) 가로 길이에 맞춤 */
         div[data-testid="stTextInput"] {
-            width: 300px !important;
+            width: 280px !important;
         }
     }
     
