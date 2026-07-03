@@ -78,13 +78,19 @@ if not st.session_state.authenticated:
     }
     
     .pin-subtitle {
-        color: #A78E5C;
         font-size: 1.0rem;
         margin-bottom: 40px;
         text-align: center;
         letter-spacing: 2px;
         font-family: 'Gothic A1', sans-serif;
         font-weight: 700;
+        
+        /* 글자 내부 중앙에 맺히는 빛 (텍스트 밖으로 새어나가지 않음) */
+        background: radial-gradient(circle, #FFE4A0 0%, #A78E5C 60%, #7d6a45 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
     }
 
     /* 입력창 중앙 정렬 (PC: 대제목 'ASSET 333' 가로 길이에 맞춤) */
