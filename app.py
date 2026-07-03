@@ -226,8 +226,8 @@ st.markdown("""
     }
 
     @keyframes progressBarPulse {
-        0%, 100% { box-shadow: 0 0 10px rgba(255, 218, 185, 0.8), 0 0 20px rgba(255, 218, 185, 0.5); }
-        50% { box-shadow: 0 0 5px rgba(255, 218, 185, 0.4), 0 0 10px rgba(255, 218, 185, 0.2); }
+        0%, 100% { box-shadow: 0 0 9px rgba(255, 218, 185, 0.8), 0 0 18px rgba(255, 218, 185, 0.5); }
+        50% { box-shadow: 0 0 4px rgba(255, 218, 185, 0.4), 0 0 9px rgba(255, 218, 185, 0.2); }
     }
     
     .progress-fill-peach {
