@@ -87,17 +87,21 @@ if not st.session_state.authenticated:
         font-weight: 700;
     }
 
+    /* 입력창 폭 좁게 중앙 정렬 (PC: 부제목 길이에 맞춤) */
+    div[data-testid="stTextInput"] {
+        width: 240px !important;
+        margin: 0 auto !important;
+    }
+
     @media (max-width: 768px) {
         .pin-subtitle {
             font-size: 0.8rem;
             letter-spacing: 1.6px;
         }
-    }
-
-    /* 입력창 폭 좁게 중앙 정렬 */
-    div[data-testid="stTextInput"] {
-        width: 300px !important;
-        margin: 0 auto !important;
+        /* 모바일은 PC의 240px 설정을 덮어쓰고 오리지널 너비 유지 */
+        div[data-testid="stTextInput"] {
+            width: 300px !important;
+        }
     }
     
     /* 텍스트 인풋 디자인 */
