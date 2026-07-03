@@ -528,7 +528,7 @@ st.markdown("""
         }
         @media (max-width: 820px) {
             div[data-testid="stElementContainer"]:has(iframe[title="streamlit_option_menu.option_menu"]) {
-                margin-bottom: -15px !important;
+                margin-bottom: -25px !important;
             }
         }
     
