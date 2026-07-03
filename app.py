@@ -54,13 +54,13 @@ if not st.session_state.authenticated:
     /* 야광 점멸 애니메이션 정의 (연보라 & 주황 믹스) */
     @keyframes neonBreathe {
         0%, 12.5%, 100% {
-            text-shadow: 0 0 8.5px rgba(138, 180, 248, 0.95), 0 0 17px rgba(138, 180, 248, 0.75), 0 0 25.5px rgba(138, 180, 248, 0.55);
-            color: #C0D8FF;
+            text-shadow: 0 0 8.5px rgba(150, 185, 235, 0.95), 0 0 17px rgba(150, 185, 235, 0.75), 0 0 25.5px rgba(150, 185, 235, 0.55);
+            color: #C8DCF8;
             opacity: 1;
         }
         62.5% {
-            text-shadow: 0 0 4px rgba(138, 180, 248, 0.25), 0 0 8px rgba(138, 180, 248, 0.1);
-            color: #C0D8FF;
+            text-shadow: 0 0 4px rgba(150, 185, 235, 0.25), 0 0 8px rgba(150, 185, 235, 0.1);
+            color: #C8DCF8;
             opacity: 0.5;
         }
     }
