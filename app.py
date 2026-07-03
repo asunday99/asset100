@@ -53,15 +53,15 @@ if not st.session_state.authenticated:
     
     /* 야광 점멸 애니메이션 정의 (연보라 & 주황 믹스) */
     @keyframes neonBreathe {
-        0% {
-            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
+        0%, 100% {
+            text-shadow: 0 0 8.5px rgba(138, 180, 248, 0.8), 0 0 17px rgba(138, 180, 248, 0.6), 0 0 25.5px rgba(138, 180, 248, 0.4);
+            color: #C0D8FF;
+            opacity: 1;
         }
         50% {
-            text-shadow: 0 0 20px rgba(255, 153, 0, 0.8), 0 0 40px rgba(255, 107, 0, 0.5), 0 0 60px rgba(255, 107, 0, 0.3);
-            color: #ffffff;
-        }
-        100% {
-            text-shadow: 0 0 10px rgba(184, 154, 255, 0.4), 0 0 20px rgba(184, 154, 255, 0.2);
+            text-shadow: 0 0 5px rgba(138, 180, 248, 0.4), 0 0 10px rgba(138, 180, 248, 0.2);
+            color: #C0D8FF;
+            opacity: 0.7;
         }
     }
 
@@ -69,14 +69,12 @@ if not st.session_state.authenticated:
     .oracle-title {
         font-size: clamp(3.0rem, 13vw, 4.5rem);
         font-weight: 900;
-        -webkit-text-stroke: 1px #ffffff;
-        color: #ffffff;
         letter-spacing: 2px;
         white-space: nowrap;
         margin-bottom: 5px;
         text-align: center;
         font-family: 'Gothic A1', 'Arial Black', sans-serif;
-        animation: neonBreathe 3s infinite ease-in-out;
+        animation: neonBreathe 3.45s infinite ease-in-out;
     }
     
     .pin-subtitle {
