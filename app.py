@@ -146,7 +146,7 @@ if not st.session_state.authenticated:
     </style>
     
     <div class="pin-container">
-        <div class="oracle-title">ASSET 333</div>
+        <div class="oracle-title">ASSET<span style="margin-left: -1pt;"> </span>333</div>
         <div class="pin-subtitle">Infinite Asset Expansion</div>
     </div>
     ''', unsafe_allow_html=True)
