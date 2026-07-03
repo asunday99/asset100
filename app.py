@@ -491,7 +491,7 @@ with st.sidebar:
 </div>
 
 **<span style="color: #8AB4F8;">대시보드 (총 금융자산)</span>**  
-**= 확정수익 + 평가수익**
+**= 평가수익 + 확정수익**
 * <span style="font-size: 0.85rem;">*평가수익*: 주식가치를 평가한 장부상 수익</span>
 * <span style="font-size: 0.85rem;">*확정수익*: 주식매도후 통장에 들어온 수익</span>
 
