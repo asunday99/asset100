@@ -74,7 +74,7 @@ if not st.session_state.authenticated:
         margin-bottom: 5px;
         text-align: center;
         font-family: 'Gothic A1', 'Arial Black', sans-serif;
-        animation: neonBreathe 3.45s infinite ease-in-out;
+        animation: neonBreathe 4.0s infinite ease-in-out;
     }
     
     .pin-subtitle {
