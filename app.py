@@ -622,6 +622,7 @@ _components.html('''
                 el.style.setProperty('width', '100%', 'important');
                 el.style.setProperty('padding-left', '0.6rem', 'important');
                 el.style.setProperty('padding-right', '0.6rem', 'important');
+                el.style.setProperty('padding-top', '1rem', 'important');
                 el.style.setProperty('margin-left', '0', 'important');
                 el.style.setProperty('margin-right', '0', 'important');
                 el.style.setProperty('box-sizing', 'border-box', 'important');
@@ -718,6 +719,7 @@ def render_trade_records(urls: dict):
         max-width: min(1200px, 90vw) !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
+        padding-top: 2rem !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
@@ -1588,6 +1590,7 @@ if menu == "대시보드":
         max-width: min(1200px, 90vw) !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
+        padding-top: 2rem !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
