@@ -231,7 +231,7 @@ st.markdown("""
     }
     
     .progress-fill-peach {
-        background: linear-gradient(90deg, #A07855, #FFBCA5, #FFF0E6);
+        background: radial-gradient(circle, #FFE4A0 0%, #A78E5C 75%, #7d6a45 100%);
         height: 100%;
         border-radius: 8px;
         position: absolute;
