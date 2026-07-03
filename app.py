@@ -965,7 +965,7 @@ elements.forEach(el => {{
             if c_bottom_right:
                 svg += f'<polygon points="{area_pts}" fill="url(#mint_trade_{chart_idx})" mask="url(#{mask_id})"/>'
             svg += f'<polygon points="{area_pts}" fill="url(#light_trade_{chart_idx})" mask="url(#{mask_id})"/>'
-            svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
+            svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
             
             for i, (m, (x, y)) in enumerate(zip(months, pts)):
                 svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
@@ -1865,7 +1865,7 @@ if (goalExpander) {
                 if c_bottom_right:
                     svg += f'<polygon points="{area_pts}" fill="url(#mint_{chart_idx})" mask="url(#{mask_id})"/>'
                 svg += f'<polygon points="{area_pts}" fill="url(#light_{chart_idx})" mask="url(#{mask_id})"/>'
-                svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
+                svg += f'<polyline points="{line_pts}" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px rgba(255,255,255,0.6))"/>'
                 for i, (m, (x, y)) in enumerate(zip(months, pts)):
                     svg += f'<circle cx="{x}" cy="{y}" r="4" fill="#ffffff" stroke="#111" stroke-width="1.5"/>'
                     lbl = y_fmt(data_dict.get(m, 0))
