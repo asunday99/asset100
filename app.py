@@ -183,8 +183,8 @@ st.markdown("""
 
     @keyframes neonPulseBlueWhite {
         0%, 100% {
-            text-shadow: 0 0 8.5px rgba(201, 216, 245, 0.68), 0 0 17px rgba(201, 216, 245, 0.51), 0 0 25.5px rgba(201, 216, 245, 0.34);
-            color: #C9D8F5;
+            text-shadow: 0 0 8.5px rgba(205, 216, 241, 0.68), 0 0 17px rgba(205, 216, 241, 0.51), 0 0 25.5px rgba(205, 216, 241, 0.34);
+            color: #CDD8F1;
             opacity: 1;
         }
         50% {
