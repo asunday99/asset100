@@ -53,12 +53,12 @@ if not st.session_state.authenticated:
     
     /* 야광 점멸 애니메이션 정의 (연보라 & 주황 믹스) */
     @keyframes neonBreathe {
-        0%, 33.33%, 100% {
+        0%, 26.66%, 100% {
             text-shadow: 0 0 8.5px rgba(138, 180, 248, 0.95), 0 0 17px rgba(138, 180, 248, 0.75), 0 0 25.5px rgba(138, 180, 248, 0.55);
             color: #C0D8FF;
             opacity: 1;
         }
-        58.33%, 75% {
+        66.66%, 80% {
             text-shadow: 0 0 4px rgba(138, 180, 248, 0.25), 0 0 8px rgba(138, 180, 248, 0.1);
             color: #C0D8FF;
             opacity: 0.5;
@@ -74,7 +74,7 @@ if not st.session_state.authenticated:
         margin-bottom: 5px;
         text-align: center;
         font-family: 'Gothic A1', 'Arial Black', sans-serif;
-        animation: neonBreathe 6.0s infinite ease-in-out;
+        animation: neonBreathe 7.5s infinite ease-in-out;
     }
     
     .pin-subtitle {
