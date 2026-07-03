@@ -926,7 +926,7 @@ elements.forEach(el => {{
             def yp(v): return PAD_T + int((1 - (v - y_min) / y_range) * plot_h)
             
             pts = [(xp(i), yp(data_dict.get(m, 0))) for i, m in enumerate(months)]
-            y0 = yp(0) if y_min < 0 else H - PAD_B
+            y0 = H - PAD_B
             area_pts = f"{PAD_L},{y0} " + " ".join(f"{x},{y}" for x, y in pts) + f" {pts[-1][0]},{y0}"
             line_pts = " ".join(f"{x},{y}" for x, y in pts)
             
