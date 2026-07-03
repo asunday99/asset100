@@ -112,10 +112,10 @@ if not st.session_state.authenticated:
         transition: all 0.3s ease;
     }
     
-    /* 텍스트 인풋 포커스 시 주황색 네온 띠 */
+    /* 텍스트 인풋 포커스 시 샴페인 골드 네온 띠 */
     div[data-baseweb="input"]:focus-within {
-        border-color: #FF9900 !important;
-        box-shadow: 0 0 20px rgba(255, 153, 0, 0.4) !important;
+        border-color: #E1C387 !important;
+        box-shadow: 0 0 20px rgba(225, 195, 135, 0.4) !important;
         background-color: rgba(0, 0, 0, 0.9) !important;
     }
 
@@ -124,7 +124,7 @@ if not st.session_state.authenticated:
         font-size: 3rem !important;
         text-align: center !important;
         letter-spacing: 25px !important;
-        caret-color: #FF9900 !important;
+        caret-color: #E1C387 !important;
         padding: 20px !important;
     }
 
