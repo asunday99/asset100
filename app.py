@@ -32,6 +32,20 @@ st.set_page_config(page_title="금융 자산 대시보드", layout="wide", initi
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
+# ── 새로고침 후에도 인증 유지: URL query param 복원 ──
+if not st.session_state.authenticated:
+    try:
+        _qp_auth = st.query_params.get("auth", "")
+        _app_pin = str(st.secrets.get("APP_PIN", "1234"))
+    except:
+        _qp_auth = ""
+        _app_pin = "1234"
+    # URL에 올바른 auth 토큰이 있으면 자동 인증 복원
+    import hashlib
+    _expected_token = hashlib.sha256(_app_pin.encode()).hexdigest()[:16]
+    if _qp_auth == _expected_token:
+        st.session_state.authenticated = True
+
 if not st.session_state.authenticated:
     st.markdown('''
     <style>
@@ -160,6 +174,10 @@ if not st.session_state.authenticated:
                 
             if pin == app_pin:
                 st.session_state.authenticated = True
+                # URL query param에 인증 토큰 저장 (새로고침 유지용)
+                import hashlib
+                _token = hashlib.sha256(app_pin.encode()).hexdigest()[:16]
+                st.query_params["auth"] = _token
                 st.rerun()
             else:
                 st.error("❌ 비밀번호가 틀렸습니다.")
