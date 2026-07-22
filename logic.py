@@ -40,13 +40,15 @@ MACRO_TITLE_MAP = {
 def get_macro_changes():
     changes = {}
     try:
-        data = yf.download('KRW=X JPY=X ^VIX ^TNX XLF QQQ DX-Y.NYB', period='5d', progress=False)
+        # ^IRX (3개월 금리) 추가
+        data = yf.download('KRW=X JPY=X ^VIX ^TNX ^IRX XLF QQQ DX-Y.NYB', period='5d', progress=False)
         closes = data['Close']
         if len(closes) >= 2:
             usd_c = closes['KRW=X'].dropna()
             jpy_c = closes['JPY=X'].dropna()
             vix_c = closes['^VIX'].dropna()
             tnx_c = closes['^TNX'].dropna()
+            irx_c = closes['^IRX'].dropna()
             xlf_c = closes['XLF'].dropna()
             qqq_c = closes['QQQ'].dropna()
             
@@ -54,6 +56,12 @@ def get_macro_changes():
             if len(jpy_c) >= 2: changes['[USD/JPY 환율]'] = jpy_c.iloc[-1] - jpy_c.iloc[-2]
             if len(vix_c) >= 2: changes['[vix지수]'] = vix_c.iloc[-1] - vix_c.iloc[-2]
             if len(tnx_c) >= 2: changes['[미국10년국채금리]'] = tnx_c.iloc[-1] - tnx_c.iloc[-2]
+            
+            # 장단기 금리차 계산 로직 추가
+            if len(tnx_c) >= 2 and len(irx_c) >= 2:
+                spread_today = tnx_c.iloc[-1] - irx_c.iloc[-1]
+                spread_yest = tnx_c.iloc[-2] - irx_c.iloc[-2]
+                changes['[장단기 금리차]'] = spread_today - spread_yest
             
             dxy_c = closes['DX-Y.NYB'].dropna()
             if len(dxy_c) >= 2: changes['[DXY]'] = dxy_c.iloc[-1] - dxy_c.iloc[-2]
@@ -255,6 +263,34 @@ def load_and_clean_data_no_cache(url, is_multi_header=False):
             if df[col].dtype == 'object':
                 df[col] = df[col].astype(str)
                 
+        # --- 코인 평가손익 강제 계산 폴백 로직 (구글 시트 수식 에러 방어) ---
+        # ACCOUNT 시트인지 확인 (실시간 코인 관련 컬럼 존재 여부로 판단)
+        coin_qty_col = next((c for c in df.columns if '수량' in str(c) and ('코인' in str(c) or '실시간' in str(c))), None)
+        coin_buy_col = next((c for c in df.columns if '매입금액' in str(c) and ('코인' in str(c) or '실시간' in str(c))), None)
+        coin_pnl_col = next((c for c in df.columns if '평가손익' in str(c) and ('코인' in str(c) or '실시간' in str(c))), None)
+        
+        if coin_qty_col and coin_buy_col and coin_pnl_col:
+            try:
+                # 업비트 BTC 현재가 가져오기
+                btc_price_str = get_upbit_btc_price()
+                btc_price = float(btc_price_str.replace(',', ''))
+                
+                for idx, row in df.iterrows():
+                    qty = float(row[coin_qty_col]) if pd.notna(row[coin_qty_col]) else 0.0
+                    buy_amt = float(row[coin_buy_col]) if pd.notna(row[coin_buy_col]) else 0.0
+                    
+                    # 수량이 있고 매입금액이 있는 경우에만 재계산 (수식 에러로 0.0이 된 경우 덮어쓰기)
+                    if qty > 0 and buy_amt > 0:
+                        # 구글 시트 파싱값이 0.0이거나 #VALUE! 에러로 날아간 경우 강제 계산
+                        current_pnl = float(row[coin_pnl_col]) if pd.notna(row[coin_pnl_col]) else 0.0
+                        if current_pnl == 0.0:
+                            eval_amt = qty * btc_price
+                            calculated_pnl = eval_amt - buy_amt
+                            df.at[idx, coin_pnl_col] = calculated_pnl
+            except Exception as e:
+                pass # 폴백 실패 시 기존 값 유지
+        # -----------------------------------------------------------------
+                
         return df
     except Exception as e:
         st.error(f"데이터 로드 에러: {e}")
@@ -280,11 +316,18 @@ def find_metric(df, label, col_offset=1):
 def get_market_data():
     data = {"USD_KRW": "1,380.0", "VIX": "16.25", "US_10Y": "4.491%", "T10Y2Y": "-", "HY_SPREAD": "-", "ADX_QQQ": "-", "XLF_QQQ_DIFF": "-"}
     try:
-        hist = yf.download("KRW=X ^VIX ^TNX QQQ XLF", period="40d", progress=False)
+        hist = yf.download("KRW=X ^VIX ^TNX ^IRX QQQ XLF", period="40d", progress=False)
         if not hist.empty and 'Close' in hist:
             if 'KRW=X' in hist['Close']: data["USD_KRW"] = f"{hist['Close']['KRW=X'].dropna().iloc[-1]:,.1f}"
             if '^VIX' in hist['Close']: data["VIX"] = f"{hist['Close']['^VIX'].dropna().iloc[-1]:.2f}"
             if '^TNX' in hist['Close']: data["US_10Y"] = f"{hist['Close']['^TNX'].dropna().iloc[-1]:.3f}%"
+            
+            if '^TNX' in hist['Close'] and '^IRX' in hist['Close']:
+                tnx = hist['Close']['^TNX'].dropna()
+                irx = hist['Close']['^IRX'].dropna()
+                if len(tnx) > 0 and len(irx) > 0:
+                    spread = tnx.iloc[-1] - irx.iloc[-1]
+                    data["T10Y2Y"] = f"{spread:.2f}%"
             
             if 'QQQ' in hist['Close'] and 'XLF' in hist['Close']:
                 qqq_close = hist['Close']['QQQ'].dropna()
