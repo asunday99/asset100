@@ -2301,11 +2301,8 @@ if (goalExpander) {
                         chg = macro_changes[lbl]
                         if chg is not None and not __import__('pandas').isna(chg):
                             sign = "+" if chg > 0 else ""
-                            change_color = "#FF4B4B" if chg > 0 else ("#1e90ff" if chg < 0 else "#a0a0a0")
-                            if 0 < abs(chg) < 0.01:
-                                change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color}; font-family:sans-serif;">({sign}{chg:.4f})</span>'
-                            else:
-                                change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color}; font-family:sans-serif;">({sign}{chg:.2f})</span>'
+                            change_color = "#FF4B4B" if chg > 0 else "#1e90ff"
+                            change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
                     
                     diff_color = 'color:white;'
                     # Padding reduced to make boxes thinner as requested
