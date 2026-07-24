@@ -2251,7 +2251,7 @@ if (goalExpander) {
             });
             </script>''', height=0)
             try:
-                macro_changes = get_macro_changes()
+                macro_changes, real_vals = get_macro_changes()
                 pairs = []
                 
                 # 컬럼명(헤더)에 값이 들어간 경우를 위해 헤더도 검사
@@ -2287,10 +2287,13 @@ if (goalExpander) {
                     if lbl not in mapped_vals:
                         mapped_vals[lbl] = val
                 
-                # Add default loading values for missing items
+                # Add default loading values for missing items (실시간 데이터 백업 활용)
                 for t in TARGET_ORDER:
-                    if t not in mapped_vals:
-                        mapped_vals[t] = "로드 중..."
+                    if t not in mapped_vals or mapped_vals[t] in ["로드 중...", "nan", "", "None"]:
+                        if t in real_vals:
+                            mapped_vals[t] = real_vals[t]
+                        else:
+                            mapped_vals[t] = "로드 중..."
                         
                 cards_html_list = []
                 for lbl in TARGET_ORDER:
@@ -2301,8 +2304,11 @@ if (goalExpander) {
                         chg = macro_changes[lbl]
                         if chg is not None and not __import__('pandas').isna(chg):
                             sign = "+" if chg > 0 else ""
-                            change_color = "#FF4B4B" if chg > 0 else "#1e90ff"
-                            change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color};">({sign}{chg:.2f})</span>'
+                            change_color = "#FF4B4B" if chg > 0 else ("#1e90ff" if chg < 0 else "#a0a0a0")
+                            if 0 < abs(chg) < 0.01:
+                                change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color}; font-family:sans-serif;">({sign}{chg:.4f})</span>'
+                            else:
+                                change_str = f' <span style="font-size:11px; font-weight:700; color:{change_color}; font-family:sans-serif;">({sign}{chg:.2f})</span>'
                     
                     diff_color = 'color:white;'
                     # Padding reduced to make boxes thinner as requested
