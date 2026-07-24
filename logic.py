@@ -36,108 +36,49 @@ MACRO_TITLE_MAP = {
     '일본금리': '[일본10년국채금리]'
 }
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=3600)
 def get_macro_changes():
     changes = {}
-    vals = {}
     try:
-        data = yf.download('KRW=X JPY=X ^VIX ^TNX ^IRX XLF QQQ DX-Y.NYB', period='3mo', progress=False)
-        closes = data['Close'] if 'Close' in data else pd.DataFrame()
-        highs = data['High'] if 'High' in data else pd.DataFrame()
-        lows = data['Low'] if 'Low' in data else pd.DataFrame()
-        
-        # 1. USD/KRW 환율
-        try:
-            if 'KRW=X' in closes:
-                usd_c = closes['KRW=X'].dropna()
-                if len(usd_c) >= 2:
-                    changes['[USD/KRW 환율]'] = float(usd_c.iloc[-1] - usd_c.iloc[-2])
-                    vals['[USD/KRW 환율]'] = f"{usd_c.iloc[-1]:,.1f}"
-        except: pass
-
-        # 2. USD/JPY 환율
-        try:
-            if 'JPY=X' in closes:
-                jpy_c = closes['JPY=X'].dropna()
-                if len(jpy_c) >= 2:
-                    changes['[USD/JPY 환율]'] = float(jpy_c.iloc[-1] - jpy_c.iloc[-2])
-                    vals['[USD/JPY 환율]'] = f"{jpy_c.iloc[-1]:,.2f}"
-        except: pass
-
-        # 3. VIX 지수
-        try:
-            if '^VIX' in closes:
-                vix_c = closes['^VIX'].dropna()
-                if len(vix_c) >= 2:
-                    changes['[vix지수]'] = float(vix_c.iloc[-1] - vix_c.iloc[-2])
-                    vals['[vix지수]'] = f"{vix_c.iloc[-1]:,.2f}"
-        except: pass
-
-        # 4. 미국 10년 국채금리
-        try:
-            if '^TNX' in closes:
-                tnx_c = closes['^TNX'].dropna()
-                if len(tnx_c) >= 2:
-                    changes['[미국10년국채금리]'] = float(tnx_c.iloc[-1] - tnx_c.iloc[-2])
-                    vals['[미국10년국채금리]'] = f"{tnx_c.iloc[-1]:,.2f}"
-        except: pass
-
-        # 5. 장단기 금리차 (10Y - 3M)
-        try:
-            if '^TNX' in closes and '^IRX' in closes:
-                tnx_c = closes['^TNX'].dropna()
-                irx_c = closes['^IRX'].dropna()
-                if len(tnx_c) >= 2 and len(irx_c) >= 2:
-                    s1 = tnx_c.iloc[-1] - irx_c.iloc[-1]
-                    s2 = tnx_c.iloc[-2] - irx_c.iloc[-2]
-                    changes['[장단기 금리차]'] = float(s1 - s2)
-                    vals['[장단기 금리차]'] = f"{s1:,.2f}%"
-        except: pass
-
-        # 6. DXY (달러인덱스)
-        try:
-            if 'DX-Y.NYB' in closes:
-                dxy_c = closes['DX-Y.NYB'].dropna()
-                if len(dxy_c) >= 2:
-                    changes['[DXY]'] = float(dxy_c.iloc[-1] - dxy_c.iloc[-2])
-                    vals['[DXY]'] = f"{dxy_c.iloc[-1]:,.2f}"
-        except: pass
-
-        # 7. XLF-QQQ 괴리율
-        try:
-            if 'XLF' in closes and 'QQQ' in closes:
-                xlf_c = closes['XLF'].dropna()
-                qqq_c = closes['QQQ'].dropna()
-                if len(xlf_c) >= 2 and len(qqq_c) >= 2:
-                    r1 = xlf_c.iloc[-1] / qqq_c.iloc[-1]
-                    r2 = xlf_c.iloc[-2] / qqq_c.iloc[-2]
-                    changes['[XLF-QQQ괴리율]'] = float(r1 - r2)
-                    vals['[XLF-QQQ괴리율]'] = f"{r1:.2f}"
-        except: pass
-
-        # 8. ADX 추세강도 (QQQ 기준)
-        try:
-            if 'QQQ' in highs and 'QQQ' in lows and 'QQQ' in closes:
-                qh, ql, qc = highs['QQQ'].dropna(), lows['QQQ'].dropna(), closes['QQQ'].dropna()
-                if len(qc) >= 28:
-                    up_move = qh.diff()
-                    down_move = -ql.diff()
-                    pos_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
-                    neg_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
-                    tr = np.maximum(qh - ql, np.maximum(abs(qh - qc.shift(1)), abs(ql - qc.shift(1))))
-                    atr = pd.Series(tr).rolling(14).mean()
-                    pos_di = 100 * (pd.Series(pos_dm, index=qh.index).rolling(14).mean() / atr)
-                    neg_di = 100 * (pd.Series(neg_dm, index=qh.index).rolling(14).mean() / atr)
-                    dx = 100 * np.abs(pos_di - neg_di) / (pos_di + neg_di)
-                    adx = dx.rolling(14).mean().dropna()
-                    if len(adx) >= 2:
-                        changes['[ADX 추세강도]'] = float(adx.iloc[-1] - adx.iloc[-2])
-                        vals['[ADX 추세강도]'] = f"{adx.iloc[-1]:.2f}%"
-        except: pass
-
+        # ^IRX (3개월 금리) 추가
+        data = yf.download('KRW=X JPY=X ^VIX ^TNX ^IRX XLF QQQ DX-Y.NYB', period='5d', progress=False)
+        closes = data['Close']
+        if len(closes) >= 2:
+            usd_c = closes['KRW=X'].dropna()
+            jpy_c = closes['JPY=X'].dropna()
+            vix_c = closes['^VIX'].dropna()
+            tnx_c = closes['^TNX'].dropna()
+            irx_c = closes['^IRX'].dropna()
+            xlf_c = closes['XLF'].dropna()
+            qqq_c = closes['QQQ'].dropna()
+            
+            if len(usd_c) >= 2: changes['[USD/KRW 환율]'] = usd_c.iloc[-1] - usd_c.iloc[-2]
+            if len(jpy_c) >= 2: changes['[USD/JPY 환율]'] = jpy_c.iloc[-1] - jpy_c.iloc[-2]
+            if len(vix_c) >= 2: changes['[vix지수]'] = vix_c.iloc[-1] - vix_c.iloc[-2]
+            if len(tnx_c) >= 2: changes['[미국10년국채금리]'] = tnx_c.iloc[-1] - tnx_c.iloc[-2]
+            
+            # 장단기 금리차 계산 로직 추가
+            if len(tnx_c) >= 2 and len(irx_c) >= 2:
+                spread_today = tnx_c.iloc[-1] - irx_c.iloc[-1]
+                spread_yest = tnx_c.iloc[-2] - irx_c.iloc[-2]
+                changes['[장단기 금리차]'] = spread_today - spread_yest
+            
+            dxy_c = closes['DX-Y.NYB'].dropna()
+            if len(dxy_c) >= 2: changes['[DXY]'] = dxy_c.iloc[-1] - dxy_c.iloc[-2]
+            
+            if len(xlf_c) >= 2 and len(qqq_c) >= 2:
+                xlf_today = xlf_c.iloc[-1]
+                qqq_today = qqq_c.iloc[-1]
+                xlf_yest = xlf_c.iloc[-2]
+                qqq_yest = qqq_c.iloc[-2]
+            
+            if not pd.isna(xlf_today) and not pd.isna(qqq_today):
+                today_ratio = xlf_today / qqq_today
+                yest_ratio = xlf_yest / qqq_yest
+                changes['XLF'] = today_ratio - yest_ratio
     except:
         pass
-    return changes, vals
+    return changes
 
 def load_config():
     default_config = {
