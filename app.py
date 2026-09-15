@@ -20,10 +20,46 @@ import plotly.express as px
 import logging
 logger = __import__('logging').getLogger(__name__)
 
-if 'gs_val' not in st.session_state:
-    st.session_state.gs_val = 100
+USER_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
+
+def load_user_goal_config():
+    default_amount = 50.0
+    default_date = datetime.date(2027, 12, 31)
+    amount_eok = default_amount
+    target_date = default_date
+    if os.path.exists(USER_CONFIG_PATH):
+        try:
+            with open(USER_CONFIG_PATH, 'r', encoding='utf-8') as _f:
+                _cfg = json.load(_f)
+            if 'goal_amount_eok' in _cfg and float(_cfg['goal_amount_eok']) > 0:
+                amount_eok = float(_cfg['goal_amount_eok'])
+            if 'goal_date' in _cfg and _cfg['goal_date']:
+                target_date = datetime.datetime.strptime(_cfg['goal_date'], '%Y-%m-%d').date()
+        except Exception:
+            pass
+    else:
+        try:
+            with open(USER_CONFIG_PATH, 'w', encoding='utf-8') as _f:
+                json.dump({'goal_amount_eok': default_amount, 'goal_date': default_date.strftime('%Y-%m-%d')}, _f)
+        except Exception:
+            pass
+    return amount_eok, target_date
+
+def save_user_goal_config(amount_eok, target_date):
+    try:
+        dt_str = target_date.strftime('%Y-%m-%d') if isinstance(target_date, (datetime.date, datetime.datetime)) else str(target_date)
+        with open(USER_CONFIG_PATH, 'w', encoding='utf-8') as _f:
+            json.dump({'goal_amount_eok': float(amount_eok), 'goal_date': dt_str}, _f)
+    except Exception:
+        pass
+
+if 'gs_val' not in st.session_state or 'target_date_dynamic' not in st.session_state:
+    _amt_eok, _tgt_dt = load_user_goal_config()
+    st.session_state.gs_val = _amt_eok
+    st.session_state.target_date_dynamic = _tgt_dt
+    st.session_state.goal_input_val = int(_amt_eok * 100000000)
+
 if 'ty_val' not in st.session_state:
-    import datetime
     st.session_state.ty_val = datetime.date.today().year + 5
 
 st.set_page_config(page_title="금융 자산 대시보드", layout="wide", initial_sidebar_state="collapsed")
@@ -1622,21 +1658,18 @@ if menu == "대시보드":
     </style>
     """, unsafe_allow_html=True)
     if True:  # 대시보드 1열 시작
-        gs_val = st.session_state.gs_val
-        if 'target_date_dynamic' not in st.session_state:
-            _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
-            try:
-                with open(_ucfg_path, 'r') as _f:
-                    _ucfg = json.load(_f)
-                st.session_state.target_date_dynamic = datetime.datetime.strptime(_ucfg.get('goal_date', ''), '%Y-%m-%d').date()
-                st.session_state.gs_val = float(_ucfg.get('goal_amount_eok', st.session_state.gs_val))
-            except:
-                st.session_state.target_date_dynamic = datetime.date.today()
+        if 'target_date_dynamic' not in st.session_state or 'gs_val' not in st.session_state:
+            _amt_eok, _tgt_dt = load_user_goal_config()
+            st.session_state.gs_val = _amt_eok
+            st.session_state.target_date_dynamic = _tgt_dt
+            st.session_state.goal_input_val = int(_amt_eok * 100000000)
         
+        gs_val = st.session_state.gs_val
         target_date_dynamic = st.session_state.target_date_dynamic
         if target_date_dynamic is None:
-            target_date_dynamic = datetime.date.today()
+            _, target_date_dynamic = load_user_goal_config()
             st.session_state.target_date_dynamic = target_date_dynamic
+
         ach = min((total_assets / (gs_val*100000000)) * 100, 100.0) if gs_val > 0 else 0
         d_days_dynamic = (target_date_dynamic - datetime.date.today()).days
         formatted_gs_val = f"{gs_val:.1f}".rstrip('0').rstrip('.')
@@ -1682,9 +1715,13 @@ if (goalExpander) {
                 if 'goal_input_val' not in st.session_state:
                     st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
                 st.session_state.goal_input_val += amount
+                st.session_state.gs_val = st.session_state.goal_input_val / 100000000.0
+                save_user_goal_config(st.session_state.gs_val, st.session_state.target_date_dynamic)
                 
             def reset_goal():
                 st.session_state.goal_input_val = 0
+                st.session_state.gs_val = 0
+                save_user_goal_config(0, st.session_state.target_date_dynamic)
 
             if 'goal_input_val' not in st.session_state:
                 st.session_state.goal_input_val = int(st.session_state.gs_val * 100000000)
@@ -1703,18 +1740,7 @@ if (goalExpander) {
 
                 if new_amt != int(st.session_state.gs_val * 100000000):
                     st.session_state.gs_val = new_amt / 100000000.0
-                    _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
-                    try:
-                        _ucfg = {}
-                        if os.path.exists(_ucfg_path):
-                            with open(_ucfg_path, 'r') as _f:
-                                _ucfg = json.load(_f)
-                        _ucfg['goal_amount_eok'] = st.session_state.gs_val
-                        _ucfg['goal_date'] = st.session_state.get('target_date_dynamic', datetime.date.today()).strftime('%Y-%m-%d')
-                        with open(_ucfg_path, 'w') as _f:
-                            json.dump(_ucfg, _f)
-                    except:
-                        pass
+                    save_user_goal_config(st.session_state.gs_val, st.session_state.target_date_dynamic)
                     st.rerun()
 
             with sc2:
@@ -1727,18 +1753,7 @@ if (goalExpander) {
                     new_date = datetime.date.today()
                 if new_date != st.session_state.get('target_date_dynamic', datetime.date.today()):
                     st.session_state.target_date_dynamic = new_date
-                    _ucfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_config.json')
-                    try:
-                        _ucfg = {}
-                        if os.path.exists(_ucfg_path):
-                            with open(_ucfg_path, 'r') as _f:
-                                _ucfg = json.load(_f)
-                        _ucfg['goal_date'] = new_date.strftime('%Y-%m-%d')
-                        _ucfg['goal_amount_eok'] = st.session_state.gs_val
-                        with open(_ucfg_path, 'w') as _f:
-                            json.dump(_ucfg, _f)
-                    except:
-                        pass
+                    save_user_goal_config(st.session_state.gs_val, new_date)
                     st.rerun()
 
                 # --- 실시간 목표 달성 시뮬레이터 ---
